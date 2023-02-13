@@ -65,6 +65,4 @@ project(":core") {
     }
 }
 
-plugins {
-    id 'jacoco’
-}
+
