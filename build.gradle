@@ -1,3 +1,10 @@
+plugins {
+    // Apply the java-library plugin for API and implementation separation.
+    id 'java-library'
+    // Use the JaCoCo plugin to calculate code coverage
+    //id 'jacoco'
+}
+
 buildscript {
     
 
