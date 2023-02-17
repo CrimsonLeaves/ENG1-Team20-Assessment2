@@ -14,19 +14,6 @@ buildscript {
     }
 }
 
- plugins {
-    // Use the JaCoCo plugin to calculate code coverage
-    id 'jacoco'
-    // Apply the java-library plugin for API and implementation separation.
-    id 'java-library'   
-}
-
-jacocoTestReport {
-    reports {
-        xml.required = true
-    }
-}
-
 allprojects {
     apply plugin: "eclipse"
 
