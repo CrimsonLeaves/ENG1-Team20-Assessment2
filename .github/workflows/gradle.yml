@@ -40,6 +40,5 @@ jobs:
     - name: Upload library JAR
       uses: actions/upload-artifact@v3.1.1
       with: 
-        name: desktop-1.0.jar
-        path: /desktop/build/libs/desktop-1.0.jar
-
+        name: core-1.0.jar
+        path: core/build/libs/core-1.0.jar
