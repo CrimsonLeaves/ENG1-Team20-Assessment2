@@ -21,6 +21,12 @@ buildscript {
     id 'java-library'   
 }
 
+jacocoTestReport {
+    reports {
+        xml.required = true
+    }
+}
+
 allprojects {
     apply plugin: "eclipse"
 
