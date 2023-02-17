@@ -5,3 +5,16 @@ sourceCompatibility = 1.7
 sourceSets.main.java.srcDirs = [ "src/" ]
 
 eclipse.project.name = appName + "-core"
+
+plugins {
+    // Use the JaCoCo plugin to calculate code coverage
+    id 'jacoco'
+    // Apply the java-library plugin for API and implementation separation.
+    id 'java-library'   
+}
+
+jacocoTestReport {
+    reports {
+        xml.required = true
+    }
+}
