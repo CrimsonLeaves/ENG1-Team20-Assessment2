@@ -41,5 +41,5 @@ jobs:
       uses: actions/upload-artifact@v3.1.1
       with: 
         name: desktop-1.0.jar
-        path: build/libs/desktop-1.0.jar
+        path: /desktop/build/libs/desktop-1.0.jar
 
