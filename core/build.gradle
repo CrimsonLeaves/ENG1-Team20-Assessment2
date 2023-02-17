@@ -5,9 +5,13 @@ plugins {
     id 'java-library'   
 }
 
+test {
+ finalizedBy jacocoTestReport
+}
+
 jacoco {
     toolVersion = "0.8.8"
-    reportsDirectory = layout.buildDirectory.dir('core/reports/jacoco')
+    reportsDirectory = layout.buildDirectory.dir('core/build/reports/jacoco')
 }
 
 jacocoTestReport {
