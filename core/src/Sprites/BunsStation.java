@@ -11,7 +11,7 @@ import com.badlogic.gdx.physics.box2d.World;
  * Class representing the Buns Station in the game.
  * Extends the InteractiveTileObject class, which handles the Box2D physics.
  */
-public class BunsStation extends InteractiveTileObject {
+public class BunsStation extends IngredientStation {
 
     /**
      * Constructor for BunsStation.
@@ -32,6 +32,7 @@ public class BunsStation extends InteractiveTileObject {
      *
      * @return A new Bun object.
      */
+    @Override
     public Ingredient getIngredient() {
         return new Bun(0, 3);
     }

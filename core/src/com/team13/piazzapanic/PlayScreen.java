@@ -63,6 +63,10 @@ public class PlayScreen implements Screen {
 
     public PlateStation plateStation;
 
+    public ArrayList<ChoppingBoard> choppingBoards = new ArrayList<>();
+
+    public ArrayList<Pan> pans = new ArrayList<>();
+
 
     public Boolean scenarioComplete;
     public Boolean createdOrder;
@@ -180,6 +184,7 @@ public class PlayScreen implements Screen {
             else {
                 controlledChef.b2body.setLinearVelocity(0, 0);
             }
+            //?? put in the above if statements surely?
         if (controlledChef.b2body.getLinearVelocity().x > 0){
             controlledChef.notificationSetBounds("Right");
         }
@@ -228,8 +233,19 @@ public class PlayScreen implements Screen {
                             case "Sprites.PlateStation":
                                 if(plateStation.getPlate().size() > 0 || plateStation.getCompletedRecipe() != null){
                                     controlledChef.pickUpItemFrom(tile);
-
                                 }
+                                break;
+                            case "Sprites.ChoppingBoard":
+                                ChoppingBoard choppingBoardTile = (ChoppingBoard) tile;
+                                controlledChef.setInHandsIng(choppingBoardTile.getCurrentIngredient());
+                                controlledChef.setChefSkin(controlledChef.getInHandsIng());
+                                choppingBoardTile.setCurrentIngredient(null);
+                                break;
+                            case "Sprites.Pan":
+                                Pan panTile = (Pan) tile;
+                                controlledChef.setInHandsIng(panTile.getCurrentIngredient());
+                                controlledChef.setChefSkin(controlledChef.getInHandsIng());
+                                panTile.setCurrentIngredient(null);
 
                         }
                     } else {
@@ -241,10 +257,11 @@ public class PlayScreen implements Screen {
                                 break;
 
                             case "Sprites.ChoppingBoard":
-                                if(controlledChef.getInHandsIng() != null){
-                                    if(controlledChef.getInHandsIng().prepareTime > 0){
-                                        controlledChef.setUserControlChef(false);
-                                    }
+                                ChoppingBoard choppingBoardTile = (ChoppingBoard) tile;
+                                if(choppingBoardTile.getCurrentIngredient() == null && controlledChef.getInHandsIng().prepareTime > 0){
+                                    choppingBoardTile.setCurrentIngredient(controlledChef.getInHandsIng());
+                                    controlledChef.setInHandsIng(null);
+                                    controlledChef.setChefSkin(null);
                                 }
                                break;
                             case "Sprites.PlateStation":
@@ -254,10 +271,11 @@ public class PlayScreen implements Screen {
                             }
                                 break;
                             case "Sprites.Pan":
-                                if(controlledChef.getInHandsIng() != null) {
-                                    if (controlledChef.getInHandsIng().isPrepared() && controlledChef.getInHandsIng().cookTime > 0){
-                                        controlledChef.setUserControlChef(false);
-                                    }
+                                Pan panTile = (Pan) tile;
+                                if(panTile.getCurrentIngredient() == null && controlledChef.getInHandsIng().cookTime > 0){
+                                    panTile.setCurrentIngredient(controlledChef.getInHandsIng());
+                                    controlledChef.setInHandsRecipe(null);
+                                    controlledChef.setChefSkin(null);
                                 }
 
                                 break;
@@ -292,6 +310,14 @@ public class PlayScreen implements Screen {
         renderer.setView(gamecam);
         chef1.update(dt);
         chef2.update(dt);
+
+        for (ChoppingBoard choppingBoard : choppingBoards) {
+            choppingBoard.update(dt);
+        }
+        for (Pan pan : pans) {
+            pan.update(dt);
+        }
+
         world.step(1/60f, 6, 2);
 
     }
@@ -353,7 +379,7 @@ public class PlayScreen implements Screen {
         update(delta);
 
         //Execute handleEvent each 1 second
-        timeSeconds +=Gdx.graphics.getRawDeltaTime();
+        timeSeconds += Gdx.graphics.getDeltaTime();
         timeSecondsCount += Gdx.graphics.getDeltaTime();
 
         if(Math.round(timeSecondsCount) == 5 && createdOrder == Boolean.FALSE){
@@ -387,20 +413,22 @@ public class PlayScreen implements Screen {
             Recipe recipeNew = plateStation.getCompletedRecipe();
             recipeNew.create(plateStation.getX(), plateStation.getY(), game.batch);
         }
-        if (!chef1.getUserControlChef()) {
-            if (chef1.getTouchingTile() != null && chef1.getInHandsIng() != null){
-                if (chef1.getTouchingTile().getUserData() instanceof InteractiveTileObject){
-                    chef1.displayIngStatic(game.batch);
-                }
+
+        // make a function
+        for (ChoppingBoard choppingBoard : choppingBoards) {
+            Ingredient currentingredient = choppingBoard.getCurrentIngredient();
+            if (currentingredient != null) {
+                currentingredient.create(choppingBoard.getX(), choppingBoard.getY(), game.batch);
             }
         }
-        if (!chef2.getUserControlChef()) {
-            if (chef2.getTouchingTile() != null && chef2.getInHandsIng() != null) {
-                if (chef2.getTouchingTile().getUserData() instanceof InteractiveTileObject) {
-                    chef2.displayIngStatic(game.batch);
-                }
+
+        for (Pan pan : pans) {
+            Ingredient currentingredient = pan.getCurrentIngredient();
+            if (currentingredient != null) {
+                currentingredient.create(pan.getX(), pan.getY(), game.batch);
             }
         }
+
         if (chef1.previousInHandRecipe != null){
             chef1.displayIngDynamic(game.batch);
         }

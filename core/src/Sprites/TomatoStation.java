@@ -13,13 +13,14 @@ import com.badlogic.gdx.physics.box2d.World;
  * The fixture of the body is then set with the instance of the object as its user data.
  * The class also provides a method getIngredient() that returns a new Tomato instance
  */
-public class TomatoStation extends InteractiveTileObject {
+public class TomatoStation extends IngredientStation {
 
     public TomatoStation(World world, TiledMap map, BodyDef bdef, Rectangle rectangle) {
         super(world, map, bdef, rectangle);
         fixture.setUserData(this);
     }
 
+    @Override
     public Ingredient getIngredient(){
         return new Tomato(2,0);
     }

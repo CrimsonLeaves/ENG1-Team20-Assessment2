@@ -11,18 +11,20 @@ import com.badlogic.gdx.physics.box2d.World;
  * and toast buns
  */
 
-public class Pan extends InteractiveTileObject {
+public class Pan extends CookingStation {
     public Pan(World world, TiledMap map, BodyDef bdef, Rectangle rectangle) {
         super(world, map, bdef, rectangle);
         fixture.setUserData(this);
 
     }
 
-    public float getX(){
-        return super.bdefNew.position.x;
-    }
-
-    public float getY(){
-        return super.bdefNew.position.y;
+    @Override
+    public void update(float dt){
+        if(currentIngredient != null) {
+            timer += dt;
+            if (timer > currentIngredient.cookTime) {
+                currentIngredient.setCooked();
+            }
+        }
     }
 }

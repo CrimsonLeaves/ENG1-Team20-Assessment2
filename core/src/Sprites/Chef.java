@@ -4,7 +4,6 @@ import Ingredients.*;
 import Recipe.BurgerRecipe;
 import Recipe.Recipe;
 import Recipe.SaladRecipe;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -192,6 +191,9 @@ public class Chef extends Sprite {
                     setChefSkin(inHandsIng);
                 }
             }
+            // why the fuck is this in here? this should be logic in the actual cooking stations
+            // should be done by placing ingredient from stack onto cooking station and picked back up when finished
+            // dont lock the chef out when preparing - actually discuss this with team
         } else if (!userControlChef && getInHandsIng().prepareTime > 0) {
             waitTimer += dt;
             if (waitTimer > inHandsIng.prepareTime) {
@@ -394,27 +396,6 @@ public class Chef extends Sprite {
     }
 
     /**
-     * Method to display the ingredient on the specific interactive tile objects (ChoppingBoard/Pan)
-     * @param batch the SpriteBatch used to render the texture.
-     */
-
-    public void displayIngStatic(SpriteBatch batch) {
-        Gdx.app.log("", inHandsIng.toString());
-        if (whatTouching != null && !chefOnChefCollision) {
-            InteractiveTileObject tile = (InteractiveTileObject) whatTouching.getUserData();
-            if (tile instanceof ChoppingBoard) {
-                ChoppingBoard tileNew = (ChoppingBoard) tile;
-                inHandsIng.create(tileNew.getX() - (0.5f / MainGame.PPM), tileNew.getY() - (0.2f / MainGame.PPM), batch);
-                setChefSkin(null);
-            } else if (tile instanceof Pan) {
-                Pan tileNew = (Pan) tile;
-                inHandsIng.create(tileNew.getX(), tileNew.getY() - (0.01f / MainGame.PPM), batch);
-                setChefSkin(null);
-            }
-        }
-    }
-
-    /**
      * The method creates an instance of the recipe and sets its position on the completed station coordinates.
      * The method also implements a timer for each ingredient which gets removed from the screen after a certain amount of time.
      *
@@ -517,10 +498,10 @@ public class Chef extends Sprite {
      *
      * @param value whether the chef is controlled by the user
      */
-    public void setUserControlChef ( boolean value){
-        userControlChef = value;
-
-    }
+//    public void setUserControlChef ( boolean value){
+//        userControlChef = value;
+//
+//    }
 
     /**
 

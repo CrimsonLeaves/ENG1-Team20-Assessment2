@@ -11,12 +11,13 @@ import com.badlogic.gdx.physics.box2d.World;
  * SteakStation is a concrete class that extends the {@link InteractiveTileObject} class.
  * Represents a SteakStation in the game where the chef can pick up a steak
  */
-public class SteakStation extends InteractiveTileObject {
+public class SteakStation extends IngredientStation {
 
     public SteakStation(World world, TiledMap map, BodyDef bdef, Rectangle rectangle) {
         super(world, map, bdef, rectangle);
         fixture.setUserData(this);
     }
+    @Override
     public Ingredient getIngredient(){
        return new Steak(2,3);
     }

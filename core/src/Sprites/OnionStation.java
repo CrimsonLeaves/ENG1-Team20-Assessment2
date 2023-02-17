@@ -14,12 +14,13 @@ import com.badlogic.gdx.physics.box2d.World;
   * The class also provides a method getIngredient() that returns a new Onion instance
  */
 
-public class OnionStation extends InteractiveTileObject {
+public class OnionStation extends IngredientStation {
     public OnionStation(World world, TiledMap map, BodyDef bdef, Rectangle rectangle) {
         super(world, map, bdef, rectangle);
         fixture.setUserData(this);
 
     }
+    @Override
     public Ingredient getIngredient(){
         return new Onion(2,0);
     }

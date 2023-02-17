@@ -11,7 +11,7 @@ import com.badlogic.gdx.physics.box2d.World;
  * The `LettuceStation` class extends the `InteractiveTileObject` class.
  * It is used to represent a station for producing lettuce in the game.
  */
-public class LettuceStation extends InteractiveTileObject {
+public class LettuceStation extends IngredientStation {
     /**
      * Constructs a LettuceStation.
      *
@@ -30,6 +30,7 @@ public class LettuceStation extends InteractiveTileObject {
      *
      * @return a Lettuce object
      */
+    @Override
     public Ingredient getIngredient(){
         return (new Lettuce(2,0));
     }
