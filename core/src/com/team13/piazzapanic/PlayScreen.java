@@ -5,6 +5,7 @@ import Recipe.Recipe;
 import Sprites.*;
 import Recipe.Order;
 import Tools.B2WorldCreator;
+import Tools.CircularList;
 import Tools.WorldContactListener;
 
 import com.badlogic.gdx.Gdx;
@@ -54,9 +55,8 @@ public class PlayScreen implements Screen {
     private final OrthogonalTiledMapRenderer renderer;
 
     private final World world;
-    private final Chef chef1;
-    private final Chef chef2;
-
+    private CircularList<Chef> chefList;
+    private int chefCount = 3;
     private Chef controlledChef;
 
     public ArrayList<Order> ordersArray;
@@ -105,10 +105,8 @@ public class PlayScreen implements Screen {
 
         world = new World(new Vector2(0,0), true);
         new B2WorldCreator(world, map, this);
-
-        chef1 = new Chef(this.world, 31.5F,65);
-        chef2 = new Chef(this.world, 128,65);
-        controlledChef = chef1;
+        chefList = new CircularList<Chef>(chefCount);
+        generateChefs(chefCount);
         world.setContactListener(new WorldContactListener());
         controlledChef.notificationSetBounds("Down");
 
@@ -143,26 +141,19 @@ public class PlayScreen implements Screen {
      */
 
     public void handleInput(float dt){
-        if ((Gdx.input.isKeyJustPressed(Input.Keys.R) &&
-                chef1.getUserControlChef() &&
-                chef2.getUserControlChef())) {
-            if (controlledChef.equals(chef1)) {
-                controlledChef.b2body.setLinearVelocity(0, 0);
-                controlledChef = chef2;
-            } else {
-                controlledChef.b2body.setLinearVelocity(0, 0);
-                controlledChef = chef1;
+        if ((Gdx.input.isKeyJustPressed(Input.Keys.R) && canSwitchChefs())) {
+
+            controlledChef.b2body.setLinearVelocity(0, 0);
+            //Chef tempChef=controlledChef;
+
+            while (!chefList.peekNextItem().getUserControlChef()){
+                chefList.nextItem();
+                //Stop infinite loop here
             }
+            controlledChef = chefList.nextItem();
+
         }
-        if (!controlledChef.getUserControlChef()){
-            if (chef1.getUserControlChef()){
-                controlledChef.b2body.setLinearVelocity(0, 0);
-                controlledChef = chef1;
-            } else if(chef2.getUserControlChef()) {
-                controlledChef.b2body.setLinearVelocity(0, 0);
-                controlledChef = chef2;
-            }
-        }
+
         if (controlledChef.getUserControlChef()) {
                 float xVelocity = 0;
                 float yVelocity = 0;
@@ -312,9 +303,10 @@ public class PlayScreen implements Screen {
 
         gamecam.update();
         renderer.setView(gamecam);
-        chef1.update(dt);
-        chef2.update(dt);
 
+        for (Chef chef : chefList.allElems()){
+            chef.update(dt);
+        }
         for (ChoppingBoard choppingBoard : choppingBoards) {
             choppingBoard.update(dt);
         }
@@ -324,6 +316,26 @@ public class PlayScreen implements Screen {
 
         world.step(1/60f, 6, 2);
 
+    }
+
+    public void generateChefs(int chefCount){
+        float locX=31.5F;
+        float locY=38;
+        float spacing = 96.5F/(chefCount-1);
+        for (int i=0;i<chefCount;i++){
+            Chef currentChef = new Chef(this.world,locX,locY);
+            chefList.addElement(currentChef);
+            locX+=spacing;
+        }
+        controlledChef=chefList.nextItem();
+    }
+    public boolean canSwitchChefs(){
+        for (Chef chef : chefList.allElems()){
+            if (!chef.getUserControlChef()){
+                return Boolean.FALSE;
+            }
+        }
+        return Boolean.TRUE;
     }
 
     /**
@@ -405,8 +417,10 @@ public class PlayScreen implements Screen {
         game.batch.setProjectionMatrix(gamecam.combined);
         game.batch.begin();
         updateOrder();
-        chef1.draw(game.batch);
-        chef2.draw(game.batch);
+
+        for (Chef chef : chefList.allElems()){
+            chef.draw(game.batch);
+        }
         controlledChef.drawNotification(game.batch);
         if (plateStation.getPlate().size() > 0){
             for(Object ing : plateStation.getPlate()){
@@ -432,12 +446,10 @@ public class PlayScreen implements Screen {
                 currentingredient.create(pan.getX(), pan.getY(), game.batch);
             }
         }
-
-        if (chef1.previousInHandRecipe != null){
-            chef1.displayIngDynamic(game.batch);
-        }
-        if (chef2.previousInHandRecipe != null){
-            chef2.displayIngDynamic(game.batch);
+        for (Chef chef : chefList.allElems()) {
+            if (chef.previousInHandRecipe != null){
+                chef.displayIngDynamic(game.batch);
+            }
         }
         game.batch.end();
     }
