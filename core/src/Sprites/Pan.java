@@ -22,8 +22,10 @@ public class Pan extends CookingStation {
     public void update(float dt){
         if(currentIngredient != null) {
             timer += dt;
-            if (timer > currentIngredient.cookTime) {
-                currentIngredient.setCooked();
+            if (timer > currentIngredient.getTimer("Pan")
+                && !currentIngredient.isCompleted("Pan")) {
+                //line 26 is so skin (Ingredient.java) only gets incremented once
+                currentIngredient.setCompleted("Pan");
             }
         }
     }

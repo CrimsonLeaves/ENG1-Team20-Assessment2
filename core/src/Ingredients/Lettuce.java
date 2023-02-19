@@ -3,6 +3,7 @@ package Ingredients;
 import com.badlogic.gdx.graphics.Texture;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 public class Lettuce extends Ingredient{
 
@@ -12,8 +13,8 @@ public class Lettuce extends Ingredient{
      * The Lettuce class sets up an ArrayList of textures for its different skins.
      */
 
-    public Lettuce(float prepareTime, float cookTime) {
-        super(prepareTime, cookTime);
+    public Lettuce(Map<String, Float> timers, Map<String, Boolean> completed) {
+        super(timers, completed);
         super.tex = new ArrayList<>();
         super.tex.add(new Texture("Food/Lettuce.png"));
         super.tex.add(new Texture("Food/Chopped_lettuce.png"));

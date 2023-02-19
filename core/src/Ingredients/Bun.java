@@ -3,6 +3,7 @@ package Ingredients;
 import com.badlogic.gdx.graphics.Texture;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 public class Bun extends Ingredient{
 
@@ -14,12 +15,10 @@ public class Bun extends Ingredient{
 
      */
 
-    public Bun(float prepareTime, float cookTime) {
-        super(prepareTime, cookTime);
-        super.setPrepared();
-        super.tex = new ArrayList<>();
-        super.tex.add(null);
-        super.tex.add(new Texture("Food/Burger_buns.png"));
-        super.tex.add(new Texture("Food/Toasted_burger_buns.png"));
+    public Bun(Map<String, Float> timers, Map<String, Boolean> completed) {
+        super(timers,completed);
+        tex = new ArrayList<>();
+        tex.add(new Texture("Food/Burger_buns.png"));
+        tex.add(new Texture("Food/Toasted_burger_buns.png"));
     }
 }

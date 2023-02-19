@@ -191,27 +191,6 @@ public class Chef extends Sprite {
                     setChefSkin(inHandsIng);
                 }
             }
-            // why the fuck is this in here? this should be logic in the actual cooking stations
-            // should be done by placing ingredient from stack onto cooking station and picked back up when finished
-            // dont lock the chef out when preparing - actually discuss this with team
-        } else if (!userControlChef && getInHandsIng().prepareTime > 0) {
-            waitTimer += dt;
-            if (waitTimer > inHandsIng.prepareTime) {
-                inHandsIng.prepareTime = 0;
-                inHandsIng.setPrepared();
-                userControlChef = true;
-                waitTimer = 0;
-                setChefSkin(inHandsIng);
-            }
-        } else if (!userControlChef && !chefOnChefCollision && getInHandsIng().isPrepared() && inHandsIng.cookTime > 0) {
-            waitTimer += dt;
-            if (waitTimer > inHandsIng.cookTime) {
-                inHandsIng.cookTime = 0;
-                inHandsIng.setCooked();
-                userControlChef = true;
-                waitTimer = 0;
-                setChefSkin(inHandsIng);
-            }
         }
     }
 
@@ -357,33 +336,33 @@ public class Chef extends Sprite {
         if (item == null) {
             skinNeeded = normalChef;
         } else if (item instanceof Lettuce) {
-            if (inHandsIng.isPrepared()) {
+            if (inHandsIng.isCompleted("Chopping Board")) {
                 skinNeeded = choppedLettuceChef;
             } else {
                 skinNeeded = lettuceChef;
             }
         } else if (item instanceof Steak) {
-            if (inHandsIng.isPrepared() && inHandsIng.isCooked()) {
+            if (inHandsIng.isCompleted("Chopping Board") && inHandsIng.isCompleted("Pan")) {
                 skinNeeded = burgerChef;
-            } else if (inHandsIng.isPrepared()) {
+            } else if (inHandsIng.isCompleted("Chopping Board")) {
                 skinNeeded = pattyChef;
             } else {
                 skinNeeded = meatChef;
             }
         } else if (item instanceof Onion) {
-            if (inHandsIng.isPrepared()) {
+            if (inHandsIng.isCompleted("Chopping Board")) {
                 skinNeeded = choppedOnionChef;
             } else {
                 skinNeeded = onionChef;
             }
         } else if (item instanceof Tomato) {
-            if (inHandsIng.isPrepared()) {
+            if (inHandsIng.isCompleted("Chopping Board")) {
                 skinNeeded = choppedTomatoChef;
             } else {
                 skinNeeded = tomatoChef;
             }
         } else if (item instanceof Bun) {
-            if (inHandsIng.isCooked()) {
+            if (inHandsIng.isCompleted("Pan")) {
                 skinNeeded = bunsToastedChef;
             } else {
                 skinNeeded = bunsChef;

@@ -1,5 +1,6 @@
 package Sprites;
 
+import Ingredients.Bun;
 import Ingredients.Lettuce;
 import Ingredients.Ingredient;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -23,17 +24,13 @@ public class LettuceStation extends IngredientStation {
     public LettuceStation(World world, TiledMap map, BodyDef bdef, Rectangle rectangle) {
         super(world, map, bdef, rectangle);
         fixture.setUserData(this);
+        timers.put("Chopping Board", (float) 2);
+        completed.put("Chopping Board", false);
+        completed.put("Pan", true);
     }
 
-    /**
-     * Returns the ingredient Lettuce.
-     *
-     * @return a Lettuce object
-     */
     @Override
-    public Ingredient getIngredient(){
-        return (new Lettuce(2,0));
-    }
+    public Ingredient getIngredient(){return new Lettuce(timers, completed);}
 }
 
 

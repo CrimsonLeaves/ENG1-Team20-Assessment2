@@ -31,8 +31,10 @@ public class CookingStation extends InteractiveTileObject{
     public void update(float dt){
         if(currentIngredient != null) {
             timer += dt;
-            if (timer > currentIngredient.prepareTime) {
-                currentIngredient.setPrepared();
+            if (timer > currentIngredient.getTimer("Chopping Board")
+                && !currentIngredient.isCompleted("Chopping Board")) {
+                //line 35 is so skin (Ingredient.java) only gets incremented once
+                currentIngredient.setCompleted("Chopping Board");
             }
         }
     }

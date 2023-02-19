@@ -3,6 +3,7 @@ package Ingredients;
 import com.badlogic.gdx.graphics.Texture;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 public class Tomato extends Ingredient{
 
@@ -12,9 +13,9 @@ public class Tomato extends Ingredient{
      * The Tomato class sets up an ArrayList of textures for its different skins.
      */
 
-    public Tomato(float prepareTime, float cookTime) {
-        super(prepareTime, cookTime);
-        super.tex = new ArrayList<>();
+    public Tomato(Map<String, Float> timers, Map<String, Boolean> completed) {
+        super(timers, completed);
+        tex = new ArrayList<>();
         tex.add(new Texture("Food/Tomato.png"));
         tex.add(new Texture("Food/Chopped_tomato.png"));
 

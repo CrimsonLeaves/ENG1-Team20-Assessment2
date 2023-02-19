@@ -1,5 +1,6 @@
 package Sprites;
 
+import Ingredients.Bun;
 import Ingredients.Ingredient;
 import Ingredients.Tomato;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -18,11 +19,12 @@ public class TomatoStation extends IngredientStation {
     public TomatoStation(World world, TiledMap map, BodyDef bdef, Rectangle rectangle) {
         super(world, map, bdef, rectangle);
         fixture.setUserData(this);
+        timers.put("Chopping Board", (float) 2);
+        completed.put("Chopping Board", false);
+        completed.put("Pan", true);
     }
 
     @Override
-    public Ingredient getIngredient(){
-        return new Tomato(2,0);
-    }
+    public Ingredient getIngredient(){return new Tomato(timers, completed);}
 }
 

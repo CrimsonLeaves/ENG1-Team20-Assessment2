@@ -73,7 +73,7 @@ public class PlateStation extends InteractiveTileObject {
                 burgerIngFound = false;
                 for (int j = 0; j < burgerRecipe.getIngredients().size(); j++) {
                     if (ing.getClass().toString().equals(burgerRecipe.getIngredients().get(j).getClass().toString())) {
-                        if (ing.isCooked()) {
+                        if (ing.isCompleted("Pan")) {
                             burgerIngFound = true;
                         }
                     }
@@ -94,7 +94,7 @@ public class PlateStation extends InteractiveTileObject {
                 saladIngFound = false;
                 for (int j = 0; j < saladRecipe.getIngredients().size(); j++) {
                     if (ing.getClass().toString().equals(saladRecipe.getIngredients().get(j).getClass().toString())) {
-                        if (ing.isPrepared()) {
+                        if (ing.isCompleted("Chopping Board")) {
                             saladIngFound = true;
                         }
                     }

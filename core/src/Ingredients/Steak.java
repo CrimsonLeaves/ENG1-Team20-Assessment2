@@ -3,6 +3,7 @@ package Ingredients;
 import com.badlogic.gdx.graphics.Texture;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 public class Steak extends Ingredient{
 
@@ -12,11 +13,11 @@ public class Steak extends Ingredient{
      * The Steak class sets up an ArrayList of textures for its different skins.
      */
 
-    public Steak(float prepareTime, float cookTime) {
-        super(prepareTime, cookTime);
-        super.tex = new ArrayList<>();
-        super.tex.add(new Texture("Food/Meat.png"));
-        super.tex.add(new Texture("Food/Patty.png"));
-        super.tex.add(new Texture("Food/Cooked_patty.png"));
+    public Steak(Map<String, Float> timers, Map<String, Boolean> completed) {
+        super(timers, completed);
+        tex = new ArrayList<>();
+        tex.add(new Texture("Food/Meat.png"));
+        tex.add(new Texture("Food/Patty.png"));
+        tex.add(new Texture("Food/Cooked_patty.png"));
     }
 }

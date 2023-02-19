@@ -19,8 +19,8 @@ public class BurgerRecipe extends Recipe{
 
     public BurgerRecipe(){
         super.ingredients = new ArrayList<>();
-        ingredients.add(new Bun(0,0));
-        ingredients.add(new Steak(0,0));
+        ingredients.add(new Bun(null, null));
+        ingredients.add(new Steak(null, null));
         completedImg = new Texture("Food/Burger.png");
     }
 }

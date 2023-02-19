@@ -258,7 +258,9 @@ public class PlayScreen implements Screen {
 
                             case "Sprites.ChoppingBoard":
                                 ChoppingBoard choppingBoardTile = (ChoppingBoard) tile;
-                                if(choppingBoardTile.getCurrentIngredient() == null && controlledChef.getInHandsIng().prepareTime > 0){
+                                if(choppingBoardTile.getCurrentIngredient() == null
+                                        && controlledChef.getInHandsIng().getTimer("Chopping Board") != null
+                                        && !controlledChef.getInHandsIng().isCompleted("Chopping Board")){
                                     choppingBoardTile.setCurrentIngredient(controlledChef.getInHandsIng());
                                     controlledChef.setInHandsIng(null);
                                     controlledChef.setChefSkin(null);
@@ -272,7 +274,9 @@ public class PlayScreen implements Screen {
                                 break;
                             case "Sprites.Pan":
                                 Pan panTile = (Pan) tile;
-                                if(panTile.getCurrentIngredient() == null && controlledChef.getInHandsIng().cookTime > 0){
+                                if(panTile.getCurrentIngredient() == null
+                                        && controlledChef.getInHandsIng().getTimer("Pan") != null
+                                        && !controlledChef.getInHandsIng().isCompleted("Pan")){
                                     panTile.setCurrentIngredient(controlledChef.getInHandsIng());
                                     controlledChef.setInHandsRecipe(null);
                                     controlledChef.setChefSkin(null);

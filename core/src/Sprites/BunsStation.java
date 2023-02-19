@@ -7,6 +7,9 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.World;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Class representing the Buns Station in the game.
  * Extends the InteractiveTileObject class, which handles the Box2D physics.
@@ -25,17 +28,13 @@ public class BunsStation extends IngredientStation {
     public BunsStation(World world, TiledMap map, BodyDef bdef, Rectangle rectangle) {
         super(world, map, bdef, rectangle);
         fixture.setUserData(this);
+        timers.put("Pan", (float) 3);
+        completed.put("Chopping Board", true);
+        completed.put("Pan", false);
     }
 
-    /**
-     * Gets an Ingredient (in this case a bun) from the station.
-     *
-     * @return A new Bun object.
-     */
     @Override
-    public Ingredient getIngredient() {
-        return new Bun(0, 3);
-    }
+    public Ingredient getIngredient(){return new Bun(timers, completed);}
 }
 
 

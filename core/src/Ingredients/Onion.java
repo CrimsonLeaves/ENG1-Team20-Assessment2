@@ -3,6 +3,7 @@ package Ingredients;
 import com.badlogic.gdx.graphics.Texture;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 public class Onion extends Ingredient{
 
@@ -12,10 +13,10 @@ public class Onion extends Ingredient{
      * The Onion class sets up an ArrayList of textures for its different skins.
      */
 
-    public Onion(float prepareTime, float cookTime) {
-        super(prepareTime, cookTime);
-        super.tex = new ArrayList<>();
-        super.tex.add(new Texture("Food/Onion.png"));
-        super.tex.add(new Texture("Food/Chopped_onion.png"));
+    public Onion(Map<String, Float> timers, Map<String, Boolean> completed) {
+        super(timers, completed);
+        tex = new ArrayList<>();
+        tex.add(new Texture("Food/Onion.png"));
+        tex.add(new Texture("Food/Chopped_onion.png"));
     }
 }
