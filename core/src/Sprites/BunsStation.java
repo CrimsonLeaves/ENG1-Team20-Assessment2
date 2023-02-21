@@ -8,7 +8,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.World;
 
 import java.util.HashMap;
-import java.util.Map;
+
 
 /**
  * Class representing the Buns Station in the game.
@@ -34,7 +34,7 @@ public class BunsStation extends IngredientStation {
     }
 
     @Override
-    public Ingredient getIngredient(){return new Bun(timers, completed);}
+    public Ingredient getIngredient(){return new Bun(new HashMap<>(timers),new HashMap<>(completed));}
 }
 
 

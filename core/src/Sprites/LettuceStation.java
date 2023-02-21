@@ -1,12 +1,13 @@
 package Sprites;
 
-import Ingredients.Bun;
 import Ingredients.Lettuce;
 import Ingredients.Ingredient;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.World;
+
+import java.util.HashMap;
 
 /**
  * The `LettuceStation` class extends the `InteractiveTileObject` class.
@@ -30,7 +31,7 @@ public class LettuceStation extends IngredientStation {
     }
 
     @Override
-    public Ingredient getIngredient(){return new Lettuce(timers, completed);}
+    public Ingredient getIngredient(){return new Lettuce(new HashMap<>(timers),new HashMap<>(completed));}
 }
 
 

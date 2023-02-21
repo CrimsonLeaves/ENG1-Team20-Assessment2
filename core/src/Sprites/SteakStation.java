@@ -1,6 +1,5 @@
 package Sprites;
 
-import Ingredients.Bun;
 import Ingredients.Ingredient;
 import Ingredients.Steak;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -9,7 +8,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.World;
 
 import java.util.HashMap;
-import java.util.Map;
+
 
 /**
  * SteakStation is a concrete class that extends the {@link InteractiveTileObject} class.
@@ -27,6 +26,6 @@ public class SteakStation extends IngredientStation {
     }
 
     @Override
-    public Ingredient getIngredient(){return new Steak(timers, completed);}
+    public Ingredient getIngredient(){return new Steak(new HashMap<>(timers),new HashMap<>(completed));}
 }
 

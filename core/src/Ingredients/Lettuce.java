@@ -15,8 +15,8 @@ public class Lettuce extends Ingredient{
 
     public Lettuce(Map<String, Float> timers, Map<String, Boolean> completed) {
         super(timers, completed);
-        super.tex = new ArrayList<>();
-        super.tex.add(new Texture("Food/Lettuce.png"));
-        super.tex.add(new Texture("Food/Chopped_lettuce.png"));
+        tex = new ArrayList<>();
+        tex.add(new Texture("Food/Lettuce.png"));
+        tex.add(new Texture("Food/Chopped_lettuce.png"));
     }
 }
