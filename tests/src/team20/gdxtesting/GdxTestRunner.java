@@ -1,3 +1,5 @@
+package team20.gdxtesting;
+
 import java.util.HashMap;
 import java.util.Map;
 
