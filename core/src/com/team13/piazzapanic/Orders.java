@@ -8,9 +8,19 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class Orders {
     int totalRecipes;
+
+    /**
+     * Constructor for Orders
+     */
     public Orders(){
         totalRecipes=2;
     }
+
+    /**
+     * Generates a new random order
+     * @param startTime Time when order is placed
+     * @return Order object of new order
+     */
     public Order newOrder(int startTime){
         int randomNum = ThreadLocalRandom.current().nextInt(0, totalRecipes);
         Texture burger_recipe = new Texture("Food/burger_recipe.png");

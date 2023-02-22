@@ -310,6 +310,10 @@ public class PlayScreen implements Screen {
 
     }
 
+    /**
+     * Initialises chefs as circular list and creates in world space
+     * @param chefCount Number of chefs to create in game
+     */
     public void generateChefs(int chefCount){
         float locX=31.5F;
         float locY=38;
@@ -321,6 +325,11 @@ public class PlayScreen implements Screen {
         }
         controlledChef=chefList.nextItem();
     }
+
+    /**
+     * Checks if chefs can be switched or not if locked out
+     * @return Boolean Can chef be controlled and switched to
+     */
     public boolean canSwitchChefs(){
         for (Chef chef : chefList.allElems()){
             if (!chef.getUserControlChef()){
@@ -371,6 +380,10 @@ public class PlayScreen implements Screen {
             ordersArray.get(0).create(trayX, trayY, game.batch);
         }
     }
+
+    /**
+     * Called each frame to check if order has been completed and update HUD
+     */
     public void checkOrder(){
         if (scenarioComplete==Boolean.TRUE){
             hud.updateScore(Boolean.TRUE, currentOrder.startTime);
