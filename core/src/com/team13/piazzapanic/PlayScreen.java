@@ -262,10 +262,10 @@ public class PlayScreen implements Screen {
                         break;
                     case "Sprites.CompletedDishStation":
                         if (recipe != null){
-                            if(recipe.getClass().equals(ordersArray.get(0).recipe.getClass())){
+                            if(recipe.getClass().equals(currentOrder.recipe.getClass())){
                                 controlledChef.dropItemOn(tile, recipe);
-                                ordersArray.get(0).orderComplete = true;
-                                if(ordersArray.size()==1){
+                                currentOrder.orderComplete = true;
+                                if(orderNum >= totalOrders){
                                     scenarioComplete = Boolean.TRUE;
                                 }
                             }
