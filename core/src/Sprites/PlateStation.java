@@ -2,6 +2,7 @@ package Sprites;
 
 import Ingredients.*;
 import Recipe.*;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -152,7 +153,7 @@ public class PlateStation extends InteractiveTileObject {
      *
      * @return A Recipe object if a recipe is completed, or an Ingredient object if no recipe is completed.
      */
-    public Object pickUpItem() {
+    public Sprite pickUpItem() {
         if (recipeDone != null){
             Recipe temp = recipeDone;
             recipeDone = null;
