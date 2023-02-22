@@ -60,6 +60,10 @@ public class PlayScreen implements Screen {
     private Chef controlledChef;
 
     public ArrayList<Order> ordersArray;
+    private Orders ordersInterface = new Orders();
+    public Order currentOrder;
+    public int orderNum=0;
+    public int totalOrders=5;
 
     public PlateStation plateStation;
 
@@ -95,8 +99,8 @@ public class PlayScreen implements Screen {
         gameport = new FitViewport(MainGame.V_WIDTH / MainGame.PPM, MainGame.V_HEIGHT / MainGame.PPM, gamecam);
         // create HUD for score & time
         hud = new HUD(game.batch);
+        //currentOrder =ordersInterface.newOrder(0);
         // create orders hud
-        Orders orders = new Orders(game.batch);
         // create map
         TmxMapLoader mapLoader = new TmxMapLoader(new InternalFileHandleResolver());
         map = mapLoader.load("Kitchen.tmx");
@@ -276,11 +280,11 @@ public class PlayScreen implements Screen {
                                 break;
                             case "Sprites.CompletedDishStation":
                                 if (controlledChef.getInHandsRecipe() != null){
-                                    if(controlledChef.getInHandsRecipe().getClass().equals(ordersArray.get(0).recipe.getClass())){
+                                    if(controlledChef.getInHandsRecipe().getClass().equals(currentOrder.recipe.getClass())){
                                         controlledChef.dropItemOn(tile);
-                                        ordersArray.get(0).orderComplete = true;
+                                        currentOrder.orderComplete = true;
                                         controlledChef.setChefSkin(null);
-                                        if(ordersArray.size()==1){
+                                        if(orderNum >= totalOrders){
                                             scenarioComplete = Boolean.TRUE;
                                         }
                                     }
@@ -379,6 +383,26 @@ public class PlayScreen implements Screen {
             ordersArray.get(0).create(trayX, trayY, game.batch);
         }
     }
+    public void checkOrder(){
+        if (scenarioComplete==Boolean.TRUE){
+            hud.updateScore(Boolean.TRUE, currentOrder.startTime);
+            hud.updateOrder(Boolean.TRUE, 0);
+            return;
+        }
+        if (currentOrder != null){
+            if (currentOrder.orderComplete == Boolean.TRUE){
+                //orderNum++;
+                hud.updateScore(Boolean.FALSE, currentOrder.startTime);
+                currentOrder = null;
+                createdOrder = Boolean.FALSE;
+                hud.updateOrder(Boolean.FALSE, orderNum);
+                return;
+            }
+            currentOrder.create(trayX,trayY,game.batch);
+        }
+
+
+    }
 
     /**
 
@@ -398,9 +422,10 @@ public class PlayScreen implements Screen {
         timeSeconds += Gdx.graphics.getDeltaTime();
         timeSecondsCount += Gdx.graphics.getDeltaTime();
 
-        if(Math.round(timeSecondsCount) == 5 && createdOrder == Boolean.FALSE){
+        if(Math.round(timeSecondsCount % 10) == 5 && createdOrder == Boolean.FALSE){
             createdOrder = Boolean.TRUE;
-            createOrder();
+            orderNum++;
+            currentOrder=ordersInterface.newOrder(hud.getTime());
         }
         float period = 1f;
         if(timeSeconds > period) {
@@ -416,7 +441,8 @@ public class PlayScreen implements Screen {
         hud.stage.draw();
         game.batch.setProjectionMatrix(gamecam.combined);
         game.batch.begin();
-        updateOrder();
+        //updateOrder();
+        checkOrder();
 
         for (Chef chef : chefList.allElems()){
             chef.draw(game.batch);
