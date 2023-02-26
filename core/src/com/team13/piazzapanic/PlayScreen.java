@@ -66,11 +66,13 @@ public class PlayScreen implements Screen {
     public int orderNum=0;
     public int totalOrders=5;
 
-    public PlateStation plateStation;
+    public ArrayList<PlateStation> plateStations = new ArrayList<>();
 
     public ArrayList<ChoppingBoard> choppingBoards = new ArrayList<>();
 
     public ArrayList<Pan> pans = new ArrayList<>();
+
+    public ArrayList<CompletedDishStation> cdStations = new ArrayList<>();
 
 
     public Boolean scenarioComplete;
@@ -221,10 +223,12 @@ public class PlayScreen implements Screen {
                         controlledChef.pickUp(lettuceTile.getIngredient());
                         break;
                     case "Sprites.PlateStation":
-                        if(plateStation.getCompletedRecipe() != null){
-                            controlledChef.pickUpItemFrom(tile);
+                        PlateStation plateTile = (PlateStation) tile;
+                        if(plateTile.getCompletedRecipe() != null){
+                            controlledChef.pickUp(plateTile.pickUpItem());
                         } else if (recipe == null && ingredient != null){
-                            controlledChef.dropItemOn(tile, ingredient);
+                            plateTile.dropItem(ingredient);
+                            controlledChef.putDown();
                         }
                         break;
                     case "Sprites.ChoppingBoard":
@@ -261,9 +265,11 @@ public class PlayScreen implements Screen {
                         }
                         break;
                     case "Sprites.CompletedDishStation":
-                        if (recipe != null){
+                        if (recipe != null && currentOrder != null){
                             if(recipe.getClass().equals(currentOrder.recipe.getClass())){
-                                controlledChef.dropItemOn(tile, recipe);
+                                CompletedDishStation cds = (CompletedDishStation) tile;
+                                cds.setRecipe(recipe);
+                                controlledChef.putDown();
                                 currentOrder.orderComplete = true;
                                 if(orderNum >= totalOrders){
                                     scenarioComplete = Boolean.TRUE;
@@ -274,12 +280,13 @@ public class PlayScreen implements Screen {
 
             }
         } else if(Gdx.input.isKeyJustPressed(Input.Keys.SHIFT_LEFT)
-                    && controlledChef.getTouchingTile() != null){ //make instance of plate station when refactoring that
+                    && controlledChef.getTouchingTile() != null){
             InteractiveTileObject tile = (InteractiveTileObject) controlledChef.getTouchingTile().getUserData();
             String tileName = tile.getClass().getName();
             if(tileName.equals("Sprites.PlateStation")){
-                if(plateStation.getPlate().size() > 0){
-                    controlledChef.pickUpItemFrom(tile);
+                PlateStation plateTile = (PlateStation) tile;
+                if(plateTile.getPlate().size() > 0){
+                    controlledChef.pickUp(plateTile.pickUpItem());
                 }
             }
         }
@@ -350,10 +357,10 @@ public class PlayScreen implements Screen {
 
         for(int i = 0; i<5; i++){
             if(randomNum==1) {
-                order = new Order(PlateStation.burgerRecipe, burger_recipe);
+                order = new Order(PlateStation.getRecipe("Burger"), burger_recipe);
             }
             else {
-                order = new Order(PlateStation.saladRecipe, salad_recipe);
+                order = new Order(PlateStation.getRecipe("Salad"), salad_recipe);
             }
             ordersArray.add(order);
             randomNum = ThreadLocalRandom.current().nextInt(1, 2 + 1);
@@ -449,14 +456,16 @@ public class PlayScreen implements Screen {
             chef.create(game.batch);
         }
         controlledChef.drawNotification(game.batch);
-        if (plateStation.getPlate().size() > 0){
-            for(Object ing : plateStation.getPlate()){
-                Ingredient ingNew = (Ingredient) ing;
-                ingNew.create(plateStation.getX(), plateStation.getY(),game.batch);
+        for (PlateStation plateStation : plateStations) {
+            if (plateStation.getPlate().size() > 0){
+                for(Object ing : plateStation.getPlate()){
+                    Ingredient ingNew = (Ingredient) ing;
+                    ingNew.create(plateStation.getX(), plateStation.getY(),game.batch);
+                }
+            } else if (plateStation.getCompletedRecipe() != null){
+                Recipe recipeNew = plateStation.getCompletedRecipe();
+                recipeNew.create(plateStation.getX(), plateStation.getY(), game.batch);
             }
-        } else if (plateStation.getCompletedRecipe() != null){
-            Recipe recipeNew = plateStation.getCompletedRecipe();
-            recipeNew.create(plateStation.getX(), plateStation.getY(), game.batch);
         }
 
         // make a function
@@ -473,11 +482,13 @@ public class PlayScreen implements Screen {
                 currentingredient.create(pan.getX(), pan.getY(), game.batch);
             }
         }
-        for (Chef chef : chefList.allElems()) {
-            if (chef.previousInHandRecipe != null){
-                chef.displayIngDynamic(game.batch);
+
+        for (CompletedDishStation cdStation : cdStations) {
+            if(cdStation.getRecipe() != null){
+                cdStation.draw(game.batch);
             }
         }
+
         game.batch.end();
     }
 

@@ -1,9 +1,7 @@
 package Sprites;
 
 import Ingredients.*;
-import Recipe.BurgerRecipe;
 import Recipe.Recipe;
-import Recipe.SaladRecipe;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -37,7 +35,6 @@ public class Chef extends Sprite {
     public Vector2 startVector;
     private float waitTimer;
 
-    private float putDownWaitTimer;
     public boolean chefOnChefCollision;
 
 
@@ -61,10 +58,6 @@ public class Chef extends Sprite {
     private float notificationWidth;
     private float notificationHeight;
 
-    private CompletedDishStation completedStation;
-
-    public int nextOrderAppearTime;
-    public Recipe previousInHandRecipe;
 
     /**
      * Chef class constructor that initializes all the fields
@@ -89,15 +82,12 @@ public class Chef extends Sprite {
         setBounds(0, 0, chefWidth, chefHeight);
         chefOnChefCollision = false;
         waitTimer = 0;
-        putDownWaitTimer = 0;
         startVector = new Vector2(0, 0);
         whatTouching = null;
         holding = new ArrayDeque<>();
         userControlChef = true;
         Texture circleTexture = new Texture("Chef/chefIdentifier.png");
         circleSprite = new Sprite(circleTexture);
-        nextOrderAppearTime = 3;
-        completedStation = null;
     }
 
 
@@ -146,8 +136,8 @@ public class Chef extends Sprite {
         this.draw(batch);
         float offset = 0;
         Iterator<Sprite> holdingIterator = holding.descendingIterator();
-        for (Iterator<Sprite> it = holdingIterator; it.hasNext(); ) {
-            Sprite item = it.next();
+        while (holdingIterator.hasNext()) {
+            Sprite item = holdingIterator.next();
             if(item instanceof Ingredient){
                 Ingredient ingredient = (Ingredient) item;
                 ingredient.create(b2body.getPosition().x, b2body.getPosition().y+(offset/MainGame.PPM),batch);
@@ -269,22 +259,6 @@ public class Chef extends Sprite {
     }
 
     /**
-     * The method creates an instance of the recipe and sets its position on the completed station coordinates.
-     * The method also implements a timer for each ingredient which gets removed from the screen after a certain amount of time.
-     *
-     * @param batch The batch used for drawing the sprite on the screen
-     */
-
-    public void displayIngDynamic(SpriteBatch batch){
-        putDownWaitTimer += 1/60f;
-        previousInHandRecipe.create(completedStation.getX(), completedStation.getY() - (0.01f / MainGame.PPM), batch);
-        if (putDownWaitTimer > nextOrderAppearTime) {
-            previousInHandRecipe = null;
-            putDownWaitTimer = 0;
-        }
-    }
-
-    /**
 
       * This method updates the state of the chef when it is in a collision with another chef.
       * The method sets the userControlChef to false, meaning the user cannot control the chef while it's in collision.
@@ -334,8 +308,8 @@ public class Chef extends Sprite {
         }
     }
 
-    public Sprite putDown(){
-        return holding.removeFirst();
+    public void putDown(){
+        holding.removeFirst();
     }
 
     public Sprite peekStack(){
@@ -352,50 +326,6 @@ public class Chef extends Sprite {
     public boolean getUserControlChef () {
             return Objects.requireNonNullElse(userControlChef, false);
         }
-
-
-    /**
-      * Drops the given ingredient on a plate station.
-      * @param station The plate station to drop the ingredient on.
-      * @param ing The ingredient to be dropped.
-     */
-
-    public void dropItemOn (InteractiveTileObject station, Ingredient ing){
-        if (station instanceof PlateStation) {
-                ((PlateStation) station).dropItem(ing);
-        }
-        putDown();
-    }
-
-    /**
-     * Drops the in-hand recipe on a completed dish station and saves the previous in-hand recipe.
-     *
-     * @param station The completed dish station to drop the recipe on.
-     */
-        public void dropItemOn (InteractiveTileObject station, Recipe recipe){
-            if (station instanceof CompletedDishStation) {
-                previousInHandRecipe = recipe;
-                completedStation = (CompletedDishStation) station;
-            }
-            putDown();
-        }
-
-    /**
-     * Picks up an item from a plate station and sets it as in-hand ingredient or recipe.
-     *
-     * @param station The plate station to pick up the item from.
-     */
-    public void pickUpItemFrom(InteractiveTileObject station){
-        if (station instanceof PlateStation){
-            PlateStation pStation = (PlateStation) station;
-            Sprite item = pStation.pickUpItem();
-            if (item instanceof Ingredient){
-                pickUp(item);
-            } else if (item instanceof Recipe){
-                pickUp(item);
-            }
-        }
-    }
 }
 
 

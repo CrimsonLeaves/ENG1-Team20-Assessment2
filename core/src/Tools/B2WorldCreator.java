@@ -69,7 +69,7 @@ public class B2WorldCreator {
                 } else if (mapObject.getName().equals("chopping_board")) {
                     screen.choppingBoards.add(new ChoppingBoard(world, map, bdef, rectangle));
                 } else if (mapObject.getName().equals("plate")) {
-                    screen.plateStation = new PlateStation(world, map, bdef, rectangle);
+                    screen.plateStations.add(new PlateStation(world, map, bdef, rectangle));
                 } else if (mapObject.getName().equals("tomato")) {
                     new TomatoStation(world, map, bdef, rectangle);
                 } else if (mapObject.getName().equals("lettuce")) {
@@ -85,7 +85,7 @@ public class B2WorldCreator {
                 } else if (mapObject.getName().equals("pan2")) {
                     screen.pans.add(new Pan(world, map, bdef, rectangle));
                 } else if (mapObject.getName().equals("completed_dish")) {
-                    new CompletedDishStation(world, map, bdef, rectangle);
+                    screen.cdStations.add(new CompletedDishStation(world, map, bdef, rectangle));
                 } else if (mapObject.getName().equals("order_top")) {
                     PlayScreen.trayX = rectangle.x;
                     PlayScreen.trayY = rectangle.y;
