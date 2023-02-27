@@ -10,3 +10,13 @@ project.ext.assetsDir = new File("../assets")
 eclipse.project {
     name = appName + "-tests"
 }
+
+dependencies {
+    // Use JUnit Jupiter for testing.
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.8.1'
+}
+
+test {
+    // Use JUnit Platform for unit tests.
+    useJUnitPlatform()
+}
