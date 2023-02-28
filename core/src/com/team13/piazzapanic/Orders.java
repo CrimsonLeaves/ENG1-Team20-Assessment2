@@ -1,41 +1,37 @@
 package com.team13.piazzapanic;
 
 import Recipe.Order;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.utils.Disposable;
-import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.Viewport;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import Sprites.PlateStation;
+import com.badlogic.gdx.graphics.Texture;
 
-public class Orders implements Disposable {
-    public Stage stage;
+import java.util.concurrent.ThreadLocalRandom;
 
-    private Order[] orders[];
-
-    Label timeLabelT;
-    Label timeLabel;
+public class Orders {
+    int totalRecipes;
 
     /**
-     * Constructor for the class, initialises an area for the orders to be placed.
-     *
-     * @param sb The spritebatch to be able to draw to the screen.
+     * Constructor for Orders
      */
-    public Orders(SpriteBatch sb){
-        Viewport viewport = new FitViewport(MainGame.V_WIDTH, MainGame.V_HEIGHT, new OrthographicCamera());
-        stage = new Stage(viewport, sb);
-
-        Table table = new Table();
-        table.top();
-        table.setFillParent(true);
-
-        stage.addActor(table);
+    public Orders(){
+        totalRecipes=2;
     }
 
-    @Override
-    public void dispose() {
-        stage.dispose();
+    /**
+     * Generates a new random order
+     * @param startTime Time when order is placed
+     * @return Order object of new order
+     */
+    public Order newOrder(int startTime){
+        int randomNum = ThreadLocalRandom.current().nextInt(0, totalRecipes);
+        Texture burger_recipe = new Texture("Food/burger_recipe.png");
+        Texture salad_recipe = new Texture("Food/salad_recipe.png");
+        switch (randomNum){
+            case 0:
+                return new Order(PlateStation.getRecipe("Burger"), burger_recipe,startTime);
+            case 1:
+                return new Order(PlateStation.getRecipe("Salad"), salad_recipe,startTime);
+            default:
+                return null;
+        }
     }
 }

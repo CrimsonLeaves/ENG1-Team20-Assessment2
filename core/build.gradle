@@ -1,26 +1,6 @@
 plugins {
-    // Use the JaCoCo plugin to calculate code coverage
-    id 'jacoco'
     // Apply the java-library plugin for API and implementation separation.
     id 'java-library'   
-}
-
-test {
- useJUnitPlatform()
- finalizedBy jacocoTestReport
-}
-
-jacoco {
-    toolVersion = "0.8.8"
-    reportsDirectory = layout.buildDirectory.dir('core/build/reports/jacoco')
-}
-
-jacocoTestReport {
-    reports {
-        xml.required = false
-        csv.required = false
-        html.outputLocation = layout.buildDirectory.dir('jacocoHtml')
-    }
 }
 
 sourceCompatibility = 1.7

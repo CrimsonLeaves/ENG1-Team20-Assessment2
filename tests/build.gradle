@@ -1,4 +1,5 @@
 apply plugin: "java"
+apply plugin: "jacoco"
 
 sourceCompatibility = 1.7 // This was 1.6 in the original example
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
@@ -9,4 +10,19 @@ project.ext.assetsDir = new File("../assets")
 
 eclipse.project {
     name = appName + "-tests"
+}
+
+dependencies {
+    // Use JUnit 4 for testing.
+    testImplementation('junit:junit:4.13')
+}
+
+test {
+    // Use JUnit 4 for unit tests.
+    useJUnit()
+}
+
+jacocoTestReport {
+    // tests are required to run before generating the report
+    dependsOn test 
 }

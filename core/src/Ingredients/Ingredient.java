@@ -12,7 +12,7 @@ public abstract class Ingredient extends Sprite {
     /**
      * An array of textures representing different states of the ingredient.
      */
-    public ArrayList<Texture> tex;
+    protected ArrayList<Texture> tex;
 
     private final Map<String, Float> timers;
 
@@ -48,6 +48,8 @@ public abstract class Ingredient extends Sprite {
         sprite.draw(batch);
     }
 
+
+    //getOrDefault exists try using that
     public Float getTimer(String station){
         return timers.get(station);
     }

@@ -8,6 +8,8 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.World;
 
+import java.util.HashMap;
+
 /**
   * OnionStation is a class extending InteractiveTileObject representing an Onion ingredient station.
   * It creates an OnionStation object with world, map, body definition and rectangle as parameters.
@@ -25,6 +27,6 @@ public class OnionStation extends IngredientStation {
     }
 
     @Override
-    public Ingredient getIngredient(){return new Onion(timers, completed);}
+    public Ingredient getIngredient(){return new Onion(new HashMap<>(timers),new HashMap<>(completed));}
 }
 

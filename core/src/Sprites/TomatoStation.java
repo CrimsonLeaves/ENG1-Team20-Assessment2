@@ -8,6 +8,8 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.World;
 
+import java.util.HashMap;
+
 /**
  * TomatoStation is a class extending InteractiveTileObject representing a Tomato ingredient station.
  * It creates an TomatoStation object with world, map, body definition and rectangle as parameters.
@@ -25,6 +27,6 @@ public class TomatoStation extends IngredientStation {
     }
 
     @Override
-    public Ingredient getIngredient(){return new Tomato(timers, completed);}
+    public Ingredient getIngredient(){return new Tomato(new HashMap<>(timers), new HashMap<>(completed));}
 }
 

@@ -2,13 +2,13 @@ package Sprites;
 
 import Ingredients.*;
 import Recipe.*;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.World;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * PlateStation class represents a Plate Station in the game where the player can drop or pick up ingredients.
@@ -25,11 +25,7 @@ public class PlateStation extends InteractiveTileObject {
     /** List of ingredients placed on the plate */
     private final List<Ingredient> plate;
 
-    /** Static recipe for a burger */
-    public static Recipe burgerRecipe;
-
-    /** Static recipe for a salad */
-    public static Recipe saladRecipe;
+    private static Map<String, Recipe> recipes;
 
     /** Recipe that has been completed on the plate */
     private Recipe recipeDone;
@@ -46,8 +42,9 @@ public class PlateStation extends InteractiveTileObject {
         super(world, map, bdef, rectangle);
         fixture.setUserData(this);
         this.plate = new ArrayList<>();
-        burgerRecipe = new BurgerRecipe();
-        saladRecipe = new SaladRecipe();
+        recipes = new HashMap<>();
+        recipes.put("Salad",new SaladRecipe());
+        recipes.put("Burger", new BurgerRecipe());
         this.recipeDone = null;
     }
 
@@ -66,48 +63,34 @@ public class PlateStation extends InteractiveTileObject {
      * if a recipe is found and set the recipeDone
      */
     public void checkRecipeCreated(){
-        if (plate.size() == burgerRecipe.getIngredients().size()) {
-            boolean burgerSame = true;
-            boolean burgerIngFound;
-            for (Ingredient ing : plate) {
-                burgerIngFound = false;
-                for (int j = 0; j < burgerRecipe.getIngredients().size(); j++) {
-                    if (ing.getClass().toString().equals(burgerRecipe.getIngredients().get(j).getClass().toString())) {
-                        if (ing.isCompleted("Pan")) {
-                            burgerIngFound = true;
-                        }
+        for (Recipe recipe: recipes.values()) {
+            if(plate.size() == recipe.getIngredients().size()){
+                boolean recipeMatch = true;
+                boolean ingredientMatch;
+                for(Ingredient ing : plate){
+                    ingredientMatch = false;
+                    for(int i = 0; i < plate.size(); i++) {
+                      if(ing.getClass().equals(recipe.getIngredients().get(i).getClass())){
+                          ingredientMatch = true;
+                          break;
+                      }
+                    }
+                    if(!ingredientMatch){
+                        recipeMatch = false;
+                        break;
                     }
                 }
-                if (!burgerIngFound) {
-                    burgerSame = false;
+                if(recipeMatch){
+                    plate.clear();
+                    recipeDone = recipe;
+                    return;
                 }
-            }
-            if (burgerSame) {
-                plate.clear();
-                recipeDone = burgerRecipe;
             }
         }
-        if (plate.size() == saladRecipe.getIngredients().size()) {
-            boolean saladSame = true;
-            boolean saladIngFound;
-            for (Ingredient ing : plate) {
-                saladIngFound = false;
-                for (int j = 0; j < saladRecipe.getIngredients().size(); j++) {
-                    if (ing.getClass().toString().equals(saladRecipe.getIngredients().get(j).getClass().toString())) {
-                        if (ing.isCompleted("Chopping Board")) {
-                            saladIngFound = true;
-                        }
-                    }
-                }
-                if (!saladIngFound) {
-                    saladSame = false;
-                }
-            }
-            if (saladSame) {
-                plate.clear();
-                recipeDone = saladRecipe;
-            }
-        }
+    }
+
+    public static Recipe getRecipe(String recipe){
+        return recipes.get(recipe);
     }
 
     /**
@@ -152,7 +135,7 @@ public class PlateStation extends InteractiveTileObject {
      *
      * @return A Recipe object if a recipe is completed, or an Ingredient object if no recipe is completed.
      */
-    public Object pickUpItem() {
+    public Sprite pickUpItem() {
         if (recipeDone != null){
             Recipe temp = recipeDone;
             recipeDone = null;

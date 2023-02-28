@@ -111,19 +111,20 @@ public class HUD implements Disposable {
      * Calculates the user's score per order and updates the label.
      *
      * @param scenarioComplete Whether the game scenario has been completed.
-     * @param expectedTime The expected time an order should be completed in.
+     * @param startTime The time at which the order is placed
      */
-    public void updateScore(Boolean scenarioComplete, Integer expectedTime){
+
+    public void updateScore(Boolean scenarioComplete, Integer startTime){
         int addScore;
         int currentTime;
 
         if(this.scenarioComplete == Boolean.FALSE){
             currentTime = (worldTimerM * 60) + worldTimerS;
-            if (currentTime <= expectedTime) {
+            if (currentTime - startTime <= 35) {
                 addScore = 100;
             }
             else{
-                addScore = 100 - (5 * (currentTime -expectedTime));
+                addScore = 100 - (5 * (currentTime -startTime- 35));
                 if(addScore < 0){
                     addScore = 0;
                 }
@@ -148,6 +149,14 @@ public class HUD implements Disposable {
         scoreLabel.setText(String.format("%d", score));
         stage.addActor(table);
 
+    }
+
+    /**
+     * Used to get the time from HUD
+     * @return Time elapsed in seconds
+     */
+    public int getTime(){
+        return worldTimerM*60+worldTimerS;
     }
 
     /**
@@ -176,4 +185,5 @@ public class HUD implements Disposable {
     public void dispose() {
         stage.dispose();
     }
+
 }
