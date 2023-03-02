@@ -33,17 +33,22 @@ public class MainGame extends Game {
 	public static final float PPM = 100;
 	public SpriteBatch batch;
 	public boolean isPlayScreen;
-	private PlayScreen playScreen;
+	public boolean isLoseScreen;
+	public PlayScreen playScreen;
 	private StartScreen startScreen;
+	private LoseScreen loseScreen;
 
 	public MainGame(){
+
 		isPlayScreen = false;
+		isLoseScreen = false;
 	}
 	@Override
 	public void create() {
 		batch = new SpriteBatch();
 		startScreen = new StartScreen(this);
 		playScreen = new PlayScreen(this);
+		loseScreen = new LoseScreen(this);
 	}
 
 	@Override
@@ -52,7 +57,10 @@ public class MainGame extends Game {
 		if (Gdx.input.isKeyJustPressed(Input.Keys.TAB)){
 			isPlayScreen = !isPlayScreen;
 		}
-		if (isPlayScreen) {
+		if (isLoseScreen) {
+			setScreen(loseScreen);
+		}
+		else if (isPlayScreen) {
 			setScreen(playScreen);
 		} else {
 			setScreen(startScreen);

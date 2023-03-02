@@ -1,10 +1,13 @@
 package com.team13.piazzapanic;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -32,6 +35,7 @@ public class HUD implements Disposable {
     Label scoreLabelT;
     Label orderNumL;
     Label orderNumLT;
+    Image[] lives = new Image[3];
 
     public HUD(SpriteBatch sb){
         this.scenarioComplete = Boolean.FALSE;
@@ -67,11 +71,25 @@ public class HUD implements Disposable {
         table.add(timeLabel).padTop(2).padLeft(2);
         table.add(scoreLabel).padTop(2).padLeft(2);
         table.add(orderNumL).padTop(2).padLeft(2);
+        table.row();
 
+        for (int i=0; i<3;i++){
+            Image heart = new Image(new Texture(Gdx.files.internal("UI/heart.png")));
+            table.add(heart);
+            lives[i]=heart;
+        }
         table.left().top();
         stage.addActor(table);
     }
 
+    /**
+     * Updates the player's lives.
+     *
+     * @param currentLives The players current lives.
+     */
+    public void updateLives(int currentLives){
+        lives[currentLives].remove();
+    }
     /**
      * Updates the time label.
      *
@@ -152,14 +170,6 @@ public class HUD implements Disposable {
     }
 
     /**
-     * Used to get the time from HUD
-     * @return Time elapsed in seconds
-     */
-    public int getTime(){
-        return worldTimerM*60+worldTimerS;
-    }
-
-    /**
      * Updates the order label.
      *
      * @param scenarioComplete Whether the game scenario has been completed.
@@ -179,6 +189,28 @@ public class HUD implements Disposable {
         orderNumLT.setText("ORDER");
         stage.addActor(table);
 
+    }
+    /**
+     * Used to get the time from HUD
+     * @return Time elapsed in seconds
+     */
+    public int getTime(){
+        return worldTimerM*60+worldTimerS;
+    }
+    public void reset(){
+        //Reset lives
+        lives = new Image[3];
+        for (int i=0; i<3;i++){
+            Image heart = new Image(new Texture(Gdx.files.internal("UI/heart.png")));
+            table.add(heart);
+            lives[i]=heart;
+        }
+        //Reset Time
+        worldTimerS=0;
+        worldTimerM=0;
+        //Reset Score
+        score=0;
+        updateOrder(false,0);
     }
 
     @Override

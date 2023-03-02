@@ -50,7 +50,8 @@ public class PlayScreen implements Screen {
     private final MainGame game;
     private final OrthographicCamera gamecam;
     private final Viewport gameport;
-    private final HUD hud;
+    private HUD hud;
+    public Reputation playerRep;
 
     private final TiledMap map;
     private final OrthogonalTiledMapRenderer renderer;
@@ -59,8 +60,6 @@ public class PlayScreen implements Screen {
     private CircularList<Chef> chefList;
     private int chefCount = 3;
     private Chef controlledChef;
-
-    public ArrayList<Order> ordersArray;
     private Orders ordersInterface = new Orders();
     public Order currentOrder;
     public int orderNum=0;
@@ -102,7 +101,7 @@ public class PlayScreen implements Screen {
         gameport = new FitViewport(MainGame.V_WIDTH / MainGame.PPM, MainGame.V_HEIGHT / MainGame.PPM, gamecam);
         // create HUD for score & time
         hud = new HUD(game.batch);
-        //currentOrder =ordersInterface.newOrder(0);
+        playerRep=new Reputation(3);
         // create orders hud
         // create map
         TmxMapLoader mapLoader = new TmxMapLoader(new InternalFileHandleResolver());
@@ -117,7 +116,6 @@ public class PlayScreen implements Screen {
         world.setContactListener(new WorldContactListener());
         controlledChef.notificationSetBounds("Down");
 
-        ordersArray = new ArrayList<>();
 
     }
 
@@ -159,6 +157,13 @@ public class PlayScreen implements Screen {
             }
             controlledChef = chefList.nextItem();
 
+        }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.L)){
+            if (playerRep.loseRep()){
+                hud.updateLives(playerRep.getRep());
+                loseGame();
+            }
+            hud.updateLives(playerRep.getRep());
         }
 
         if (controlledChef.getUserControlChef()) {
@@ -275,6 +280,10 @@ public class PlayScreen implements Screen {
                                     scenarioComplete = Boolean.TRUE;
                                 }
                             }
+                            else {
+                                controlledChef.putDown();
+                                currentOrder.orderFailed=true;
+                            }
                         }
                 }
 
@@ -337,55 +346,13 @@ public class PlayScreen implements Screen {
      * Checks if chefs can be switched or not if locked out
      * @return Boolean Can chef be controlled and switched to
      */
-    public boolean canSwitchChefs(){
-        for (Chef chef : chefList.allElems()){
-            if (!chef.getUserControlChef()){
+    public boolean canSwitchChefs() {
+        for (Chef chef : chefList.allElems()) {
+            if (!chef.getUserControlChef()) {
                 return Boolean.FALSE;
             }
         }
         return Boolean.TRUE;
-    }
-
-    /**
-     * Creates the orders randomly and adds to an array, updates the HUD.
-     */
-    public void createOrder() {
-        int randomNum = ThreadLocalRandom.current().nextInt(1, 2 + 1);
-        Texture burger_recipe = new Texture("Food/burger_recipe.png");
-        Texture salad_recipe = new Texture("Food/salad_recipe.png");
-        Order order;
-
-        for(int i = 0; i<5; i++){
-            if(randomNum==1) {
-                order = new Order(PlateStation.getRecipe("Burger"), burger_recipe);
-            }
-            else {
-                order = new Order(PlateStation.getRecipe("Salad"), salad_recipe);
-            }
-            ordersArray.add(order);
-            randomNum = ThreadLocalRandom.current().nextInt(1, 2 + 1);
-        }
-        hud.updateOrder(Boolean.FALSE, 1);
-    }
-
-    /**
-     * Updates the orders as they are completed, or if the game scenario has been completed.
-     */
-    public void updateOrder(){
-        if(scenarioComplete==Boolean.TRUE) {
-            hud.updateScore(Boolean.TRUE, (6 - ordersArray.size()) * 35);
-            hud.updateOrder(Boolean.TRUE, 0);
-            return;
-        }
-        if(ordersArray.size() != 0) {
-            if (ordersArray.get(0).orderComplete) {
-                hud.updateScore(Boolean.FALSE, (6 - ordersArray.size()) * 35);
-                ordersArray.remove(0);
-                hud.updateOrder(Boolean.FALSE, 6 - ordersArray.size());
-                return;
-            }
-            ordersArray.get(0).create(trayX, trayY, game.batch);
-        }
     }
 
     /**
@@ -406,10 +373,55 @@ public class PlayScreen implements Screen {
                 hud.updateOrder(Boolean.FALSE, orderNum);
                 return;
             }
+            if (currentOrder.orderFailed == Boolean.TRUE){
+                currentOrder = null;
+                if (playerRep.loseRep()){
+                    hud.updateLives(playerRep.getRep());
+                    loseGame();
+                    return;
+                }
+                hud.updateLives(playerRep.getRep());
+                createdOrder = Boolean.FALSE;
+                hud.updateOrder(Boolean.FALSE, orderNum);
+                return;
+            }
             currentOrder.create(trayX,trayY,game.batch);
         }
 
 
+    }
+
+    /**
+     * Puts game into lose game state
+     */
+    public void loseGame(){
+        Gdx.app.log("State","The game is in loss state");
+        game.isLoseScreen=true;
+    }
+
+    /**
+     * Resets all variables and objects for replaying.
+     */
+    public void resetGame(){
+        scenarioComplete = Boolean.FALSE;
+        createdOrder = Boolean.FALSE;
+        playerRep.reset();
+        for (Chef chef : chefList.allElems()){
+            chef.getTexture().dispose();
+            world.destroyBody(chef.b2body);
+        }
+        chefList = new CircularList<Chef>(chefCount);
+        generateChefs(chefCount);
+        controlledChef.notificationSetBounds("Down");
+        timeSeconds = 0f;
+        timeSecondsCount = 0f;
+        orderNum=0;
+        game.isLoseScreen=false;
+        currentOrder=null;
+        //hud.reset();
+        hud.dispose();
+        hud=new HUD(game.batch);
+        Gdx.app.log("State","Reset");
     }
 
     /**
@@ -518,5 +530,6 @@ public class PlayScreen implements Screen {
         renderer.dispose();
         world.dispose();
         hud.dispose();
+
     }
 }

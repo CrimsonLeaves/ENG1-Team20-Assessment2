@@ -14,21 +14,11 @@ public class Order extends Sprite {
     public Recipe recipe;
     /** A flag indicating whether the order has been completed. */
     public Boolean orderComplete;
+    public Boolean orderFailed;
     /** The image representing this order. */
     public Texture orderImg;
     public int startTime;
 
-    /**
-     * Constructor for the `Order` class.
-     *
-     * @param recipe The `Recipe` object associated with this order.
-     * @param orderImg The image representing this order.
-     */
-    public Order(Recipe recipe, Texture orderImg) {
-        this.recipe = recipe;
-        this.orderImg = orderImg;
-        this.orderComplete = false;
-    }
     /**
      * Constructor for the `Order` class.
      *
@@ -40,6 +30,7 @@ public class Order extends Sprite {
         this.recipe = recipe;
         this.orderImg = orderImg;
         this.orderComplete = false;
+        this.orderFailed = false;
         this.startTime=startTime;
     }
 
