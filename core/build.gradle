@@ -1,6 +1,8 @@
 plugins {
     // Apply the java-library plugin for API and implementation separation.
-    id 'java-library'   
+    id 'java-library'
+    //Apply Checkstyle plugin, this will be used to check if code follows Google's java rules.
+    id 'checkstyle'
 }
 
 sourceCompatibility = 1.7
@@ -10,4 +12,21 @@ sourceSets.main.java.srcDirs = [ "src/" ]
 
 eclipse.project.name = appName + "-core"
 
+def checkstyleVersion = '10.4’
 
+checkstyle {
+    toolVersion "${checkstyleVersion}”
+}
+
+configurations {
+    checkstyleRules
+}
+
+dependencies {
+    checkstyleRules("com.puppycrawl.tools:checkstyle:${checkstyleVersion}") {
+    transitive = false
+    }
+}
+checkstyle {
+    config = resources.text.fromArchiveEntry(configurations.checkstyleRules, 'google_checks.xml’)
+}
