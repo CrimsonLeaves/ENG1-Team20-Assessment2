@@ -385,7 +385,7 @@ public class PlayScreen implements Screen {
                 hud.updateOrder(Boolean.FALSE, orderNum);
                 return;
             }
-            currentOrder.create(trayX,trayY,game.batch);
+            currentOrder.create(112/MainGame.PPM,128/MainGame.PPM,game.batch);
         }
 
 

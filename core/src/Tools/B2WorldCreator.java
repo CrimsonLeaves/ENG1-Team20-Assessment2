@@ -62,34 +62,38 @@ public class B2WorldCreator {
                 bdef.position.set(position_x / MainGame.PPM, position_y / MainGame.PPM);
                 bdef.type = BodyDef.BodyType.StaticBody;
 
-                if (mapObject.getName().equals("bin")) {
-                    new Bin(world, map, bdef, rectangle);
-                } else if (mapObject.getName().equals("worktop")) {
-                    new Worktop(world, map, bdef, rectangle);
-                } else if (mapObject.getName().equals("chopping_board")) {
-                    screen.choppingBoards.add(new ChoppingBoard(world, map, bdef, rectangle));
-                } else if (mapObject.getName().equals("plate")) {
-                    screen.plateStations.add(new PlateStation(world, map, bdef, rectangle));
-                } else if (mapObject.getName().equals("tomato")) {
-                    new TomatoStation(world, map, bdef, rectangle);
-                } else if (mapObject.getName().equals("lettuce")) {
-                    new LettuceStation(world, map, bdef, rectangle);
-                } else if (mapObject.getName().equals("buns")) {
-                    new BunsStation(world, map, bdef, rectangle);
-                } else if (mapObject.getName().equals("onion")) {
-                    new OnionStation(world, map, bdef, rectangle);
-                } else if (mapObject.getName().equals("pan1")) {
-                    screen.pans.add(new Pan(world, map, bdef, rectangle));
-                } else if (mapObject.getName().equals("steak")) {
-                    new SteakStation(world, map, bdef, rectangle);
-                } else if (mapObject.getName().equals("pan2")) {
-                    screen.pans.add(new Pan(world, map, bdef, rectangle));
-                } else if (mapObject.getName().equals("completed_dish")) {
-                    screen.cdStations.add(new CompletedDishStation(world, map, bdef, rectangle));
-                } else if (mapObject.getName().equals("order_top")) {
-                    PlayScreen.trayX = rectangle.x;
-                    PlayScreen.trayY = rectangle.y;
+                if(mapObject.getName() != null){
+
+                    if (mapObject.getName().equals("bin")) {
+                        new Bin(world, map, bdef, rectangle);
+                    } else if (mapObject.getName().equals("worktop")) {
+                        new Worktop(world, map, bdef, rectangle);
+                    } else if (mapObject.getName().equals("chopping_board")) {
+                        screen.choppingBoards.add(new ChoppingBoard(world, map, bdef, rectangle));
+                    } else if (mapObject.getName().equals("plate")) {
+                        screen.plateStations.add(new PlateStation(world, map, bdef, rectangle));
+                    } else if (mapObject.getName().equals("tomato")) {
+                        new TomatoStation(world, map, bdef, rectangle);
+                    } else if (mapObject.getName().equals("lettuce")) {
+                        new LettuceStation(world, map, bdef, rectangle);
+                    } else if (mapObject.getName().equals("buns")) {
+                        new BunsStation(world, map, bdef, rectangle);
+                    } else if (mapObject.getName().equals("onion")) {
+                        new OnionStation(world, map, bdef, rectangle);
+                    } else if (mapObject.getName().equals("pan1")) {
+                        screen.pans.add(new Pan(world, map, bdef, rectangle));
+                    } else if (mapObject.getName().equals("steak")) {
+                        new SteakStation(world, map, bdef, rectangle);
+                    } else if (mapObject.getName().equals("pan2")) {
+                        screen.pans.add(new Pan(world, map, bdef, rectangle));
+                    } else if (mapObject.getName().equals("completed_dish")) {
+                        screen.cdStations.add(new CompletedDishStation(world, map, bdef, rectangle));
+                    } else if (mapObject.getName().equals("order_top")) {
+                        PlayScreen.trayX = rectangle.x;
+                        PlayScreen.trayY = rectangle.y;
+                    }
                 }
+
 
             }
         }
