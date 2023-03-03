@@ -12,21 +12,24 @@ sourceSets.main.java.srcDirs = [ "src/" ]
 
 eclipse.project.name = appName + "-core"
 
-def checkstyleVersion = '10.4’
-
-checkstyle {
-    toolVersion "${checkstyleVersion}”
+repositories {
+    // Use Maven Central for resolving dependencies.
+    mavenCentral()
 }
 
+def checkstyleVersion = '10.4'
+
 configurations {
-    checkstyleRules
+  checkstyleRules
 }
 
 dependencies {
     checkstyleRules("com.puppycrawl.tools:checkstyle:${checkstyleVersion}") {
-    transitive = false
+        transitive = false
     }
 }
+
 checkstyle {
-    config = resources.text.fromArchiveEntry(configurations.checkstyleRules, 'google_checks.xml’)
+    toolVersion "${checkstyleVersion}"
+    config = resources.text.fromArchiveEntry(configurations.checkstyleRules, 'google_checks.xml')
 }
