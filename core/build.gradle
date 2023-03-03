@@ -33,3 +33,9 @@ checkstyle {
     toolVersion "${checkstyleVersion}"
     config = resources.text.fromArchiveEntry(configurations.checkstyleRules, 'google_checks.xml')
 }
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'com.team13.piazzapanic.MainGame'
+    }
+}
