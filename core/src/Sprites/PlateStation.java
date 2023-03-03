@@ -45,6 +45,8 @@ public class PlateStation extends InteractiveTileObject {
         recipes = new HashMap<>();
         recipes.put("Salad",new SaladRecipe());
         recipes.put("Burger", new BurgerRecipe());
+        recipes.put("Pizza", new UncookedPizzaRecipe());
+        recipes.put("Jacket Potato", new JacketPotatoRecipe());
         this.recipeDone = null;
     }
 

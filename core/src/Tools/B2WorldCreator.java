@@ -91,6 +91,16 @@ public class B2WorldCreator {
                     } else if (mapObject.getName().equals("order_top")) {
                         PlayScreen.trayX = rectangle.x;
                         PlayScreen.trayY = rectangle.y;
+                    } else if(mapObject.getName().equals("cheese")){
+                        new CheeseStation(world,map,bdef,rectangle);
+                    } else if(mapObject.getName().equals("dough")){
+                        new DoughStation(world,map,bdef,rectangle);
+                    } else if(mapObject.getName().equals("potato")){
+                        new PotatoStation(world,map,bdef,rectangle);
+                    } else if(mapObject.getName().equals("beans")){
+                        new BeansStation(world,map,bdef,rectangle);
+                    } else if(mapObject.getName().equals("oven")){
+                        screen.ovens.add(new Oven(world,map,bdef,rectangle));
                     }
                 }
 
