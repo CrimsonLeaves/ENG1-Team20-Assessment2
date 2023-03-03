@@ -46,7 +46,6 @@ jobs:
         path: core/build/libs/core-1.0.jar
     - name: Upload Checkstyle report
       uses: actions/upload-artifact@v3.1.1
-      if: startsWith(matrix.os, 'ubuntu’)
       with:
         name: checkstyle-report
         path: core/build/reports/checkstyle
