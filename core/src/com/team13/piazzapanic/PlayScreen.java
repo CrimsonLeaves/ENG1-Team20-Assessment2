@@ -1,7 +1,7 @@
 package com.team13.piazzapanic;
 
 import Ingredients.Ingredient;
-import Recipe.Recipe;
+import Recipe.*;
 import Sprites.*;
 import Recipe.Order;
 import Tools.B2WorldCreator;
@@ -75,6 +75,9 @@ public class PlayScreen implements Screen {
     public ArrayList<CompletedDishStation> cdStations = new ArrayList<>();
 
     public Boolean scenarioMode;
+    public ArrayList<Oven> ovens = new ArrayList<>();
+
+
     public Boolean scenarioComplete;
     public Boolean createdOrder;
 
@@ -232,6 +235,22 @@ public class PlayScreen implements Screen {
                         LettuceStation lettuceTile = (LettuceStation) tile;
                         controlledChef.pickUp(lettuceTile.getIngredient());
                         break;
+                    case "Sprites.CheeseStation":
+                        CheeseStation cheeseStation = (CheeseStation) tile;
+                        controlledChef.pickUp(cheeseStation.getIngredient());
+                        break;
+                    case "Sprites.DoughStation":
+                        DoughStation doughStation = (DoughStation) tile;
+                        controlledChef.pickUp(doughStation.getIngredient());
+                        break;
+                    case "Sprites.PotatoStation":
+                        PotatoStation potatoStation = (PotatoStation) tile;
+                        controlledChef.pickUp(potatoStation.getIngredient());
+                        break;
+                    case "Sprites.BeansStation":
+                        BeansStation beansStation = (BeansStation) tile;
+                        controlledChef.pickUp(beansStation.getIngredient());
+                        break;
                     case "Sprites.PlateStation":
                         PlateStation plateTile = (PlateStation) tile;
                         if(plateTile.getCompletedRecipe() != null){
@@ -265,6 +284,27 @@ public class PlayScreen implements Screen {
                             if(ingredient.getTimer("Pan") != null
                                       && !ingredient.isCompleted("Pan")){
                                 panTile.setCurrentIngredient(ingredient);
+                                controlledChef.putDown();
+                            }
+                        }
+                        break;
+                    case "Sprites.Oven":
+                        Oven ovenTile = (Oven) tile;
+                        if(ovenTile.getCurrentIngredient() != null){
+                            controlledChef.pickUp(ovenTile.getCurrentIngredient());
+                            ovenTile.setCurrentIngredient(null);
+                        } else if (ovenTile.getCurrentRecipe() != null){
+                            controlledChef.pickUp(ovenTile.getCurrentRecipe());
+                            ovenTile.setCurrentRecipe(null);
+                        } else if (ingredient != null){
+                            if(ingredient.getTimer("Oven") != null
+                                && !ingredient.isCompleted("Oven")){
+                                ovenTile.setCurrentIngredient(ingredient);
+                                controlledChef.putDown();
+                            }
+                        } else if (recipe != null){
+                            if(recipe instanceof UncookedPizzaRecipe){
+                                ovenTile.setCurrentRecipe(recipe);
                                 controlledChef.putDown();
                             }
                         }
@@ -327,6 +367,9 @@ public class PlayScreen implements Screen {
         }
         for (Pan pan : pans) {
             pan.update(dt);
+        }
+        for (Oven oven : ovens){
+            oven.update(dt);
         }
 
         world.step(1/60f, 6, 2);
@@ -392,7 +435,7 @@ public class PlayScreen implements Screen {
                 hud.updateOrder(Boolean.FALSE, orderNum);
                 return;
             }
-            currentOrder.create(trayX,trayY,game.batch);
+            currentOrder.create(112/MainGame.PPM,128/MainGame.PPM,game.batch);
         }
 
 
@@ -502,16 +545,26 @@ public class PlayScreen implements Screen {
 
         // make a function
         for (ChoppingBoard choppingBoard : choppingBoards) {
-            Ingredient currentingredient = choppingBoard.getCurrentIngredient();
-            if (currentingredient != null) {
-                currentingredient.create(choppingBoard.getX(), choppingBoard.getY(), game.batch);
+            Ingredient currentIngredient = choppingBoard.getCurrentIngredient();
+            if (currentIngredient != null) {
+                currentIngredient.create(choppingBoard.getX(), choppingBoard.getY(), game.batch);
             }
         }
 
         for (Pan pan : pans) {
-            Ingredient currentingredient = pan.getCurrentIngredient();
-            if (currentingredient != null) {
-                currentingredient.create(pan.getX(), pan.getY(), game.batch);
+            Ingredient currentIngredient = pan.getCurrentIngredient();
+            if (currentIngredient != null) {
+                currentIngredient.create(pan.getX(), pan.getY(), game.batch);
+            }
+        }
+
+        for (Oven oven : ovens){
+            Ingredient currentIngredient = oven.getCurrentIngredient();
+            Recipe  currentRecipe = oven.getCurrentRecipe();
+            if (currentIngredient != null) {
+                currentIngredient.create(oven.getX(),oven.getY(),game.batch);
+            } else if (currentRecipe != null){
+                currentRecipe.create(oven.getX(),oven.getY(),game.batch);
             }
         }
 
