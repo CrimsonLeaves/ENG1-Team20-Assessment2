@@ -16,13 +16,8 @@ public class TileAssetTests {
     }
 
     @Test
-    public void testKitchenTSXExists() {
-        assertTrue("This test will only pass when the Kitchen.tsx asset exists.", Gdx.files.internal("Kitchen.tsx").exists());
-    }
-
-    @Test
-    public void testKitchenTileSetExists() {
-        assertTrue("This test will only pass when the KitchenTileSet.tsx asset exists.", Gdx.files.internal("KitchenTileSet.tsx").exists());
+    public void testKitchenTilesTSXExists() {
+        assertTrue("This test will only pass when the Kitchen.tsx asset exists.", Gdx.files.internal("kitchenTiles.tsx").exists());
     }
 
     @Test
@@ -31,12 +26,8 @@ public class TileAssetTests {
     }
 
     @Test
-    public void testTile_setAssetExists() {
-        assertTrue("This test will only pass when the Tile_set.png asset exists.", Gdx.files.internal("Tile_set.png").exists());
-    }
-    @Test
-    public void testTileSetAssetExists() {
-        assertTrue("This test will only pass when the TileSet.png asset exists.", Gdx.files.internal("TileSet.png").exists());
+    public void testTilesAssetExists() {
+        assertTrue("This test will only pass when the Tiles.png asset exists.", Gdx.files.internal("Tiles.png").exists());
     }
 
 }
