@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.*;
 
 /**
@@ -17,6 +18,7 @@ public class StartScreen implements Screen {
     private final Sprite backgroundSprite;
     private final OrthographicCamera camera;
     private final Viewport viewport;
+    private Stage stage;
 
     /**
      * Constructor for StartScreen.
@@ -29,6 +31,7 @@ public class StartScreen implements Screen {
         backgroundSprite = new Sprite(backgroundImage);
         camera = new OrthographicCamera();
         viewport = new FitViewport(MainGame.V_WIDTH, MainGame.V_HEIGHT, camera);
+        Gdx.input.setInputProcessor(stage);
     }
 
     /**
@@ -40,6 +43,7 @@ public class StartScreen implements Screen {
         backgroundSprite.setSize(MainGame.V_WIDTH, MainGame.V_HEIGHT);
         backgroundSprite.setPosition(0, 0);
         camera.position.set(viewport.getWorldWidth() / 2, viewport.getWorldHeight() / 2, 0);
+        Gdx.input.setInputProcessor(stage);
     }
 
     /**
@@ -91,5 +95,6 @@ public class StartScreen implements Screen {
     @Override
     public void dispose() {
         backgroundImage.dispose();
+        stage.dispose();
     }
 }

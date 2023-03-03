@@ -34,14 +34,21 @@ public class MainGame extends Game {
 	public SpriteBatch batch;
 	public boolean isPlayScreen;
 	public boolean isLoseScreen;
+	public boolean inGame;
+	public boolean scenarioMode;
+	public String difficulty;
 	public PlayScreen playScreen;
-	private StartScreen startScreen;
+	public StartScreen startScreen;
 	private LoseScreen loseScreen;
+	public MainMenu mainMenu;
 
 	public MainGame(){
 
 		isPlayScreen = false;
 		isLoseScreen = false;
+		inGame = false;
+		scenarioMode = false;
+		difficulty="Easy";
 	}
 	@Override
 	public void create() {
@@ -49,21 +56,28 @@ public class MainGame extends Game {
 		startScreen = new StartScreen(this);
 		playScreen = new PlayScreen(this);
 		loseScreen = new LoseScreen(this);
+		mainMenu = new MainMenu(this);
+
 	}
 
 	@Override
 	public void render() {
 		super.render();
-		if (Gdx.input.isKeyJustPressed(Input.Keys.TAB)){
+		if (Gdx.input.isKeyJustPressed(Input.Keys.TAB) && inGame){
 			isPlayScreen = !isPlayScreen;
 		}
 		if (isLoseScreen) {
 			setScreen(loseScreen);
 		}
-		else if (isPlayScreen) {
-			setScreen(playScreen);
-		} else {
-			setScreen(startScreen);
+		else if (inGame){
+			if (isPlayScreen ) {
+				setScreen(playScreen);
+			} else {
+				setScreen(startScreen);
+			}
+		}
+		else {
+			setScreen(mainMenu);
 		}
 	}
 

@@ -50,6 +50,7 @@ public class LoseScreen implements Screen {
         table.setFillParent(true);
         table.debug();
         stage.addActor(table);
+        Gdx.input.setInputProcessor(stage);
         backgroundSprite.setSize(MainGame.V_WIDTH, MainGame.V_HEIGHT);
         backgroundSprite.setPosition(0, 0);
         camera.position.set(viewport.getWorldWidth() / 2, viewport.getWorldHeight() / 2, 0);
@@ -70,15 +71,17 @@ public class LoseScreen implements Screen {
         exit.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                Gdx.app.exit();
+                //game.playScreen.resetGame();
+                game.isLoseScreen=false;
+                game.setScreen(game.mainMenu);
             }
         });
 
         replay.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                Gdx.app.log("State","reset clicked");
                 game.playScreen.resetGame();
+                game.inGame=true;
                 game.setScreen(game.playScreen);
             }
         });

@@ -21,6 +21,7 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
@@ -73,7 +74,7 @@ public class PlayScreen implements Screen {
 
     public ArrayList<CompletedDishStation> cdStations = new ArrayList<>();
 
-
+    public Boolean scenarioMode;
     public Boolean scenarioComplete;
     public Boolean createdOrder;
 
@@ -83,6 +84,8 @@ public class PlayScreen implements Screen {
     private float timeSeconds = 0f;
 
     private float timeSecondsCount = 0f;
+    private Stage stage;
+    private float diffMult=1;
 
     /**
      * PlayScreen constructor initializes the game instance, sets initial conditions for scenarioComplete and createdOrder,
@@ -102,6 +105,8 @@ public class PlayScreen implements Screen {
         // create HUD for score & time
         hud = new HUD(game.batch);
         playerRep=new Reputation(3);
+        scenarioMode = game.scenarioMode;
+        Gdx.input.setInputProcessor(stage);
         // create orders hud
         // create map
         TmxMapLoader mapLoader = new TmxMapLoader(new InternalFileHandleResolver());
@@ -121,7 +126,7 @@ public class PlayScreen implements Screen {
 
     @Override
     public void show(){
-
+        Gdx.input.setInputProcessor(stage);
     }
 
 
@@ -276,8 +281,10 @@ public class PlayScreen implements Screen {
                                 cds.setRecipe(recipe);
                                 controlledChef.putDown();
                                 currentOrder.orderComplete = true;
-                                if(orderNum >= totalOrders){
-                                    scenarioComplete = Boolean.TRUE;
+                                if(scenarioMode == true){
+                                    if(orderNum >= totalOrders){
+                                        scenarioComplete = Boolean.TRUE;
+                                    }
                                 }
                             }
                             else {
@@ -396,6 +403,7 @@ public class PlayScreen implements Screen {
      */
     public void loseGame(){
         Gdx.app.log("State","The game is in loss state");
+        game.inGame=false;
         game.isLoseScreen=true;
     }
 
@@ -407,7 +415,7 @@ public class PlayScreen implements Screen {
         createdOrder = Boolean.FALSE;
         playerRep.reset();
         for (Chef chef : chefList.allElems()){
-            chef.getTexture().dispose();
+            if (chef.getTexture() != null) {chef.getTexture().dispose();}
             world.destroyBody(chef.b2body);
         }
         chefList = new CircularList<Chef>(chefCount);
@@ -421,7 +429,19 @@ public class PlayScreen implements Screen {
         //hud.reset();
         hud.dispose();
         hud=new HUD(game.batch);
-        Gdx.app.log("State","Reset");
+        switch (game.difficulty){
+            case "Easy":
+                diffMult=1.5f;
+                break;
+            case "Medium":
+                diffMult=1;
+                break;
+            case "Hard":
+                diffMult=0.67f;
+                break;
+            default:
+                break;
+        }
     }
 
     /**
@@ -530,6 +550,7 @@ public class PlayScreen implements Screen {
         renderer.dispose();
         world.dispose();
         hud.dispose();
+        stage.dispose();
 
     }
 }
