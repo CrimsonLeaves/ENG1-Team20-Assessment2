@@ -27,9 +27,9 @@ public class Orders {
         Texture salad_recipe = new Texture("Food/salad_recipe.png");
         switch (randomNum){
             case 0:
-                return new Order(PlateStation.getRecipe("Burger"), burger_recipe,startTime);
+                return new Order(PlateStation.getRecipe("Burger"), burger_recipe,startTime,60f);
             case 1:
-                return new Order(PlateStation.getRecipe("Salad"), salad_recipe,startTime);
+                return new Order(PlateStation.getRecipe("Salad"), salad_recipe,startTime,60f);
             default:
                 return null;
         }

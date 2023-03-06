@@ -41,22 +41,31 @@ public class MainMenu implements Screen {
     @Override
     public void show() {
         Table table = new Table();
+        Table buttonTable = new Table();
         table.setFillParent(true);
-        //table.setDebug(true);
         Gdx.input.setInputProcessor(stage);
-        stage.addActor(table);
         Skin skin = new Skin(Gdx.files.internal("skin/glassy-ui.json"));
         backgroundSprite.setSize(MainGame.V_WIDTH, MainGame.V_HEIGHT);
         backgroundSprite.setPosition(0, 0);
         camera.position.set(viewport.getWorldWidth() / 2, viewport.getWorldHeight() / 2, 0);
 
+        table.setDebug(true);
+
+
+        stage.addActor(table);
+
+
+        //Buttons
         TextButton scenarioMode = new TextButton("Scenario Mode", skin);
         TextButton endlessMode = new TextButton("Endless Mode", skin);
         TextButton shop = new TextButton("Shop", skin);
         TextButton instructions = new TextButton("Instructions", skin);
+        //Difficulty
         Label difficultyLabel = new Label("Difficulty:",skin);
         final SelectBox<String> difficultyBox;difficultyBox = new SelectBox<String>(skin);
         difficultyBox.setItems(new String[]{"Easy","Medium","Hard"});
+        //Money
+        Label moneyLabel = new Label(("Money: "+game.getMoney()),skin);
 
         scenarioMode.getLabel().setFontScale(0.5f);
         endlessMode.getLabel().setFontScale(0.5f);
@@ -65,14 +74,18 @@ public class MainMenu implements Screen {
         int buttonWidth=250;
         int buttonHeight=100;
 
-        table.add(scenarioMode).width(buttonWidth).height(buttonHeight).left().padRight(10);
-        table.add(endlessMode).width(buttonWidth).height(buttonHeight).right().padLeft(10);
-        table.row().padTop(10);
-        table.add(shop).width(buttonWidth).height(buttonHeight).left().padRight(10);
-        table.add(instructions).width(buttonWidth).height(buttonHeight).right().padLeft(10);
-        table.row().padTop(10);
-        table.add(difficultyLabel).padRight(10);
-        table.add(difficultyBox).padLeft(10).width(buttonWidth).height(buttonHeight/3);
+        buttonTable.add(scenarioMode).width(buttonWidth).height(buttonHeight).left().padRight(10);
+        buttonTable.add(endlessMode).width(buttonWidth).height(buttonHeight).right().padLeft(10);
+        buttonTable.row().padTop(10);
+        buttonTable.add(shop).width(buttonWidth).height(buttonHeight).left().padRight(10);
+        buttonTable.add(instructions).width(buttonWidth).height(buttonHeight).right().padLeft(10);
+        buttonTable.row().padTop(10);
+        buttonTable.add(difficultyLabel).padRight(10);
+        buttonTable.add(difficultyBox).padLeft(10).width(buttonWidth).height(buttonHeight/3);
+        table.add(buttonTable).center().center();
+        table.row();
+        table.add(moneyLabel).bottom().left();
+
 
         scenarioMode.addListener(new ChangeListener() {
             @Override

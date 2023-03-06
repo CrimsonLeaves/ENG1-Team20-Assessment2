@@ -6,9 +6,9 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -16,27 +16,37 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
-public class LoseScreen implements Screen {
+public class EndScreen implements Screen {
     private final MainGame game;
-    private final Texture backgroundImage;
+    private final Texture backgroundImageLose;
+    private final Texture backgroundImageScenarioWin;
+    private final Texture backgroundImageEndlessWin;
     private final Sprite backgroundSprite;
     private final OrthographicCamera camera;
     private final Viewport viewport;
     private Stage stage;
+    public Boolean win;
+    public String time;
+    public int score;
 
     /**
      * Constructor for LoseScreen.
      *
      * @param game the game object.
      */
-    public LoseScreen(MainGame game) {
+    public EndScreen(MainGame game) {
         this.game = game;
-        backgroundImage = new Texture("UI/lossImage.png");
-        backgroundSprite = new Sprite(backgroundImage);
+        backgroundImageLose = new Texture("UI/lossImage.png");
+        backgroundImageScenarioWin = new Texture("UI/scenarioWinImage.png");
+        backgroundImageEndlessWin = new Texture("UI/endlessWinImage.png");
+        backgroundSprite = new Sprite(backgroundImageLose);
         camera = new OrthographicCamera();
         viewport = new FitViewport(MainGame.V_WIDTH, MainGame.V_HEIGHT, camera);
         stage = new Stage();
         Gdx.input.setInputProcessor(stage);
+        win=false;
+        time="00:00";
+        score=0;
     }
 
 
@@ -56,23 +66,50 @@ public class LoseScreen implements Screen {
         camera.position.set(viewport.getWorldWidth() / 2, viewport.getWorldHeight() / 2, 0);
         Skin skin = new Skin(Gdx.files.internal("skin/glassy-ui.json"));
 
-
+        //Buttons
         TextButton exit = new TextButton("Exit", skin);
         TextButton replay = new TextButton("Replay", skin);
 
+        //Button Sizes
         exit.setSize(250,100);
         replay.setSize(250,100);
-
-        //replay.setPosition(0,0);
-        //exit.setPosition(stage.getWidth()-exit.getWidth(),0);
-        table.bottom();
-
+        //Text
+        Label winLabel = new Label("Well Done!",skin);
+        Label scoreLabel = new Label ("Score: "+score,skin);
+        //Scenario Win
+        Label scenarioTimeLabel = new Label("Completion Time: "+time,skin);
+        //Endless Win
+        Label EndlessTimeLabel = new Label("Survival Time: "+time,skin);
+        //Resizing Fonts
+        float fontscale= 2f;
+        winLabel.setFontScale(fontscale);
+        scoreLabel.setFontScale(fontscale);
+        scenarioTimeLabel.setFontScale(fontscale);
+        scenarioTimeLabel.setFontScale(fontscale);
+        if (win){
+            backgroundSprite.setTexture(backgroundImageScenarioWin);
+            table.add(winLabel);
+            table.row().padTop(50);
+            table.add(scenarioTimeLabel);
+            table.row().padTop(50);
+            table.add(scoreLabel);
+        }
+        else if (!game.scenarioMode){
+            backgroundSprite.setTexture(backgroundImageEndlessWin);
+            table.add(winLabel);
+            table.row().padTop(50);
+            table.add(EndlessTimeLabel);
+            table.row().padTop(25);
+            table.add(scoreLabel);
+        }
+        else{
+            backgroundSprite.setTexture(backgroundImageLose);
+        }
 
         exit.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                //game.playScreen.resetGame();
-                game.isLoseScreen=false;
+                game.isEndScreen =false;
                 game.setScreen(game.mainMenu);
             }
         });
@@ -89,6 +126,8 @@ public class LoseScreen implements Screen {
         replay.setPosition(40,40);
         table.addActor(exit);
         exit.setPosition(stage.getWidth()-exit.getWidth()-40, 40);
+
+
     }
 
     /**
@@ -104,6 +143,7 @@ public class LoseScreen implements Screen {
 
         camera.update();
         game.batch.setProjectionMatrix(camera.combined);
+
         game.batch.begin();
         backgroundSprite.draw(game.batch);
         game.batch.end();
@@ -143,7 +183,9 @@ public class LoseScreen implements Screen {
      */
     @Override
     public void dispose() {
-        backgroundImage.dispose();
+        backgroundImageEndlessWin.dispose();
+        backgroundImageScenarioWin.dispose();
+        backgroundImageLose.dispose();
         stage.dispose();
     }
 }

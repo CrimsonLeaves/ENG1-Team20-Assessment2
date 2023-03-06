@@ -132,7 +132,7 @@ public class HUD implements Disposable {
      * @param startTime The time at which the order is placed
      */
 
-    public void updateScore(Boolean scenarioComplete, Integer startTime){
+    public int updateScore(Boolean scenarioComplete, Integer startTime){
         int addScore;
         int currentTime;
 
@@ -160,12 +160,13 @@ public class HUD implements Disposable {
             table.center().top();
             stage.addActor(table);
             this.scenarioComplete = Boolean.TRUE;
-            return;
+            return score;
         }
 
         table.left().top();
         scoreLabel.setText(String.format("%d", score));
         stage.addActor(table);
+        return score;
 
     }
 
@@ -197,6 +198,7 @@ public class HUD implements Disposable {
     public int getTime(){
         return worldTimerM*60+worldTimerS;
     }
+    public int getScore() {return score;}
     public void reset(){
         //Reset lives
         lives = new Image[3];

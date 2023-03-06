@@ -12,10 +12,11 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
@@ -26,7 +27,6 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 import java.util.ArrayList;
-import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * The PlayScreen class is responsible for displaying the game to the user and handling the user's interactions.
@@ -89,6 +89,8 @@ public class PlayScreen implements Screen {
     private float timeSecondsCount = 0f;
     private Stage stage;
     private float diffMult=1;
+    private boolean moneyAdded;
+    private ShapeRenderer shapeRenderer;
 
     /**
      * PlayScreen constructor initializes the game instance, sets initial conditions for scenarioComplete and createdOrder,
@@ -99,6 +101,7 @@ public class PlayScreen implements Screen {
      */
 
     public PlayScreen(MainGame game){
+        shapeRenderer = new ShapeRenderer();
         this.game = game;
         scenarioComplete = Boolean.FALSE;
         createdOrder = Boolean.FALSE;
@@ -110,6 +113,7 @@ public class PlayScreen implements Screen {
         playerRep=new Reputation(3);
         scenarioMode = game.scenarioMode;
         Gdx.input.setInputProcessor(stage);
+        moneyAdded=false;
         // create orders hud
         // create map
         TmxMapLoader mapLoader = new TmxMapLoader(new InternalFileHandleResolver());
@@ -167,11 +171,16 @@ public class PlayScreen implements Screen {
 
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.L)){
-            if (playerRep.loseRep()){
+            if (currentOrder==null){
+                if (playerRep.loseRep()){
+                    hud.updateLives(playerRep.getRep());
+                    loseGame();
+                }
                 hud.updateLives(playerRep.getRep());
-                loseGame();
+                return;
             }
-            hud.updateLives(playerRep.getRep());
+            currentOrder.orderFailed=Boolean.TRUE;
+
         }
 
         if (controlledChef.getUserControlChef()) {
@@ -324,6 +333,9 @@ public class PlayScreen implements Screen {
                                 if(scenarioMode == true){
                                     if(orderNum >= totalOrders){
                                         scenarioComplete = Boolean.TRUE;
+                                        game.endScreen.win=true;
+                                        String stringTime = String.format("%02d:%02d",(int)(timeSecondsCount / 60),(int)(timeSecondsCount % 60));
+                                        game.endScreen.time=stringTime;
                                     }
                                 }
                             }
@@ -410,8 +422,15 @@ public class PlayScreen implements Screen {
      */
     public void checkOrder(){
         if (scenarioComplete==Boolean.TRUE){
-            hud.updateScore(Boolean.TRUE, currentOrder.startTime);
+            int totalMoney = hud.updateScore(Boolean.TRUE, currentOrder.startTime);
             hud.updateOrder(Boolean.TRUE, 0);
+            if (!moneyAdded){
+                moneyAdded=true;
+                game.addMoney(totalMoney);
+            }
+            game.inGame=false;
+            game.isEndScreen =true;
+            game.isPlayScreen=false;
             return;
         }
         if (currentOrder != null){
@@ -422,6 +441,13 @@ public class PlayScreen implements Screen {
                 createdOrder = Boolean.FALSE;
                 hud.updateOrder(Boolean.FALSE, orderNum);
                 return;
+            }
+
+            if (currentOrder.totalTime-currentOrder.currentTime <=0){
+                currentOrder.orderFailed=Boolean.TRUE;
+            }
+            else {
+                currentOrder.currentTime+=Gdx.graphics.getDeltaTime();
             }
             if (currentOrder.orderFailed == Boolean.TRUE){
                 currentOrder = null;
@@ -447,7 +473,15 @@ public class PlayScreen implements Screen {
     public void loseGame(){
         Gdx.app.log("State","The game is in loss state");
         game.inGame=false;
-        game.isLoseScreen=true;
+        game.isEndScreen =true;
+        game.isPlayScreen=false;
+        game.endScreen.win=false;
+        String stringTime = String.format("%02d:%02d",(int)(timeSecondsCount / 60), (int)(timeSecondsCount % 60));
+        game.endScreen.time=stringTime;
+        game.endScreen.score=hud.getScore();
+        if (!game.scenarioMode){
+            game.addMoney(hud.getScore());
+        }
     }
 
     /**
@@ -467,7 +501,7 @@ public class PlayScreen implements Screen {
         timeSeconds = 0f;
         timeSecondsCount = 0f;
         orderNum=0;
-        game.isLoseScreen=false;
+        game.isEndScreen =false;
         currentOrder=null;
         //hud.reset();
         hud.dispose();
@@ -518,6 +552,8 @@ public class PlayScreen implements Screen {
 
         Gdx.gl.glClear(1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+
 
         renderer.render();
         game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
@@ -573,8 +609,30 @@ public class PlayScreen implements Screen {
                 cdStation.draw(game.batch);
             }
         }
-
         game.batch.end();
+        Gdx.gl.glEnable(GL20.GL_BLEND);
+        if (currentOrder!=null){
+            float orderX=435;
+            float orderY=450;
+            float percent=(currentOrder.totalTime- currentOrder.currentTime)/ currentOrder.totalTime;
+
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+            Gdx.gl20.glLineWidth(3f);
+            shapeRenderer.setColor(Color.BLACK);
+            shapeRenderer.arc(orderX, orderY, 10f,90,360 * percent);
+            shapeRenderer.end();
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+            if (percent > 0.75) {shapeRenderer.setColor(new Color(0,0.4f,0,1));}
+            else if (percent > 0.50) {shapeRenderer.setColor(Color.YELLOW);}
+            else if (percent > 0.25) {shapeRenderer.setColor(Color.ORANGE);}
+            else {shapeRenderer.setColor(Color.RED);}
+
+            shapeRenderer.arc(orderX, orderY, 10f,90,360 * percent);
+            shapeRenderer.end();
+
+
+        }
+        Gdx.gl.glDisable(GL20.GL_BLEND);
     }
 
     @Override
@@ -604,6 +662,7 @@ public class PlayScreen implements Screen {
         world.dispose();
         hud.dispose();
         stage.dispose();
+        shapeRenderer.dispose();
 
     }
 }

@@ -3,6 +3,7 @@ package Recipe;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.team13.piazzapanic.MainGame;
 
 /**
@@ -18,6 +19,11 @@ public class Order extends Sprite {
     /** The image representing this order. */
     public Texture orderImg;
     public int startTime;
+    public float totalTime;
+    public float currentTime;
+    private ShapeRenderer shapeRenderer;
+    public float adjustedX;
+    public float adjustedY;
 
     /**
      * Constructor for the `Order` class.
@@ -26,12 +32,17 @@ public class Order extends Sprite {
      * @param orderImg The image representing this order.
      * @param startTime The time at which the order is created.
      */
-    public Order(Recipe recipe, Texture orderImg, int startTime) {
+    public Order(Recipe recipe, Texture orderImg, int startTime,float totalTime) {
         this.recipe = recipe;
         this.orderImg = orderImg;
         this.orderComplete = false;
         this.orderFailed = false;
         this.startTime=startTime;
+        this.totalTime=totalTime;
+        currentTime=0f;
+        shapeRenderer = new ShapeRenderer();
+        adjustedX=0;
+        adjustedY=0;
     }
 
     /**
@@ -43,8 +54,8 @@ public class Order extends Sprite {
      */
     public void create(float x, float y, SpriteBatch batch) {
         Sprite sprite = new Sprite(orderImg);
-        float adjustedX = x - (8 / MainGame.PPM);
-        float adjustedY = y + (2 / MainGame.PPM);
+        adjustedX = x - (8 / MainGame.PPM);
+        adjustedY = y + (2 / MainGame.PPM);
         if (orderImg.toString().equals("Food/salad_recipe.png")) {
             sprite.setBounds(adjustedX, adjustedY, 53 / MainGame.PPM, 28 / MainGame.PPM);
             sprite.draw(batch);
@@ -52,5 +63,10 @@ public class Order extends Sprite {
             sprite.setBounds(adjustedX, adjustedY, 33 / MainGame.PPM, 28 / MainGame.PPM);
             sprite.draw(batch);
         }
+    }
+    public void drawTimer(){
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        shapeRenderer.arc(adjustedX, adjustedY, 10f,0f,120f);
+        shapeRenderer.end();
     }
 }
