@@ -37,7 +37,10 @@ task debug(dependsOn: classes, type: JavaExec) {
 task dist(type: Jar) {
     duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
     manifest {
-        attributes 'Main-Class': project.mainClassName
+        attributes(
+                "Main-Class": 'com.team13.piazzapanic.DesktopLauncher',
+                "Class-Path": configurations.compile.collect { it.getName() }.join(' ')
+        )
     }
     dependsOn configurations.runtimeClasspath
     from {
@@ -50,15 +53,3 @@ task dist(type: Jar) {
 dist.dependsOn classes
 
 eclipse.project.name = appName + "-desktop"
-
-repositories {
-    mavenCentral()
-}
-
-jar {
-    manifest {
-        attributes(
-                'Main-Class': 'com.team13.piazzapanic.DesktopLauncher'
-        )
-    }
-}
