@@ -37,10 +37,7 @@ task debug(dependsOn: classes, type: JavaExec) {
 task dist(type: Jar) {
     duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
     manifest {
-        attributes(
-                "Main-Class": project.mainClassName,
-                "Class-Path": configurations.compile.collect { it.getName() }.join(' ')
-        )
+        attributes 'Main-Class': project.mainClassName
     }
     dependsOn configurations.runtimeClasspath
     from {
