@@ -26,6 +26,7 @@ public class MainMenu implements Screen {
     private final Sprite backgroundSprite;
     private final OrthographicCamera camera;
     private final Viewport viewport;
+    Skin skin;
 
 
     public MainMenu(MainGame game){
@@ -37,6 +38,8 @@ public class MainMenu implements Screen {
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
         spriteBatch = new SpriteBatch();
+        skin = new Skin(Gdx.files.internal("skin/glassy-ui.json"));
+
     }
     @Override
     public void show() {
@@ -44,7 +47,7 @@ public class MainMenu implements Screen {
         Table buttonTable = new Table();
         table.setFillParent(true);
         Gdx.input.setInputProcessor(stage);
-        Skin skin = new Skin(Gdx.files.internal("skin/glassy-ui.json"));
+
         backgroundSprite.setSize(MainGame.V_WIDTH, MainGame.V_HEIGHT);
         backgroundSprite.setPosition(0, 0);
         camera.position.set(viewport.getWorldWidth() / 2, viewport.getWorldHeight() / 2, 0);
@@ -62,7 +65,7 @@ public class MainMenu implements Screen {
         TextButton instructions = new TextButton("Instructions", skin);
         //Difficulty
         Label difficultyLabel = new Label("Difficulty:",skin);
-        final SelectBox<String> difficultyBox;difficultyBox = new SelectBox<String>(skin);
+        final SelectBox<String> difficultyBox= new SelectBox<String>(skin);
         difficultyBox.setItems(new String[]{"Easy","Medium","Hard"});
         //Money
         Label moneyLabel = new Label(("Money: "+game.getMoney()),skin);
@@ -160,5 +163,6 @@ public class MainMenu implements Screen {
     public void dispose() {
         stage.dispose();
         spriteBatch.dispose();
+        skin.dispose();
     }
 }

@@ -28,6 +28,7 @@ public class EndScreen implements Screen {
     public Boolean win;
     public String time;
     public int score;
+    Skin skin;
 
     /**
      * Constructor for LoseScreen.
@@ -47,6 +48,7 @@ public class EndScreen implements Screen {
         win=false;
         time="00:00";
         score=0;
+        skin = new Skin(Gdx.files.internal("skin/glassy-ui.json"));
     }
 
 
@@ -64,7 +66,7 @@ public class EndScreen implements Screen {
         backgroundSprite.setSize(MainGame.V_WIDTH, MainGame.V_HEIGHT);
         backgroundSprite.setPosition(0, 0);
         camera.position.set(viewport.getWorldWidth() / 2, viewport.getWorldHeight() / 2, 0);
-        Skin skin = new Skin(Gdx.files.internal("skin/glassy-ui.json"));
+
 
         //Buttons
         TextButton exit = new TextButton("Exit", skin);
@@ -187,5 +189,6 @@ public class EndScreen implements Screen {
         backgroundImageScenarioWin.dispose();
         backgroundImageLose.dispose();
         stage.dispose();
+        skin.dispose();
     }
 }
