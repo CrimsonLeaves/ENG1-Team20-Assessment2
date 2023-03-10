@@ -48,6 +48,12 @@ public abstract class Ingredient extends Sprite {
         sprite.draw(batch);
     }
 
+    public Boolean isAllCompleted(){
+        for (boolean complete : completed.values()) {
+            if(!complete){return false;}
+        }
+        return true;
+    }
 
     //getOrDefault exists try using that
     public Float getTimer(String station){

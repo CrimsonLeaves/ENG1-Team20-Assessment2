@@ -66,23 +66,20 @@ public class PlateStation extends InteractiveTileObject {
      */
     public void checkRecipeCreated(){
         for (Recipe recipe: recipes.values()) {
-            if(plate.size() == recipe.getIngredients().size()){
-                boolean recipeMatch = true;
-                boolean ingredientMatch;
+            ArrayList<Ingredient> recipeIngredients = new ArrayList<>(recipe.getIngredients());
+            if(plate.size() == recipeIngredients.size()){
                 for(Ingredient ing : plate){
-                    ingredientMatch = false;
-                    for(int i = 0; i < plate.size(); i++) {
-                      if(ing.getClass().equals(recipe.getIngredients().get(i).getClass())){
-                          ingredientMatch = true;
+                    if(!ing.isAllCompleted()){
+                        return;
+                    }
+                    for(int i = 0; i < recipeIngredients.size(); i++) {
+                      if(ing.getClass().equals(recipeIngredients.get(i).getClass())){
+                          recipeIngredients.remove(i);
                           break;
                       }
                     }
-                    if(!ingredientMatch){
-                        recipeMatch = false;
-                        break;
-                    }
                 }
-                if(recipeMatch){
+                if(recipeIngredients.isEmpty()){
                     plate.clear();
                     recipeDone = recipe;
                     return;
