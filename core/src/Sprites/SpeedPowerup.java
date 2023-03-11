@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.Texture;
 
 public class SpeedPowerup extends Powerup {
     public SpeedPowerup(float x, float y){
-        super(new Texture("Powerups/speedPowerup.png"), x, y);
+        super(new Texture(Gdx.files.internal("Powerups/speedPowerup.png")), x, y);
     }
 
 }
