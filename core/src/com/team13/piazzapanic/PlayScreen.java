@@ -32,6 +32,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -533,12 +534,17 @@ public class PlayScreen implements Screen {
      */
     public void createPowerup(){
         //Generate random location that is accessible
+        Random r = new Random();
+        float min=MainGame.TILE_SIZE/MainGame.PPM;
+        float xMax = MainGame.TILE_SIZE*8/MainGame.PPM;
+        float yMax = MainGame.TILE_SIZE*6/MainGame.PPM;
         Rectangle centreIsland = new Rectangle(MainGame.TILE_SIZE*3/MainGame.PPM,MainGame.TILE_SIZE*3/MainGame.PPM,MainGame.TILE_SIZE*4/MainGame.PPM,MainGame.TILE_SIZE*4/MainGame.PPM);
-        float x=ThreadLocalRandom.current().nextFloat(MainGame.TILE_SIZE/MainGame.PPM,MainGame.TILE_SIZE*8/MainGame.PPM);
-        float y=ThreadLocalRandom.current().nextFloat(MainGame.TILE_SIZE/MainGame.PPM,MainGame.TILE_SIZE*6/MainGame.PPM);
+        float x = MainGame.TILE_SIZE/MainGame.PPM + r.nextFloat()*(xMax-min);
+        float y = MainGame.TILE_SIZE/MainGame.PPM + r.nextFloat()*(yMax-min);
+
         while (centreIsland.contains(x,y)){
-            x=ThreadLocalRandom.current().nextFloat(MainGame.TILE_SIZE/MainGame.PPM,MainGame.TILE_SIZE*8/MainGame.PPM);
-            y=ThreadLocalRandom.current().nextFloat(MainGame.TILE_SIZE/MainGame.PPM,MainGame.TILE_SIZE*6/MainGame.PPM);
+            x = MainGame.TILE_SIZE/MainGame.PPM + r.nextFloat()*(xMax-min);
+            y = MainGame.TILE_SIZE/MainGame.PPM + r.nextFloat()*(yMax-min);
         }
 
 
