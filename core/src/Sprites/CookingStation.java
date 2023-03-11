@@ -1,5 +1,6 @@
 package Sprites;
 
+import Ingredients.FailedIngredient;
 import Ingredients.Ingredient;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Rectangle;
@@ -29,12 +30,15 @@ public class CookingStation extends InteractiveTileObject{
     }
 
     public void update(float dt){
-        if(currentIngredient != null) {
+        if(currentIngredient != null && !currentIngredient.getFailed()) {
             timer += dt;
             if (timer > currentIngredient.getTimer("Chopping Board")
                 && !currentIngredient.isCompleted("Chopping Board")) {
-                //line 35 is so skin (Ingredient.java) only gets incremented once
                 currentIngredient.setCompleted("Chopping Board");
+                timer = 0;
+            } else if( timer > currentIngredient.getTimer("Chopping Board") *2
+                    && currentIngredient.isCompleted("Chopping Board")){
+                currentIngredient = new FailedIngredient();
             }
         }
     }

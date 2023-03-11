@@ -20,6 +20,8 @@ public abstract class Ingredient extends Sprite {
 
     private int skin;
 
+    private boolean failed;
+
     /**
      * Constructs a new Ingredient object with the specified preparation and cooking times.
      *
@@ -31,6 +33,7 @@ public abstract class Ingredient extends Sprite {
         this.timers = timers;
         this.completed = completed;
         this.skin = 0;
+        this.failed = false;
     }
 
     /**
@@ -68,5 +71,9 @@ public abstract class Ingredient extends Sprite {
         completed.put(station, true);
         skin += 1;
     }
+
+    public void setFailed(Boolean failed){this.failed = failed;}
+
+    public Boolean getFailed(){return this.failed;}
 
 }

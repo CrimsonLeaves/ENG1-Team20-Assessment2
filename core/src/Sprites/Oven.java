@@ -1,5 +1,6 @@
 package Sprites;
 
+import Ingredients.FailedIngredient;
 import Ingredients.Ingredient;
 import Recipe.Recipe;
 import Recipe.CookedPizzaRecipe;
@@ -43,12 +44,15 @@ public class Oven extends CookingStation{
 
     @Override
     public void update(float dt){
-        if(currentIngredient != null) {
+        if(currentIngredient != null && !currentIngredient.getFailed()) {
             timer += dt;
             if (timer > currentIngredient.getTimer("Oven")
                     && !currentIngredient.isCompleted("Oven")) {
-                //line 37 is so skin (Ingredient.java) only gets incremented once
                 currentIngredient.setCompleted("Oven");
+                timer = 0;
+            } else if( timer > currentIngredient.getTimer("Oven")*2
+                    && currentIngredient.isCompleted("Oven")){
+                currentIngredient = new FailedIngredient();
             }
         } else if(currentRecipe != null){
             timer +=dt;
