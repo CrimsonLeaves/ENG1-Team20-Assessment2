@@ -1,5 +1,6 @@
 package Sprites;
 
+import Ingredients.FailedIngredient;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -20,12 +21,15 @@ public class Pan extends CookingStation {
 
     @Override
     public void update(float dt){
-        if(currentIngredient != null) {
+        if(currentIngredient != null && !currentIngredient.getFailed()) {
             timer += dt;
             if (timer > currentIngredient.getTimer("Pan")
                 && !currentIngredient.isCompleted("Pan")) {
-                //line 26 is so skin (Ingredient.java) only gets incremented once
                 currentIngredient.setCompleted("Pan");
+                timer = 0;
+            } else if( timer > currentIngredient.getTimer("Pan")*2
+                        && currentIngredient.isCompleted("Pan")){
+                currentIngredient = new FailedIngredient();
             }
         }
     }
