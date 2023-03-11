@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.team13.piazzapanic.MainGame;
@@ -57,6 +58,7 @@ public class Chef extends Sprite {
     private float notificationY;
     private float notificationWidth;
     private float notificationHeight;
+    public Rectangle collisionRect;
 
 
     /**
@@ -88,6 +90,7 @@ public class Chef extends Sprite {
         userControlChef = true;
         Texture circleTexture = new Texture("Chef/chefIdentifier.png");
         circleSprite = new Sprite(circleTexture);
+        collisionRect = new Rectangle(initialX,initialY, circleSprite.getWidth()/MainGame.PPM, circleSprite.getHeight()/MainGame.PPM);
     }
 
 
@@ -98,6 +101,7 @@ public class Chef extends Sprite {
      */
     public void update(float dt) {
         setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() / 2);
+        collisionRect.setPosition(circleSprite.getX(), circleSprite.getY());
         currentSkin = getSkin();
         setRegion(currentSkin);
         switch (currentState) {

@@ -4,6 +4,7 @@ import Ingredients.Ingredient;
 import Recipe.*;
 import Sprites.*;
 import Recipe.Order;
+import Sprites.SpeedPowerup;
 import Tools.B2WorldCreator;
 import Tools.CircularList;
 import Tools.WorldContactListener;
@@ -15,11 +16,14 @@ import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -27,6 +31,8 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * The PlayScreen class is responsible for displaying the game to the user and handling the user's interactions.
@@ -53,27 +59,20 @@ public class PlayScreen implements Screen {
     private final Viewport gameport;
     private HUD hud;
     public Reputation playerRep;
-
     private final TiledMap map;
     private final OrthogonalTiledMapRenderer renderer;
-
     private final World world;
     private CircularList<Chef> chefList;
     private int chefCount = 3;
     private Chef controlledChef;
-    private Orders ordersInterface = new Orders();
+    private final Orders ordersInterface = new Orders();
     public Order currentOrder;
     public int orderNum=0;
     public int totalOrders=5;
-
     public ArrayList<PlateStation> plateStations = new ArrayList<>();
-
     public ArrayList<ChoppingBoard> choppingBoards = new ArrayList<>();
-
     public ArrayList<Pan> pans = new ArrayList<>();
-
     public ArrayList<CompletedDishStation> cdStations = new ArrayList<>();
-
     public Boolean scenarioMode;
     public ArrayList<Oven> ovens = new ArrayList<>();
 
@@ -90,7 +89,11 @@ public class PlayScreen implements Screen {
     private Stage stage;
     private float diffMult=1;
     private boolean moneyAdded;
-    private ShapeRenderer shapeRenderer;
+    private final ShapeRenderer shapeRenderer;
+    private ArrayList<Powerup> powerups;
+    private final int totalPowerups=2;
+    private float movementSpeed=1f;
+    private float powerupFinish=-1f;
 
     /**
      * PlayScreen constructor initializes the game instance, sets initial conditions for scenarioComplete and createdOrder,
@@ -114,6 +117,7 @@ public class PlayScreen implements Screen {
         scenarioMode = game.scenarioMode;
         Gdx.input.setInputProcessor(stage);
         moneyAdded=false;
+        powerups = new ArrayList<>();
         // create orders hud
         // create map
         TmxMapLoader mapLoader = new TmxMapLoader(new InternalFileHandleResolver());
@@ -123,10 +127,12 @@ public class PlayScreen implements Screen {
 
         world = new World(new Vector2(0,0), true);
         new B2WorldCreator(world, map, this);
-        chefList = new CircularList<Chef>(chefCount);
+        chefList = new CircularList<>(chefCount);
         generateChefs(chefCount);
+
         world.setContactListener(new WorldContactListener());
         controlledChef.notificationSetBounds("Down");
+        createPowerup();
 
 
     }
@@ -134,6 +140,7 @@ public class PlayScreen implements Screen {
     @Override
     public void show(){
         Gdx.input.setInputProcessor(stage);
+
     }
 
 
@@ -203,7 +210,7 @@ public class PlayScreen implements Screen {
                 xVelocity += 0.5f;
                 controlledChef.notificationSetBounds("Right");
             }
-            controlledChef.b2body.setLinearVelocity(xVelocity, yVelocity);
+            controlledChef.b2body.setLinearVelocity(xVelocity*movementSpeed, yVelocity*movementSpeed);
         } else {
             controlledChef.b2body.setLinearVelocity(0, 0);
         }
@@ -330,7 +337,7 @@ public class PlayScreen implements Screen {
                                 cds.setRecipe(recipe);
                                 controlledChef.putDown();
                                 currentOrder.orderComplete = true;
-                                if(scenarioMode == true){
+                                if(scenarioMode){
                                     if(orderNum >= totalOrders){
                                         scenarioComplete = Boolean.TRUE;
                                         game.endScreen.win=true;
@@ -522,6 +529,71 @@ public class PlayScreen implements Screen {
     }
 
     /**
+     * Generates a new powerup in playable area.
+     */
+    public void createPowerup(){
+        //Generate random location that is accessible
+        Rectangle centreIsland = new Rectangle(MainGame.TILE_SIZE*3/MainGame.PPM,MainGame.TILE_SIZE*3/MainGame.PPM,MainGame.TILE_SIZE*4/MainGame.PPM,MainGame.TILE_SIZE*4/MainGame.PPM);
+        float x=ThreadLocalRandom.current().nextFloat(MainGame.TILE_SIZE/MainGame.PPM,MainGame.TILE_SIZE*8/MainGame.PPM);
+        float y=ThreadLocalRandom.current().nextFloat(MainGame.TILE_SIZE/MainGame.PPM,MainGame.TILE_SIZE*6/MainGame.PPM);
+        while (centreIsland.contains(x,y)){
+            x=ThreadLocalRandom.current().nextFloat(MainGame.TILE_SIZE/MainGame.PPM,MainGame.TILE_SIZE*8/MainGame.PPM);
+            y=ThreadLocalRandom.current().nextFloat(MainGame.TILE_SIZE/MainGame.PPM,MainGame.TILE_SIZE*6/MainGame.PPM);
+        }
+
+
+
+        //Random powerup
+        int randomNum = ThreadLocalRandom.current().nextInt(0, totalPowerups);
+        Powerup newPowerup;
+        switch (randomNum){
+            case 0: //Speed Powerup
+                newPowerup=new SpeedPowerup(x,y);
+                break;
+            case 1:
+                newPowerup=new ResetOrderPowerup(x,y);
+                break;
+            default:
+                newPowerup=new SpeedPowerup(x,y);
+                break;
+        }
+        powerups.add(newPowerup);
+    }
+
+    /**
+     * Checks for any overlap of controlled chef and powerups. Removes and activates if so.
+     */
+    public void checkPowerupCollisions(){
+        Iterator itr = powerups.iterator();
+        while (itr.hasNext()){
+            Powerup currentPowerup = (Powerup) itr.next();
+            if (currentPowerup.collisionRect.overlaps(controlledChef.collisionRect)){
+                resetPowerups(); //So that powerups cannot be combined
+                activatePowerups(currentPowerup.getClass().getSimpleName());
+                itr.remove();
+            }
+        }
+    }
+    private void activatePowerups(String name){
+        switch (name){
+            case "SpeedPowerup":
+                movementSpeed=1.5f; //Increase speed by 50%
+                powerupFinish=timeSecondsCount+10f; //Set powerup active for 10 seconds
+                break;
+            case "ResetOrderPowerup":
+                if (currentOrder != null) {
+                    currentOrder.currentTime = 0f;
+                    powerupFinish = -1;
+                }
+                break;
+            default:
+                Gdx.app.log("Error","wrong name");
+        }
+    }
+    private void resetPowerups(){
+        movementSpeed=1f;
+    }
+    /**
 
      The render method updates the screen by calling the update method with the given delta time, and rendering the graphics of the game.
 
@@ -539,15 +611,23 @@ public class PlayScreen implements Screen {
         timeSeconds += Gdx.graphics.getDeltaTime();
         timeSecondsCount += Gdx.graphics.getDeltaTime();
 
-        if(Math.round(timeSecondsCount % 10) == 5 && createdOrder == Boolean.FALSE){
+        if (Math.round(timeSecondsCount % 10) == 5 && createdOrder == Boolean.FALSE){
             createdOrder = Boolean.TRUE;
             orderNum++;
             currentOrder=ordersInterface.newOrder(hud.getTime());
         }
         float period = 1f;
-        if(timeSeconds > period) {
+        if (timeSeconds > period) {
             timeSeconds -= period;
             hud.updateTime(scenarioComplete);
+            if (ThreadLocalRandom.current().nextInt(0, 15) == 0){
+                createPowerup();
+            }
+        }
+
+        if (timeSecondsCount > powerupFinish && powerupFinish > 0){
+            powerupFinish=-1;
+            resetPowerups();
         }
 
         Gdx.gl.glClear(1);
@@ -560,12 +640,16 @@ public class PlayScreen implements Screen {
         hud.stage.draw();
         game.batch.setProjectionMatrix(gamecam.combined);
         game.batch.begin();
-        //updateOrder();
         checkOrder();
+        checkPowerupCollisions();
 
+        for (Powerup powerup : powerups){
+            powerup.create(game.batch);
+        }
         for (Chef chef : chefList.allElems()){
             chef.create(game.batch);
         }
+
         controlledChef.drawNotification(game.batch);
         for (PlateStation plateStation : plateStations) {
             if (plateStation.getPlate().size() > 0){
@@ -609,6 +693,7 @@ public class PlayScreen implements Screen {
                 cdStation.draw(game.batch);
             }
         }
+
         game.batch.end();
         Gdx.gl.glEnable(GL20.GL_BLEND);
         if (currentOrder!=null){
