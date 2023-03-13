@@ -4,14 +4,22 @@ import Ingredients.FailedIngredient;
 import Ingredients.Ingredient;
 import Recipe.Recipe;
 import Recipe.CookedPizzaRecipe;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.World;
+import com.team13.piazzapanic.MainGame;
 
 public class Oven extends CookingStation{
 
     Recipe currentRecipe;
+    private Texture progBarBack;
+    private Texture progBarFill;
+    private Texture progBarBurn;
+    private float pizzaTimer=5;
 
     /**
      * Constructor for the class, initialises b2bodies.
@@ -25,6 +33,9 @@ public class Oven extends CookingStation{
         super(world, map, bdef, rectangle);
         fixture.setUserData(this);
         currentRecipe = null;
+        progBarBack = new Texture("UI/progBarBackground.png");
+        progBarFill = new Texture("UI/progBarMain.png");
+        progBarBurn = new Texture("UI/progBarBurn.png");
     }
 
     public Recipe getCurrentRecipe(){return currentRecipe;}
@@ -57,10 +68,47 @@ public class Oven extends CookingStation{
         } else if(currentRecipe != null){
             timer +=dt;
             //hardcoded to deal with cooking a pizza
-            if (timer > 5){
+            if (timer > pizzaTimer && (currentRecipe.getClass().getSimpleName().equals("UncookedPizzaRecipe"))){
+                Gdx.app.log("Pizza","Made");
+                timer = 0;
                 currentRecipe = new CookedPizzaRecipe(); //cooked pizza
+
+            }
+            else if (timer > pizzaTimer*2 && currentRecipe.getClass().getSimpleName().equals("CookedPizzaRecipe")){
+                Gdx.app.log("Pizza","Burnt");
+                currentRecipe = null;
+                currentIngredient = new FailedIngredient();
             }
         }
     }
+    @Override
+    public void drawProgressBar(SpriteBatch batch, String station){
+        float adjX = getX()- MainGame.TILE_SIZE/2/MainGame.PPM;
+        float adjY = getY()-MainGame.TILE_SIZE/2/MainGame.PPM;
+        if (currentIngredient != null&& !currentIngredient.getFailed()) {
+            if (!currentIngredient.isCompleted(station)){
+                float progress=timer/currentIngredient.getTimer(station);
+                batch.draw(progBarBack,adjX,adjY,MainGame.TILE_SIZE/MainGame.PPM,MainGame.TILE_SIZE/(4*MainGame.PPM));
+                batch.draw(progBarFill,adjX,adjY,MainGame.TILE_SIZE*progress/MainGame.PPM,MainGame.TILE_SIZE/(4*MainGame.PPM));
+            }
+            else{
+                float progress=timer/(currentIngredient.getTimer(station)*2);
+                batch.draw(progBarFill,adjX,adjY,MainGame.TILE_SIZE/MainGame.PPM,MainGame.TILE_SIZE/(4*MainGame.PPM));
+                batch.draw(progBarBurn,adjX,adjY,MainGame.TILE_SIZE*progress/MainGame.PPM,MainGame.TILE_SIZE/(4*MainGame.PPM));
+            }
+        }
+        if (currentRecipe != null){
+            if (timer < pizzaTimer && currentRecipe.getClass().getSimpleName().equals("UncookedPizzaRecipe")){
+                float progress=timer/pizzaTimer;
+                batch.draw(progBarBack,adjX,adjY,MainGame.TILE_SIZE/MainGame.PPM,MainGame.TILE_SIZE/(4*MainGame.PPM));
+                batch.draw(progBarFill,adjX,adjY,MainGame.TILE_SIZE*progress/MainGame.PPM,MainGame.TILE_SIZE/(4*MainGame.PPM));
+            }
+            else if (timer < pizzaTimer*2){
+                float progress=timer/(pizzaTimer*2);
+                batch.draw(progBarFill,adjX,adjY,MainGame.TILE_SIZE/MainGame.PPM,MainGame.TILE_SIZE/(4*MainGame.PPM));
+                batch.draw(progBarBurn,adjX,adjY,MainGame.TILE_SIZE*progress/MainGame.PPM,MainGame.TILE_SIZE/(4*MainGame.PPM));
+            }
+        }
 
+    }
 }

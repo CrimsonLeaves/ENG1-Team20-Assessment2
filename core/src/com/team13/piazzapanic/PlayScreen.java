@@ -674,6 +674,7 @@ public class PlayScreen implements Screen {
             Ingredient currentIngredient = choppingBoard.getCurrentIngredient();
             if (currentIngredient != null) {
                 currentIngredient.create(choppingBoard.getX(), choppingBoard.getY(), game.batch);
+                choppingBoard.drawProgressBar(game.batch,"Chopping Board");
             }
         }
 
@@ -681,6 +682,7 @@ public class PlayScreen implements Screen {
             Ingredient currentIngredient = pan.getCurrentIngredient();
             if (currentIngredient != null) {
                 currentIngredient.create(pan.getX(), pan.getY(), game.batch);
+                pan.drawProgressBar(game.batch,"Pan");
             }
         }
 
@@ -689,8 +691,10 @@ public class PlayScreen implements Screen {
             Recipe  currentRecipe = oven.getCurrentRecipe();
             if (currentIngredient != null) {
                 currentIngredient.create(oven.getX(),oven.getY(),game.batch);
+                oven.drawProgressBar(game.batch,"Oven");
             } else if (currentRecipe != null){
                 currentRecipe.create(oven.getX(),oven.getY(),game.batch);
+                oven.drawProgressBar(game.batch,"Oven");
             }
         }
 
