@@ -91,11 +91,13 @@ public class PlayScreen implements Screen {
     private float diffMult=1;
     private boolean moneyAdded;
     private final ShapeRenderer shapeRenderer;
+    //Powerups
     private ArrayList<Powerup> powerups;
-    private final int totalPowerups=3;
+    private final int totalPowerups=4;
     private float movementSpeed=1f;
     private float powerupFinish=-1f;
     private boolean instantCook=false;
+    private boolean noBurn=false;
 
     /**
      * PlayScreen constructor initializes the game instance, sets initial conditions for scenarioComplete and createdOrder,
@@ -384,13 +386,13 @@ public class PlayScreen implements Screen {
             chef.update(dt);
         }
         for (ChoppingBoard choppingBoard : choppingBoards) {
-            choppingBoard.update(dt, diffMult, instantCook);
+            choppingBoard.update(dt, diffMult, instantCook, noBurn);
         }
         for (Pan pan : pans) {
-            pan.update(dt, diffMult, instantCook);
+            pan.update(dt, diffMult, instantCook, noBurn);
         }
         for (Oven oven : ovens){
-            oven.update(dt, diffMult, instantCook);
+            oven.update(dt, diffMult, instantCook, noBurn);
         }
 
         world.step(1/60f, 6, 2);
@@ -563,6 +565,9 @@ public class PlayScreen implements Screen {
             case 2:
                 newPowerup = new InstantCookPowerup(x, y);
                 break;
+            case 3:
+                newPowerup = new NoBurnPowerup(x, y);
+                break;
             default:
                 newPowerup=new SpeedPowerup(x,y);
                 break;
@@ -600,6 +605,10 @@ public class PlayScreen implements Screen {
                 instantCook=true;
                 powerupFinish=timeSecondsCount+10f;
                 break;
+            case "NoBurnPowerup":
+                noBurn=true;
+                powerupFinish=timeSecondsCount+10f;
+                break;
             default:
                 Gdx.app.log("Error","wrong name");
         }
@@ -607,6 +616,7 @@ public class PlayScreen implements Screen {
     private void resetPowerups(){
         movementSpeed=1f;
         instantCook=false;
+        noBurn=false;
     }
     /**
 

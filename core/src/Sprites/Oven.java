@@ -54,7 +54,7 @@ public class Oven extends CookingStation{
     }
 
     @Override
-    public void update(float dt,float diff,boolean instantCook){
+    public void update(float dt,float diff,boolean instantCook, boolean noBurn){
         if(currentIngredient != null && !currentIngredient.getFailed()) {
             if (instantCook && !currentIngredient.isCompleted("Oven")){
                 timer=currentIngredient.getTimer("Oven");
@@ -64,6 +64,8 @@ public class Oven extends CookingStation{
                     && !currentIngredient.isCompleted("Oven")) {
                 currentIngredient.setCompleted("Oven");
                 timer = 0;
+            } else if (noBurn && currentIngredient.isCompleted("Oven")){
+                timer=0;
             } else if( timer > currentIngredient.getTimer("Oven")*2*diff
                     && currentIngredient.isCompleted("Oven")){
                 currentIngredient = new FailedIngredient();
@@ -79,8 +81,9 @@ public class Oven extends CookingStation{
                 timer = 0;
                 currentRecipe = new CookedPizzaRecipe(); //cooked pizza
 
-            }
-            else if (timer > pizzaTimer*2*diff && currentRecipe.getClass().getSimpleName().equals("CookedPizzaRecipe")){
+            } else if (noBurn && currentRecipe.getClass().getSimpleName().equals("CookedPizzaRecipe")){
+                timer=0;
+            } else if (timer > pizzaTimer*2*diff && currentRecipe.getClass().getSimpleName().equals("CookedPizzaRecipe")){
                 Gdx.app.log("Pizza","Burnt");
                 currentRecipe = null;
                 currentIngredient = new FailedIngredient();
@@ -89,30 +92,30 @@ public class Oven extends CookingStation{
     }
     @Override
     public void drawProgressBar(SpriteBatch batch, String station,float diff){
-        float adjX = getX()- MainGame.TILE_SIZE/2/MainGame.PPM;
+        float adjX = getX()- (MainGame.TILE_SIZE-1)/2/MainGame.PPM;
         float adjY = getY()-MainGame.TILE_SIZE/2/MainGame.PPM;
         if (currentIngredient != null&& !currentIngredient.getFailed()) {
             if (!currentIngredient.isCompleted(station)){
                 float progress=timer/currentIngredient.getTimer(station);
-                batch.draw(progBarBack,adjX,adjY,MainGame.TILE_SIZE/MainGame.PPM,MainGame.TILE_SIZE/(4*MainGame.PPM));
-                batch.draw(progBarFill,adjX,adjY,MainGame.TILE_SIZE*progress/MainGame.PPM,MainGame.TILE_SIZE/(4*MainGame.PPM));
+                batch.draw(progBarBack,adjX,adjY,(MainGame.TILE_SIZE-1)/MainGame.PPM,MainGame.TILE_SIZE/(4*MainGame.PPM));
+                batch.draw(progBarFill,adjX,adjY,(MainGame.TILE_SIZE-1)*progress/MainGame.PPM,MainGame.TILE_SIZE/(4*MainGame.PPM));
             }
             else{
                 float progress=timer/(currentIngredient.getTimer(station)*2*diff);
-                batch.draw(progBarFill,adjX,adjY,MainGame.TILE_SIZE/MainGame.PPM,MainGame.TILE_SIZE/(4*MainGame.PPM));
-                batch.draw(progBarBurn,adjX,adjY,MainGame.TILE_SIZE*progress/MainGame.PPM,MainGame.TILE_SIZE/(4*MainGame.PPM));
+                batch.draw(progBarFill,adjX,adjY,(MainGame.TILE_SIZE-1)/MainGame.PPM,MainGame.TILE_SIZE/(4*MainGame.PPM));
+                batch.draw(progBarBurn,adjX,adjY,(MainGame.TILE_SIZE-1)*progress/MainGame.PPM,MainGame.TILE_SIZE/(4*MainGame.PPM));
             }
         }
         if (currentRecipe != null){
             if (timer < pizzaTimer && currentRecipe.getClass().getSimpleName().equals("UncookedPizzaRecipe")){
                 float progress=timer/pizzaTimer;
-                batch.draw(progBarBack,adjX,adjY,MainGame.TILE_SIZE/MainGame.PPM,MainGame.TILE_SIZE/(4*MainGame.PPM));
-                batch.draw(progBarFill,adjX,adjY,MainGame.TILE_SIZE*progress/MainGame.PPM,MainGame.TILE_SIZE/(4*MainGame.PPM));
+                batch.draw(progBarBack,adjX,adjY,(MainGame.TILE_SIZE-1)/MainGame.PPM,MainGame.TILE_SIZE/(4*MainGame.PPM));
+                batch.draw(progBarFill,adjX,adjY,(MainGame.TILE_SIZE-1)*progress/MainGame.PPM,MainGame.TILE_SIZE/(4*MainGame.PPM));
             }
             else if (timer < pizzaTimer*2*diff){
                 float progress=timer/(pizzaTimer*2*diff);
-                batch.draw(progBarFill,adjX,adjY,MainGame.TILE_SIZE/MainGame.PPM,MainGame.TILE_SIZE/(4*MainGame.PPM));
-                batch.draw(progBarBurn,adjX,adjY,MainGame.TILE_SIZE*progress/MainGame.PPM,MainGame.TILE_SIZE/(4*MainGame.PPM));
+                batch.draw(progBarFill,adjX,adjY,(MainGame.TILE_SIZE-1)/MainGame.PPM,MainGame.TILE_SIZE/(4*MainGame.PPM));
+                batch.draw(progBarBurn,adjX,adjY,(MainGame.TILE_SIZE-1)*progress/MainGame.PPM,MainGame.TILE_SIZE/(4*MainGame.PPM));
             }
         }
 

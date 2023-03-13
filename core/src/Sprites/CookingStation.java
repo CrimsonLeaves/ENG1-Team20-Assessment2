@@ -38,7 +38,7 @@ public class CookingStation extends InteractiveTileObject{
         progBarBurn = new Texture("UI/progBarBurn.png");
     }
 
-    public void update(float dt,float diff,boolean instantCook){
+    public void update(float dt,float diff,boolean instantCook, boolean noBurn){
         if(currentIngredient != null && !currentIngredient.getFailed()) {
             if (instantCook && !currentIngredient.isCompleted("Chopping Board")){
                 timer=currentIngredient.getTimer("Chopping Board");
@@ -48,6 +48,8 @@ public class CookingStation extends InteractiveTileObject{
                 && !currentIngredient.isCompleted("Chopping Board")) {
                 currentIngredient.setCompleted("Chopping Board");
                 timer = 0;
+            } else if (noBurn && currentIngredient.isCompleted("Chopping Board")){
+                timer=0;
             } else if( timer > currentIngredient.getTimer("Chopping Board") *2*diff
                     && currentIngredient.isCompleted("Chopping Board")){
                 currentIngredient = new FailedIngredient();
@@ -56,17 +58,17 @@ public class CookingStation extends InteractiveTileObject{
     }
     public void drawProgressBar(SpriteBatch batch, String station,float diff){
         if (currentIngredient != null&& !currentIngredient.getFailed()) {
-            float adjX = getX()-MainGame.TILE_SIZE/2/MainGame.PPM;
+            float adjX = getX()-(MainGame.TILE_SIZE+1)/2/MainGame.PPM;
             float adjY = getY()-MainGame.TILE_SIZE/2/MainGame.PPM;
             if (!currentIngredient.isCompleted(station)){
                 float progress=timer/currentIngredient.getTimer(station);
-                batch.draw(progBarBack,adjX,adjY,MainGame.TILE_SIZE/MainGame.PPM,MainGame.TILE_SIZE/(4*MainGame.PPM));
-                batch.draw(progBarFill,adjX,adjY,MainGame.TILE_SIZE*progress/MainGame.PPM,MainGame.TILE_SIZE/(4*MainGame.PPM));
+                batch.draw(progBarBack,adjX,adjY,(MainGame.TILE_SIZE-1)/MainGame.PPM,MainGame.TILE_SIZE/(4*MainGame.PPM));
+                batch.draw(progBarFill,adjX,adjY,(MainGame.TILE_SIZE-1)*progress/MainGame.PPM,MainGame.TILE_SIZE/(4*MainGame.PPM));
             }
             else{
                 float progress=timer/(currentIngredient.getTimer(station)*2*diff);
-                batch.draw(progBarFill,adjX,adjY,MainGame.TILE_SIZE/MainGame.PPM,MainGame.TILE_SIZE/(4*MainGame.PPM));
-                batch.draw(progBarBurn,adjX,adjY,MainGame.TILE_SIZE*progress/MainGame.PPM,MainGame.TILE_SIZE/(4*MainGame.PPM));
+                batch.draw(progBarFill,adjX,adjY,(MainGame.TILE_SIZE-1)/MainGame.PPM,MainGame.TILE_SIZE/(4*MainGame.PPM));
+                batch.draw(progBarBurn,adjX,adjY,(MainGame.TILE_SIZE-1)*progress/MainGame.PPM,MainGame.TILE_SIZE/(4*MainGame.PPM));
             }
         }
 

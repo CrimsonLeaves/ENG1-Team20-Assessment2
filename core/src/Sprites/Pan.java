@@ -20,7 +20,7 @@ public class Pan extends CookingStation {
     }
 
     @Override
-    public void update(float dt, float diff,boolean instantCook){
+    public void update(float dt, float diff,boolean instantCook, boolean noBurn){
         if(currentIngredient != null && !currentIngredient.getFailed()) {
             if (instantCook && !currentIngredient.isCompleted("Pan")){
                 timer=currentIngredient.getTimer("Pan");
@@ -30,6 +30,8 @@ public class Pan extends CookingStation {
                 && !currentIngredient.isCompleted("Pan")) {
                 currentIngredient.setCompleted("Pan");
                 timer = 0;
+            } else if (noBurn && currentIngredient.isCompleted("Pan")){
+                timer=0;
             } else if( timer > currentIngredient.getTimer("Pan")*2*diff
                         && currentIngredient.isCompleted("Pan")){
                 currentIngredient = new FailedIngredient();
