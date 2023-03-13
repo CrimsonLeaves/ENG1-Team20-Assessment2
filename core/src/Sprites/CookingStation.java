@@ -38,8 +38,11 @@ public class CookingStation extends InteractiveTileObject{
         progBarBurn = new Texture("UI/progBarBurn.png");
     }
 
-    public void update(float dt,float diff){
+    public void update(float dt,float diff,boolean instantCook){
         if(currentIngredient != null && !currentIngredient.getFailed()) {
+            if (instantCook && !currentIngredient.isCompleted("Chopping Board")){
+                timer=currentIngredient.getTimer("Chopping Board");
+            }
             timer += dt;
             if (timer > currentIngredient.getTimer("Chopping Board")
                 && !currentIngredient.isCompleted("Chopping Board")) {

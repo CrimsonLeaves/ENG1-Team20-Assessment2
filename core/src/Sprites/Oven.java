@@ -54,8 +54,11 @@ public class Oven extends CookingStation{
     }
 
     @Override
-    public void update(float dt,float diff){
+    public void update(float dt,float diff,boolean instantCook){
         if(currentIngredient != null && !currentIngredient.getFailed()) {
+            if (instantCook && !currentIngredient.isCompleted("Oven")){
+                timer=currentIngredient.getTimer("Oven");
+            }
             timer += dt;
             if (timer > currentIngredient.getTimer("Oven")
                     && !currentIngredient.isCompleted("Oven")) {
@@ -66,6 +69,9 @@ public class Oven extends CookingStation{
                 currentIngredient = new FailedIngredient();
             }
         } else if(currentRecipe != null){
+            if (instantCook && currentRecipe.getClass().getSimpleName().equals("UncookedPizzaRecipe")){
+                timer=pizzaTimer;
+            }
             timer +=dt;
             //hardcoded to deal with cooking a pizza
             if (timer > pizzaTimer && (currentRecipe.getClass().getSimpleName().equals("UncookedPizzaRecipe"))){

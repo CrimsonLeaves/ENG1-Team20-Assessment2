@@ -20,8 +20,11 @@ public class Pan extends CookingStation {
     }
 
     @Override
-    public void update(float dt, float diff){
+    public void update(float dt, float diff,boolean instantCook){
         if(currentIngredient != null && !currentIngredient.getFailed()) {
+            if (instantCook && !currentIngredient.isCompleted("Pan")){
+                timer=currentIngredient.getTimer("Pan");
+            }
             timer += dt;
             if (timer > currentIngredient.getTimer("Pan")
                 && !currentIngredient.isCompleted("Pan")) {

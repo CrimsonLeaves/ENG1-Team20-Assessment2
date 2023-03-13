@@ -92,9 +92,10 @@ public class PlayScreen implements Screen {
     private boolean moneyAdded;
     private final ShapeRenderer shapeRenderer;
     private ArrayList<Powerup> powerups;
-    private final int totalPowerups=2;
+    private final int totalPowerups=3;
     private float movementSpeed=1f;
     private float powerupFinish=-1f;
+    private boolean instantCook=false;
 
     /**
      * PlayScreen constructor initializes the game instance, sets initial conditions for scenarioComplete and createdOrder,
@@ -383,13 +384,13 @@ public class PlayScreen implements Screen {
             chef.update(dt);
         }
         for (ChoppingBoard choppingBoard : choppingBoards) {
-            choppingBoard.update(dt, diffMult);
+            choppingBoard.update(dt, diffMult, instantCook);
         }
         for (Pan pan : pans) {
-            pan.update(dt, diffMult);
+            pan.update(dt, diffMult, instantCook);
         }
         for (Oven oven : ovens){
-            oven.update(dt, diffMult);
+            oven.update(dt, diffMult, instantCook);
         }
 
         world.step(1/60f, 6, 2);
@@ -554,10 +555,13 @@ public class PlayScreen implements Screen {
         Powerup newPowerup;
         switch (randomNum){
             case 0: //Speed Powerup
-                newPowerup=new SpeedPowerup(x,y);
+                newPowerup = new SpeedPowerup(x, y);
                 break;
             case 1:
-                newPowerup=new ResetOrderPowerup(x,y);
+                newPowerup = new ResetOrderPowerup(x, y);
+                break;
+            case 2:
+                newPowerup = new InstantCookPowerup(x, y);
                 break;
             default:
                 newPowerup=new SpeedPowerup(x,y);
@@ -592,12 +596,17 @@ public class PlayScreen implements Screen {
                     powerupFinish = -1;
                 }
                 break;
+            case "InstantCookPowerup":
+                instantCook=true;
+                powerupFinish=timeSecondsCount+10f;
+                break;
             default:
                 Gdx.app.log("Error","wrong name");
         }
     }
     private void resetPowerups(){
         movementSpeed=1f;
+        instantCook=false;
     }
     /**
 
