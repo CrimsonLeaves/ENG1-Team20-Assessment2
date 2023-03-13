@@ -38,20 +38,20 @@ public class CookingStation extends InteractiveTileObject{
         progBarBurn = new Texture("UI/progBarBurn.png");
     }
 
-    public void update(float dt){
+    public void update(float dt,float diff){
         if(currentIngredient != null && !currentIngredient.getFailed()) {
             timer += dt;
             if (timer > currentIngredient.getTimer("Chopping Board")
                 && !currentIngredient.isCompleted("Chopping Board")) {
                 currentIngredient.setCompleted("Chopping Board");
                 timer = 0;
-            } else if( timer > currentIngredient.getTimer("Chopping Board") *2
+            } else if( timer > currentIngredient.getTimer("Chopping Board") *2*diff
                     && currentIngredient.isCompleted("Chopping Board")){
                 currentIngredient = new FailedIngredient();
             }
         }
     }
-    public void drawProgressBar(SpriteBatch batch, String station){
+    public void drawProgressBar(SpriteBatch batch, String station,float diff){
         if (currentIngredient != null&& !currentIngredient.getFailed()) {
             float adjX = getX()-MainGame.TILE_SIZE/2/MainGame.PPM;
             float adjY = getY()-MainGame.TILE_SIZE/2/MainGame.PPM;
@@ -61,7 +61,7 @@ public class CookingStation extends InteractiveTileObject{
                 batch.draw(progBarFill,adjX,adjY,MainGame.TILE_SIZE*progress/MainGame.PPM,MainGame.TILE_SIZE/(4*MainGame.PPM));
             }
             else{
-                float progress=timer/(currentIngredient.getTimer(station)*2);
+                float progress=timer/(currentIngredient.getTimer(station)*2*diff);
                 batch.draw(progBarFill,adjX,adjY,MainGame.TILE_SIZE/MainGame.PPM,MainGame.TILE_SIZE/(4*MainGame.PPM));
                 batch.draw(progBarBurn,adjX,adjY,MainGame.TILE_SIZE*progress/MainGame.PPM,MainGame.TILE_SIZE/(4*MainGame.PPM));
             }

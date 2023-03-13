@@ -383,13 +383,13 @@ public class PlayScreen implements Screen {
             chef.update(dt);
         }
         for (ChoppingBoard choppingBoard : choppingBoards) {
-            choppingBoard.update(dt);
+            choppingBoard.update(dt, diffMult);
         }
         for (Pan pan : pans) {
-            pan.update(dt);
+            pan.update(dt, diffMult);
         }
         for (Oven oven : ovens){
-            oven.update(dt);
+            oven.update(dt, diffMult);
         }
 
         world.step(1/60f, 6, 2);
@@ -674,7 +674,7 @@ public class PlayScreen implements Screen {
             Ingredient currentIngredient = choppingBoard.getCurrentIngredient();
             if (currentIngredient != null) {
                 currentIngredient.create(choppingBoard.getX(), choppingBoard.getY(), game.batch);
-                choppingBoard.drawProgressBar(game.batch,"Chopping Board");
+                choppingBoard.drawProgressBar(game.batch,"Chopping Board", diffMult);
             }
         }
 
@@ -682,7 +682,7 @@ public class PlayScreen implements Screen {
             Ingredient currentIngredient = pan.getCurrentIngredient();
             if (currentIngredient != null) {
                 currentIngredient.create(pan.getX(), pan.getY(), game.batch);
-                pan.drawProgressBar(game.batch,"Pan");
+                pan.drawProgressBar(game.batch,"Pan", diffMult);
             }
         }
 
@@ -691,10 +691,10 @@ public class PlayScreen implements Screen {
             Recipe  currentRecipe = oven.getCurrentRecipe();
             if (currentIngredient != null) {
                 currentIngredient.create(oven.getX(),oven.getY(),game.batch);
-                oven.drawProgressBar(game.batch,"Oven");
+                oven.drawProgressBar(game.batch,"Oven", diffMult);
             } else if (currentRecipe != null){
                 currentRecipe.create(oven.getX(),oven.getY(),game.batch);
-                oven.drawProgressBar(game.batch,"Oven");
+                oven.drawProgressBar(game.batch,"Oven", diffMult);
             }
         }
 
