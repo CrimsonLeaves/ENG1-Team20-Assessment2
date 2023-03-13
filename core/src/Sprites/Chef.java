@@ -319,6 +319,12 @@ public class Chef extends Sprite {
     public Sprite peekStack(){
         return holding.peekFirst();
     }
+    public Deque<Sprite> getStack(){
+        return holding;
+    }
+    public int getHoldingSize(){
+        return holding.size();
+    }
 
     /**
 

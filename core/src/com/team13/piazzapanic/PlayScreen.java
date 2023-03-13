@@ -31,6 +31,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.Iterator;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
@@ -93,7 +94,7 @@ public class PlayScreen implements Screen {
     private final ShapeRenderer shapeRenderer;
     //Powerups
     private ArrayList<Powerup> powerups;
-    private final int totalPowerups=4;
+    private final int totalPowerups=5;
     private float movementSpeed=1f;
     private float powerupFinish=-1f;
     private boolean instantCook=false;
@@ -131,7 +132,7 @@ public class PlayScreen implements Screen {
 
         world = new World(new Vector2(0,0), true);
         new B2WorldCreator(world, map, this);
-        chefList = new CircularList<>(chefCount);
+        chefList = new CircularList<>(chefCount+1);
         generateChefs(chefCount);
 
         world.setContactListener(new WorldContactListener());
@@ -533,7 +534,7 @@ public class PlayScreen implements Screen {
     }
 
     /**
-     * Generates a new powerup in playable area.
+     * Generates a new random powerup in playable area (with a random location).
      */
     public void createPowerup(){
         //Generate random location that is accessible
@@ -545,7 +546,7 @@ public class PlayScreen implements Screen {
         float x = MainGame.TILE_SIZE/MainGame.PPM + r.nextFloat()*(xMax-min);
         float y = MainGame.TILE_SIZE/MainGame.PPM + r.nextFloat()*(yMax-min);
 
-        while (centreIsland.contains(x,y)){
+        while (centreIsland.contains(x, y)){
             x = MainGame.TILE_SIZE/MainGame.PPM + r.nextFloat()*(xMax-min);
             y = MainGame.TILE_SIZE/MainGame.PPM + r.nextFloat()*(yMax-min);
         }
@@ -568,6 +569,9 @@ public class PlayScreen implements Screen {
             case 3:
                 newPowerup = new NoBurnPowerup(x, y);
                 break;
+            case 4:
+                newPowerup = new ExtraChefPowerup(x, y);
+                break;
             default:
                 newPowerup=new SpeedPowerup(x,y);
                 break;
@@ -583,12 +587,23 @@ public class PlayScreen implements Screen {
         while (itr.hasNext()){
             Powerup currentPowerup = (Powerup) itr.next();
             if (currentPowerup.collisionRect.overlaps(controlledChef.collisionRect)){
-                resetPowerups(); //So that powerups cannot be combined
-                activatePowerups(currentPowerup.getClass().getSimpleName());
+                String powerupName = currentPowerup.getClass().getSimpleName();
+                if (powerupName.equals("ExtraChefPowerup") && chefList.getCurrentSize()==chefCount+1){
+                    powerupFinish=timeSecondsCount+15f;
+                }
+                else{
+                    resetPowerups(); //So that powerups cannot be combined
+                    activatePowerups(powerupName);
+                }
                 itr.remove();
             }
         }
     }
+
+    /**
+     * Enables the powerup's ability once collided
+     * @param name Simple class name of powerup
+     */
     private void activatePowerups(String name){
         switch (name){
             case "SpeedPowerup":
@@ -609,6 +624,12 @@ public class PlayScreen implements Screen {
                 noBurn=true;
                 powerupFinish=timeSecondsCount+10f;
                 break;
+            case "ExtraChefPowerup":
+                Chef powerChef = new Chef(this.world,MainGame.TILE_SIZE*7,MainGame.TILE_SIZE*7);
+                powerChef.update(Gdx.graphics.getDeltaTime());
+                chefList.addElement(powerChef);
+                powerupFinish=timeSecondsCount+15f;
+                break;
             default:
                 Gdx.app.log("Error","wrong name");
         }
@@ -617,6 +638,32 @@ public class PlayScreen implements Screen {
         movementSpeed=1f;
         instantCook=false;
         noBurn=false;
+
+        if (chefList.getCurrentSize() > chefCount){ //If powerchef is active
+            Chef removeChef = chefList.removeElement();
+            if (controlledChef.equals(removeChef)){ //Give control to a different chef
+                controlledChef = chefList.nextItem();
+            }
+            //Clear stack into another chef
+            Deque<Sprite> holding = removeChef.getStack();
+            Iterator<Sprite> holdingIterator = holding.descendingIterator();
+            while (holdingIterator.hasNext()) {
+                Sprite item = holdingIterator.next();
+                boolean placed=false;
+                int i=0;
+                while (!placed){
+                    Chef chef = chefList.allElems().get(i);
+                    if (chef.getHoldingSize() <3){
+                        chef.pickUp(item);
+                        placed=true;
+                    }
+                    i++;
+                }
+            }
+            world.destroyBody(removeChef.b2body);
+
+
+        }
     }
     /**
 
@@ -645,7 +692,7 @@ public class PlayScreen implements Screen {
         if (timeSeconds > period) {
             timeSeconds -= period;
             hud.updateTime(scenarioComplete);
-            if (ThreadLocalRandom.current().nextInt(0, (int)(15/diffMult)) == 0){
+            if (ThreadLocalRandom.current().nextInt(0, (int)(25/diffMult)) == 0){
                 createPowerup();
             }
         }

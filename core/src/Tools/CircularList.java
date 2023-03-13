@@ -33,6 +33,7 @@ public class CircularList<E> {
         E toReturn=elements.get(lastIndex);
         lastIndex--;
         currentSize--;
+        elements.remove(toReturn);
         return toReturn;
     }
 
@@ -49,7 +50,7 @@ public class CircularList<E> {
         if (Empty()) {return null;}
         return elements.get(currentIndex);
     }
-
+    public int getCurrentSize() {return currentSize;}
     public ArrayList<E> allElems(){
         return elements;
     }
