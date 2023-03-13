@@ -21,15 +21,15 @@ public class Orders {
      * @param startTime Time when order is placed
      * @return Order object of new order
      */
-    public Order newOrder(int startTime){
+    public Order newOrder(int startTime, float diff){
         int randomNum = ThreadLocalRandom.current().nextInt(0, totalRecipes);
         Texture burger_recipe = new Texture("Food/burger_recipe.png");
         Texture salad_recipe = new Texture("Food/salad_recipe.png");
         switch (randomNum){
             case 0:
-                return new Order(PlateStation.getRecipe("Burger"), burger_recipe,startTime,60f);
+                return new Order(PlateStation.getRecipe("Burger"), burger_recipe,startTime,60f*diff);
             case 1:
-                return new Order(PlateStation.getRecipe("Salad"), salad_recipe,startTime,60f);
+                return new Order(PlateStation.getRecipe("Salad"), salad_recipe,startTime,60f*diff);
             default:
                 return null;
         }

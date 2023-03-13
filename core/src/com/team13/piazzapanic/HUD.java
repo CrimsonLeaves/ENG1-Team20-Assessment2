@@ -132,17 +132,17 @@ public class HUD implements Disposable {
      * @param startTime The time at which the order is placed
      */
 
-    public int updateScore(Boolean scenarioComplete, Integer startTime){
+    public int updateScore(Boolean scenarioComplete, Integer startTime,float diff){
         int addScore;
         int currentTime;
 
         if(this.scenarioComplete == Boolean.FALSE){
             currentTime = (worldTimerM * 60) + worldTimerS;
-            if (currentTime - startTime <= 35) {
+            if (currentTime - startTime <= 30*diff) {
                 addScore = 100;
             }
             else{
-                addScore = 100 - (5 * (currentTime -startTime- 35));
+                addScore = 100 - (int)(5 * (currentTime -startTime- 30*diff));
                 if(addScore < 0){
                     addScore = 0;
                 }

@@ -430,7 +430,7 @@ public class PlayScreen implements Screen {
      */
     public void checkOrder(){
         if (scenarioComplete==Boolean.TRUE){
-            int totalMoney = hud.updateScore(Boolean.TRUE, currentOrder.startTime);
+            int totalMoney = hud.updateScore(Boolean.TRUE, currentOrder.startTime,diffMult);
             hud.updateOrder(Boolean.TRUE, 0);
             if (!moneyAdded){
                 moneyAdded=true;
@@ -444,7 +444,7 @@ public class PlayScreen implements Screen {
         if (currentOrder != null){
             if (currentOrder.orderComplete == Boolean.TRUE){
                 //orderNum++;
-                hud.updateScore(Boolean.FALSE, currentOrder.startTime);
+                hud.updateScore(Boolean.FALSE, currentOrder.startTime,diffMult);
                 currentOrder = null;
                 createdOrder = Boolean.FALSE;
                 hud.updateOrder(Boolean.FALSE, orderNum);
@@ -620,13 +620,13 @@ public class PlayScreen implements Screen {
         if (Math.round(timeSecondsCount % 10) == 5 && createdOrder == Boolean.FALSE){
             createdOrder = Boolean.TRUE;
             orderNum++;
-            currentOrder=ordersInterface.newOrder(hud.getTime());
+            currentOrder=ordersInterface.newOrder(hud.getTime(),diffMult);
         }
         float period = 1f;
         if (timeSeconds > period) {
             timeSeconds -= period;
             hud.updateTime(scenarioComplete);
-            if (ThreadLocalRandom.current().nextInt(0, 15) == 0){
+            if (ThreadLocalRandom.current().nextInt(0, (int)(15/diffMult)) == 0){
                 createPowerup();
             }
         }
