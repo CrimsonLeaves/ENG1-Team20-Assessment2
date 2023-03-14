@@ -137,7 +137,6 @@ public class PlayScreen implements Screen {
 
         world.setContactListener(new WorldContactListener());
         controlledChef.notificationSetBounds("Down");
-        createPowerup();
 
 
     }
@@ -145,6 +144,7 @@ public class PlayScreen implements Screen {
     @Override
     public void show(){
         Gdx.input.setInputProcessor(stage);
+
 
     }
 
@@ -503,6 +503,7 @@ public class PlayScreen implements Screen {
         scenarioComplete = Boolean.FALSE;
         createdOrder = Boolean.FALSE;
         playerRep.reset();
+        chefCount=game.getChefCount();
         for (Chef chef : chefList.allElems()){
             if (chef.getTexture() != null) {chef.getTexture().dispose();}
             world.destroyBody(chef.b2body);

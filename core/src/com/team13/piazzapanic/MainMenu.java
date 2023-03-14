@@ -13,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -27,6 +28,8 @@ public class MainMenu implements Screen {
     private final OrthographicCamera camera;
     private final Viewport viewport;
     Skin skin;
+    Image titleImage;
+    Label moneyLabel;
 
 
     public MainMenu(MainGame game){
@@ -39,6 +42,7 @@ public class MainMenu implements Screen {
         Gdx.input.setInputProcessor(stage);
         spriteBatch = new SpriteBatch();
         skin = new Skin(Gdx.files.internal("skin/glassy-ui.json"));
+        titleImage= new Image(new Texture("UI/TitleText.png"));
 
     }
     @Override
@@ -52,7 +56,7 @@ public class MainMenu implements Screen {
         backgroundSprite.setPosition(0, 0);
         camera.position.set(viewport.getWorldWidth() / 2, viewport.getWorldHeight() / 2, 0);
 
-        table.setDebug(true);
+        table.setDebug(false);
 
 
         stage.addActor(table);
@@ -68,7 +72,8 @@ public class MainMenu implements Screen {
         final SelectBox<String> difficultyBox= new SelectBox<String>(skin);
         difficultyBox.setItems(new String[]{"Easy","Medium","Hard"});
         //Money
-        Label moneyLabel = new Label(("Money: "+game.getMoney()),skin);
+        table.removeActor(moneyLabel);
+        moneyLabel = new Label("Money: "+game.getMoney(),skin);
 
         scenarioMode.getLabel().setFontScale(0.5f);
         endlessMode.getLabel().setFontScale(0.5f);
@@ -85,6 +90,9 @@ public class MainMenu implements Screen {
         buttonTable.row().padTop(10);
         buttonTable.add(difficultyLabel).padRight(10);
         buttonTable.add(difficultyBox).padLeft(10).width(buttonWidth).height(buttonHeight/3);
+
+        table.add(titleImage).size(320,100).padBottom(20);
+        table.row();
         table.add(buttonTable).center().center();
         table.row();
         table.add(moneyLabel).bottom().left();
@@ -112,6 +120,13 @@ public class MainMenu implements Screen {
                 game.setScreen(game.startScreen);
             }
         });
+        shop.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                game.isShopScreen=true;
+                game.setScreen(game.shopScreen);
+            }
+        });
 
         difficultyBox.addListener(new ChangeListener() {
             @Override
@@ -129,6 +144,8 @@ public class MainMenu implements Screen {
     public void render(float delta) {
         Gdx.gl.glClearColor(0, 0.5f, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        ScreenUtils.clear(0, 0.5f, 0, 1);
+        moneyLabel.setText("Money: "+game.getMoney());
         camera.update();
         game.batch.setProjectionMatrix(camera.combined);
         game.batch.begin();

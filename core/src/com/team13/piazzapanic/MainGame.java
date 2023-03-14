@@ -34,23 +34,34 @@ public class MainGame extends Game {
 	public SpriteBatch batch;
 	public boolean isPlayScreen;
 	public boolean isEndScreen;
+	public boolean isShopScreen;
 	public boolean inGame;
 	public boolean scenarioMode;
 	public String difficulty;
+	private int money;
+	//Chef counts
+	private int chefCount;
+	private int unlockedChefs;
+	private int maxChefs;
+	//Screens
 	public PlayScreen playScreen;
 	public StartScreen startScreen;
 	public EndScreen endScreen;
 	public MainMenu mainMenu;
-	private int money;
+	public ShopScreen shopScreen;
+
 
 	public MainGame(){
-
+		isShopScreen = false;
 		isPlayScreen = false;
 		isEndScreen = false;
 		inGame = false;
 		scenarioMode = false;
 		difficulty="Easy";
-		money=0;
+		money=1000;
+		chefCount=3;
+		unlockedChefs=3;
+		maxChefs=5;
 	}
 	@Override
 	public void create() {
@@ -59,10 +70,20 @@ public class MainGame extends Game {
 		playScreen = new PlayScreen(this);
 		endScreen = new EndScreen(this);
 		mainMenu = new MainMenu(this);
+		shopScreen = new ShopScreen(this);
 
 	}
 	public int getMoney() {return money;}
 	public void addMoney(int money) {this.money+=money;}
+	//ChefCount getter and setter
+	public int getChefCount() {return chefCount;}
+	public void setChefCount(int chefCount) {this.chefCount=chefCount;}
+	//UnlockedChefs getter and setter
+	public int getUnlockedChefs() {return unlockedChefs;}
+	public void setUnlockedChefs(int unlockedChefs) {this.unlockedChefs=unlockedChefs;}
+	//MaxChefs getter
+	public int getMaxChefs() {return maxChefs;}
+
 
 	@Override
 	public void render() {
@@ -79,8 +100,9 @@ public class MainGame extends Game {
 			} else {
 				setScreen(startScreen);
 			}
-		}
-		else {
+		} else if(isShopScreen){
+			setScreen(shopScreen);
+		} else {
 			setScreen(mainMenu);
 		}
 	}
