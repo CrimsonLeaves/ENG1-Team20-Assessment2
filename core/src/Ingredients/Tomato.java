@@ -8,9 +8,14 @@ import java.util.Map;
 public class Tomato extends Ingredient{
 
     /**
-     * The Tomato class represents a specific type of ingredient in the game, specifically tomatoes.
-     * It extends the {@link Ingredient} class and has a preparation time and cooking time.
+     * The Tomato class represents a specific type of ingredient in the game, specifically tomato.
+     * It extends the {@link Ingredient} class and has dictionaries for timers
+     * and which preparation steps are completed.
      * The Tomato class sets up an ArrayList of textures for its different skins.
+     *
+     * @param timers    A dictionary with keys of the cooking stations and values of their relative cooking timers
+     * @param completed A dictionary with keys of the cooking stations and values representing if the ingredient
+     *                  requires preparing at that station
      */
 
     public Tomato(Map<String, Float> timers, Map<String, Boolean> completed) {
