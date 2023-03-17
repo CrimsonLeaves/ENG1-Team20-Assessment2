@@ -91,6 +91,7 @@ public class ShopScreen implements Screen {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 game.isShopScreen = false;
+                game.mainMenu.resetScreen();
                 game.setScreen(game.mainMenu);
             }
         });
@@ -190,8 +191,8 @@ public class ShopScreen implements Screen {
     @Override
     public void resize(int width, int height) {
         viewport.update(width, height);
+        stage.getViewport().setScreenBounds((width-viewport.getScreenWidth())/2,(height-viewport.getScreenHeight())/2,viewport.getScreenWidth(),viewport.getScreenHeight());
         camera.position.set(viewport.getWorldWidth() / 2, viewport.getWorldHeight() / 2, 0);
-        stage.getViewport().update(width, height);
 
     }
     @Override
