@@ -62,13 +62,22 @@ It's a fun little game with serious software engineering principles.
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- ACKNOWLEDGMENTS -->
-## Contributers
+## Assessment 1 Contributers:
 
 * [Bailey Findlay](https://github.com/bailey-f)
 * [Chenxi Wu](https://github.com/Chenxwu)
 * [Yuxin Wu](https://github.com/Hereward1883)
 * [Elizabeth Edwards](https://github.com/lizzy02g)
 * [Alex McRobie](https://github.com/PovRos)
+
+## Assessment 2 Contributers:
+
+* [Megan Bishop (CrimsonLeaves)](https://github.com/CrimsonLeaves)
+* [Nathan Sweeney (nsweeney02)](https://github.com/nsweeney02)
+* [Tommy George (Pangreor)](https://github.com/Pangreor)
+* [Lauren Victoria (laurenvictoriaa)](https://github.com/laurenvictoriaa)
+* [Bartek Grudzinski (Tek191)](https://github.com/Tek191)
+* [Davron Imamov (DavronImam)](https://github.com/DavronImam)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
