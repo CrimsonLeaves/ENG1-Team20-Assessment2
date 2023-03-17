@@ -22,13 +22,7 @@ public class pickUpTest {
     public void test_fullStack(){
         //Tests if nothing will be added to the stack if it is already full.
         //Create a new stack and fill it (so it contains 3 items).
-        /*
-        TomatoStation tomatoTile = new TomatoStation(new World(new Vector2(), true), new TiledMap(), new BodyDef(), new Rectangle());
-        ArrayDeque<Object> holding = new ArrayDeque<>();
-        for (int i=0; i<3; i++) {
-            holding.addFirst(tomatoTile.getIngredient());
-        }
-        */
+        Chef c = new Chef(new World(new Vector2(0, 0), true), 0, 0);
 
 
     }
