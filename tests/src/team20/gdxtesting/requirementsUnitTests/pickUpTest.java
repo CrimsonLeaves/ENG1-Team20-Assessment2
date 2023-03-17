@@ -1,4 +1,5 @@
 package team20.gdxtesting.requirementsUnitTests;
+import Sprites.Chef;
 import Sprites.TomatoStation;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
@@ -23,11 +24,8 @@ public class pickUpTest {
         //Tests if nothing will be added to the stack if it is already full.
         //Create a new stack and fill it (so it contains 3 items).
         /*
-        TomatoStation tomatoTile = new TomatoStation(new World(new Vector2(), true), new TiledMap(), new BodyDef(), new Rectangle());
-        ArrayDeque<Object> holding = new ArrayDeque<>();
-        for (int i=0; i<3; i++) {
-            holding.addFirst(tomatoTile.getIngredient());
-        }
+        //won't let me create a new instance of chef.
+        Chef c = new Chef(new World(new Vector2(0, 0), true), 0, 0);
         */
 
 
@@ -35,6 +33,8 @@ public class pickUpTest {
     @Test
     public void test_addStack(){
         //Add a valid item to the stack.
+
+
     }
     @Test
     public void test_invalidAddStack(){
