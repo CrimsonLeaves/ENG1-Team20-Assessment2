@@ -1,5 +1,4 @@
 package team20.gdxtesting.requirementsUnitTests;
-import Sprites.Chef;
 import Sprites.TomatoStation;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
@@ -23,18 +22,14 @@ public class pickUpTest {
     public void test_fullStack(){
         //Tests if nothing will be added to the stack if it is already full.
         //Create a new stack and fill it (so it contains 3 items).
-        /*
-        //won't let me create a new instance of chef.
-        Chef c = new Chef(new World(new Vector2(0, 0), true), 0, 0);
-        */
+        //Currently causing error: com.badlogic.gdx.utils.SharedLibraryLoadRuntimeException: Couldn't load shared library 'gdx-box2d64.dll'
+        //Chef c = new Chef(new World(new Vector2(0, 0), true), 0, 0);
 
 
     }
     @Test
     public void test_addStack(){
         //Add a valid item to the stack.
-
-
     }
     @Test
     public void test_invalidAddStack(){
