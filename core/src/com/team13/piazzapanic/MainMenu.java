@@ -30,6 +30,7 @@ public class MainMenu implements Screen {
     Skin skin;
     Image titleImage;
     Label moneyLabel;
+    Table table;
 
 
     public MainMenu(MainGame game){
@@ -45,9 +46,14 @@ public class MainMenu implements Screen {
         titleImage= new Image(new Texture("UI/TitleText.png"));
 
     }
+    public void resetScreen(){
+        table.clear();
+        table.remove();
+        stage.clear();
+    }
     @Override
     public void show() {
-        Table table = new Table();
+        table = new Table();
         Table buttonTable = new Table();
         table.setFillParent(true);
         Gdx.input.setInputProcessor(stage);
@@ -157,7 +163,11 @@ public class MainMenu implements Screen {
 
     @Override
     public void resize(int width, int height) {
+        if (viewport.getScreenHeight()+viewport.getLeftGutterWidth()+ viewport.getRightGutterWidth() != width || viewport.getScreenWidth()+ viewport.getBottomGutterHeight()+ viewport.getTopGutterHeight()  != height){
+            resetScreen();
+        }
         viewport.update(width, height);
+        stage.getViewport().setScreenBounds((width-viewport.getScreenWidth())/2,(height-viewport.getScreenHeight())/2,viewport.getScreenWidth(),viewport.getScreenHeight());
         camera.position.set(viewport.getWorldWidth() / 2, viewport.getWorldHeight() / 2, 0);
     }
 
