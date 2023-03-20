@@ -14,7 +14,10 @@ eclipse.project {
 
 dependencies {
     // Use JUnit 4 for testing.
-    testImplementation('junit:junit:4.13')
+    testImplementation('junit:junit:4.13.2')
+    //Box 2D dependencies
+    testImplementation "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
+    testImplementation "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
 }
 
 test {
