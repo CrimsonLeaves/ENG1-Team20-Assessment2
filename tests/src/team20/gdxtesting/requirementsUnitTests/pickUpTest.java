@@ -1,15 +1,22 @@
 package team20.gdxtesting.requirementsUnitTests;
+import Sprites.Chef;
 import Sprites.TomatoStation;
+import Tools.B2WorldCreator;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.World;
+import com.team13.piazzapanic.PlayScreen;
+import jdk.jfr.internal.tool.Main;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import team20.gdxtesting.GdxTestRunner;
-
+import Sprites.Chef;
+import com.team13.piazzapanic.MainGame;
 import java.util.ArrayDeque;
 
 import static org.junit.Assert.assertTrue;
@@ -18,12 +25,14 @@ import static org.junit.Assert.assertTrue;
 //Test requirement: CARRYING_STACK
 //Specifically testing if the ingredients can be added to the stack.
 public class pickUpTest {
+
     @Test
     public void test_fullStack(){
         //Tests if nothing will be added to the stack if it is already full.
         //Create a new stack and fill it (so it contains 3 items).
-        //Currently causing error: com.badlogic.gdx.utils.SharedLibraryLoadRuntimeException: Couldn't load shared library 'gdx-box2d64.dll'
-        //Chef c = new Chef(new World(new Vector2(0, 0), true), 0, 0);
+        Chef c = new Chef(new World(new Vector2(0,0),true), 0, 0);
+
+
 
 
     }
