@@ -6,6 +6,7 @@ import Sprites.*;
 import Recipe.Order;
 import Sprites.SpeedPowerup;
 import Tools.B2WorldCreator;
+import Tools.ChefDataStore;
 import Tools.CircularList;
 import Tools.WorldContactListener;
 
@@ -13,6 +14,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -25,8 +27,10 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
@@ -92,6 +96,7 @@ public class PlayScreen implements Screen {
     private float diffMult=1;
     private boolean moneyAdded;
     private final ShapeRenderer shapeRenderer;
+    private boolean loadGame = true;
     //Powerups
     private ArrayList<Powerup> powerups;
     private final int totalPowerups=5;
@@ -144,8 +149,6 @@ public class PlayScreen implements Screen {
     @Override
     public void show(){
         Gdx.input.setInputProcessor(stage);
-
-
     }
 
 
@@ -405,13 +408,26 @@ public class PlayScreen implements Screen {
      * @param chefCount Number of chefs to create in game
      */
     public void generateChefs(int chefCount){
-        float locX=31.5F;
-        float locY=38;
-        float spacing = 96.5F/(chefCount-1);
-        for (int i=0;i<chefCount;i++){
-            Chef currentChef = new Chef(this.world,locX,locY);
-            chefList.addElement(currentChef);
-            locX+=spacing;
+        if (!loadGame){
+            float locX=31.5F;
+            float locY=38;
+            float spacing = 96.5F/(chefCount-1);
+            for (int i=0;i<chefCount;i++){
+                Chef currentChef = new Chef(this.world,locX,locY);
+                chefList.addElement(currentChef);
+                locX+=spacing;
+            }
+        }
+        else{
+            Json json = new Json();
+            FileHandle file = Gdx.files.local("chefData.json");
+            String chefRaw = file.readString();
+            ArrayList<ChefDataStore> chefData = json.fromJson(ArrayList.class, chefRaw);
+            for (ChefDataStore chef : chefData){
+                Chef currentChef = new Chef(this.world,chef.getX()*MainGame.PPM,chef.getY()*MainGame.PPM);
+                //Gdx.app.log("Chef Coord",""+chef.getX()+", "+chef.getY());
+                chefList.addElement(currentChef);
+            }
         }
         controlledChef=chefList.nextItem();
     }
@@ -532,6 +548,20 @@ public class PlayScreen implements Screen {
             default:
                 break;
         }
+    }
+    public void saveGame(){
+        //Save chef locations
+        Gdx.app.log("Game","Saved");
+        ArrayList<ChefDataStore> chefData = new ArrayList<>();
+        for (Chef chef : chefList.allElems()){
+            Gdx.app.log("Chef Coord",""+chef.b2body.getPosition().x+", "+chef.b2body.getPosition().y);
+            ChefDataStore currentChefData = new ChefDataStore(chef.b2body.getPosition().x,  chef.b2body.getPosition().y);
+            chefData.add(currentChefData);
+        }
+        Json json = new Json();
+        String chefDataString = json.toJson(chefData);
+        FileHandle file = Gdx.files.local("chefData.json");
+        file.writeString(chefDataString, false);
     }
 
     /**
@@ -804,7 +834,7 @@ public class PlayScreen implements Screen {
 
     @Override
     public void pause(){
-
+        saveGame();
     }
 
     @Override
@@ -819,6 +849,7 @@ public class PlayScreen implements Screen {
 
     @Override
     public void dispose(){
+
         map.dispose();
         renderer.dispose();
         world.dispose();

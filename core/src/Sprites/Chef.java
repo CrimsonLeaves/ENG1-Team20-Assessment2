@@ -2,6 +2,7 @@ package Sprites;
 
 import Ingredients.*;
 import Recipe.Recipe;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -256,7 +257,6 @@ public class Chef extends Sprite {
         CircleShape shape = new CircleShape();
         shape.setRadius(4.5f / MainGame.PPM);
         shape.setPosition(new Vector2(shape.getPosition().x + (0.5f / MainGame.PPM), shape.getPosition().y - (5.5f / MainGame.PPM)));
-
 
         fdef.shape = shape;
         b2body.createFixture(fdef).setUserData(this);
