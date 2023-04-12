@@ -2,6 +2,7 @@ package com.team13.piazzapanic;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.Game;
 
@@ -49,6 +50,7 @@ public class MainGame extends Game {
 	public EndScreen endScreen;
 	public MainMenu mainMenu;
 	public ShopScreen shopScreen;
+	Preferences prefs;
 
 
 	public MainGame(){
@@ -57,11 +59,12 @@ public class MainGame extends Game {
 		isEndScreen = false;
 		inGame = false;
 		scenarioMode = false;
-		difficulty="Easy";
-		money=1000;
-		chefCount=3;
-		unlockedChefs=3;
-		maxChefs=5;
+		difficulty = "Easy";
+
+		money = 0;
+		chefCount = 3;
+		unlockedChefs = 3;
+		maxChefs = 5;
 	}
 	@Override
 	public void create() {
@@ -71,16 +74,44 @@ public class MainGame extends Game {
 		endScreen = new EndScreen(this);
 		mainMenu = new MainMenu(this);
 		shopScreen = new ShopScreen(this);
+		prefs = Gdx.app.getPreferences("gameData");
+		money = prefs.getInteger("money", 0);
+		chefCount = prefs.getInteger("chefCount", 3);
+		unlockedChefs = prefs.getInteger("unlockedChefs", 3);
 
 	}
-	public int getMoney() {return money;}
-	public void addMoney(int money) {this.money+=money;}
+	public int getMoney() {
+		prefs.getInteger("money", 0);
+		return money;
+	}
+	public void addMoney(int money) {
+		prefs = Gdx.app.getPreferences("gameData");
+		this.money+=money;
+		prefs.putInteger("money",this.money);
+		prefs.flush();
+	}
 	//ChefCount getter and setter
-	public int getChefCount() {return chefCount;}
-	public void setChefCount(int chefCount) {this.chefCount=chefCount;}
+	public int getChefCount() {
+		chefCount = prefs.getInteger("chefCount", 3);
+		return chefCount;
+	}
+	public void setChefCount(int chefCount) {
+		prefs = Gdx.app.getPreferences("gameData");
+		this.chefCount=chefCount;
+		prefs.putInteger("chefCount",this.chefCount);
+		prefs.flush();
+	}
 	//UnlockedChefs getter and setter
-	public int getUnlockedChefs() {return unlockedChefs;}
-	public void setUnlockedChefs(int unlockedChefs) {this.unlockedChefs=unlockedChefs;}
+	public int getUnlockedChefs() {
+		unlockedChefs = prefs.getInteger("unlockedChefs", 3);
+		return unlockedChefs;
+	}
+	public void setUnlockedChefs(int unlockedChefs) {
+		prefs = Gdx.app.getPreferences("gameData");
+		this.unlockedChefs=unlockedChefs;
+		prefs.putInteger("unlockedChefs",this.unlockedChefs);
+		prefs.flush();
+	}
 	//MaxChefs getter
 	public int getMaxChefs() {return maxChefs;}
 
