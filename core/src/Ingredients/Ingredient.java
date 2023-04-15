@@ -83,6 +83,21 @@ public abstract class Ingredient extends Sprite {
     public Float getTimer(String station){
         return timers.get(station);
     }
+    public Map<String, Float> getTimers(){
+        return timers;
+    }
+
+    public int getSkin() {
+        return skin;
+    }
+
+    public void setSkin(int skin) {
+        this.skin = skin;
+    }
+
+    public Map<String, Boolean> getCompleted() {
+        return completed;
+    }
 
     /**
      * Returns the boolean value of the input station

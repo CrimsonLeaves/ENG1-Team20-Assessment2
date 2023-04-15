@@ -12,6 +12,10 @@ public class Reputation {
         this.maxRep=maxRep;
         rep=maxRep;
     }
+    public Reputation(){
+        maxRep=3;
+        rep=3;
+    }
 
     /**
      * Gets current reputation
@@ -20,6 +24,9 @@ public class Reputation {
     public int getRep(){
         return  rep;
     }
+    public int getMaxRep() {return maxRep;}
+    public void setMaxRep(int maxRep) {this.maxRep = maxRep;}
+    public void setRep(int rep) {this.rep = rep;}
 
     /**
      * Removes 1 reputation point and checks if game should end

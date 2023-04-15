@@ -49,7 +49,7 @@ public class Chef extends Sprite {
 
     private Fixture whatTouching;
 
-    private final Deque<Sprite> holding;
+    private Deque<Sprite> holding;
 
     private Boolean userControlChef;
 
@@ -321,6 +321,9 @@ public class Chef extends Sprite {
     }
     public Deque<Sprite> getStack(){
         return holding;
+    }
+    public void setStack(Deque<Sprite> holding){
+        this.holding=holding;
     }
     public int getHoldingSize(){
         return holding.size();

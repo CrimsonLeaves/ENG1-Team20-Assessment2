@@ -75,7 +75,8 @@ public class HUD implements Disposable {
 
         for (int i=0; i<3;i++){
             Image heart = new Image(new Texture(Gdx.files.internal("UI/heart.png")));
-            table.add(heart);
+            table.bottom().left();
+            table.add(heart).padLeft(10);
             lives[i]=heart;
         }
         table.left().top();
@@ -124,7 +125,28 @@ public class HUD implements Disposable {
         stage.addActor(table);
 
     }
+    public void setHud(float timeSeconds,int score, int rep){
+        worldTimerM=(int)timeSeconds/60;
+        worldTimerS=(int)timeSeconds%60;
+        this.score=score;
+        for (int i=3-rep; i>0;i--){
+            lives[i].setVisible(false);
+            lives[i].remove();
+        }
+        table.left().top();
+        if(worldTimerS < 10){
+            timeStr = String.format("%d", worldTimerM) + ":0" + String.format("%d", worldTimerS);
+        }
+        else {
+            timeStr = String.format("%d", worldTimerM) + ":" + String.format("%d", worldTimerS);
+        }
+        timeLabel.setText(timeStr);
+        stage.addActor(table);
 
+        table.left().top();
+        scoreLabel.setText(String.format("%d", score));
+        stage.addActor(table);
+    }
     /**
      * Calculates the user's score per order and updates the label.
      *

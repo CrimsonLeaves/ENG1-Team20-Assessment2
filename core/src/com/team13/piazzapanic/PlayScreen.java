@@ -1,14 +1,11 @@
 package com.team13.piazzapanic;
 
-import Ingredients.Ingredient;
+import Ingredients.*;
 import Recipe.*;
 import Sprites.*;
 import Recipe.Order;
 import Sprites.SpeedPowerup;
-import Tools.B2WorldCreator;
-import Tools.ChefDataStore;
-import Tools.CircularList;
-import Tools.WorldContactListener;
+import Tools.*;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -34,10 +31,7 @@ import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
-import java.util.ArrayList;
-import java.util.Deque;
-import java.util.Iterator;
-import java.util.Random;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -97,6 +91,7 @@ public class PlayScreen implements Screen {
     private boolean moneyAdded;
     private final ShapeRenderer shapeRenderer;
     private boolean loadGame = true;
+    private ArrayList<ChefDataStore> chefData;
     //Powerups
     private ArrayList<Powerup> powerups;
     private final int totalPowerups=5;
@@ -138,6 +133,7 @@ public class PlayScreen implements Screen {
         world = new World(new Vector2(0,0), true);
         new B2WorldCreator(world, map, this);
         chefList = new CircularList<>(chefCount+1);
+        if (loadGame){loadGame();}
         generateChefs(chefCount);
 
         world.setContactListener(new WorldContactListener());
@@ -408,7 +404,7 @@ public class PlayScreen implements Screen {
      * @param chefCount Number of chefs to create in game
      */
     public void generateChefs(int chefCount){
-        if (!loadGame){
+        if (!loadGame || chefData==null){
             float locX=31.5F;
             float locY=38;
             float spacing = 96.5F/(chefCount-1);
@@ -419,13 +415,10 @@ public class PlayScreen implements Screen {
             }
         }
         else{
-            Json json = new Json();
-            FileHandle file = Gdx.files.local("chefData.json");
-            String chefRaw = file.readString();
-            ArrayList<ChefDataStore> chefData = json.fromJson(ArrayList.class, chefRaw);
             for (ChefDataStore chef : chefData){
                 Chef currentChef = new Chef(this.world,chef.getX()*MainGame.PPM,chef.getY()*MainGame.PPM);
-                //Gdx.app.log("Chef Coord",""+chef.getX()+", "+chef.getY());
+                Deque<Sprite> holding = loadIngredients(chef.getHolding());
+                currentChef.setStack(holding);
                 chefList.addElement(currentChef);
             }
         }
@@ -517,51 +510,181 @@ public class PlayScreen implements Screen {
      */
     public void resetGame(){
         scenarioComplete = Boolean.FALSE;
-        createdOrder = Boolean.FALSE;
         playerRep.reset();
-        chefCount=game.getChefCount();
         for (Chef chef : chefList.allElems()){
             if (chef.getTexture() != null) {chef.getTexture().dispose();}
             world.destroyBody(chef.b2body);
         }
         chefList = new CircularList<Chef>(chefCount);
-        generateChefs(chefCount);
-        controlledChef.notificationSetBounds("Down");
-        timeSeconds = 0f;
-        timeSecondsCount = 0f;
-        orderNum=0;
-        game.isEndScreen =false;
-        currentOrder=null;
-        //hud.reset();
         hud.dispose();
         hud=new HUD(game.batch);
-        switch (game.difficulty){
-            case "Easy":
-                diffMult=1.5f;
-                break;
-            case "Medium":
-                diffMult=1;
-                break;
-            case "Hard":
-                diffMult=0.67f;
-                break;
-            default:
-                break;
+        if (loadGame){loadGame();}
+        else{
+            scenarioComplete = Boolean.FALSE;
+            createdOrder = Boolean.FALSE;
+            chefCount=game.getChefCount();
+            timeSeconds = 0f;
+            timeSecondsCount = 0f;
+            orderNum=0;
+            currentOrder=null;
+            switch (game.difficulty){
+                case "Easy":
+                    diffMult=1.5f;
+                    break;
+                case "Medium":
+                    diffMult=1;
+                    break;
+                case "Hard":
+                    diffMult=0.67f;
+                    break;
+                default:
+                    break;
+            }
         }
+        generateChefs(chefCount);
+        controlledChef.notificationSetBounds("Down");
+
+        game.isEndScreen =false;
+
+
+
     }
     public void saveGame(){
         //Save chef locations
         Gdx.app.log("Game","Saved");
+        //Generate chefData
         ArrayList<ChefDataStore> chefData = new ArrayList<>();
         for (Chef chef : chefList.allElems()){
-            Gdx.app.log("Chef Coord",""+chef.b2body.getPosition().x+", "+chef.b2body.getPosition().y);
-            ChefDataStore currentChefData = new ChefDataStore(chef.b2body.getPosition().x,  chef.b2body.getPosition().y);
+            ArrayList<IngredientDataStore> holding = new ArrayList<>();
+            for (Sprite item : chef.getStack()){
+
+                holding.add(saveIngredient(item));
+            }
+            ChefDataStore currentChefData = new ChefDataStore(chef.b2body.getPosition().x,  chef.b2body.getPosition().y, holding);
             chefData.add(currentChefData);
         }
+        OrderDataStore order = null;
+        if (currentOrder!=null){
+            order = new OrderDataStore(currentOrder.orderImg.toString(),currentOrder.startTime,diffMult);
+        }
+        //Create save object
+        SaveDataStore saveData = new SaveDataStore(chefData, orderNum, diffMult,createdOrder,timeSeconds,timeSecondsCount, chefCount, hud.getScore(), playerRep,order);
+        //Save to file
         Json json = new Json();
-        String chefDataString = json.toJson(chefData);
-        FileHandle file = Gdx.files.local("chefData.json");
-        file.writeString(chefDataString, false);
+        String dataString = json.toJson(saveData);
+        FileHandle file = Gdx.files.local("data.json");
+        file.writeString(dataString, false);
+    }
+    public IngredientDataStore saveIngredient(Sprite ingredient){
+        if (ingredient instanceof Ingredient){
+            Ingredient itemIngredient = (Ingredient) ingredient;
+            String name=itemIngredient.getClass().getSimpleName();
+            Map<String, Float> timers = itemIngredient.getTimers();
+            Map<String, Boolean> completed = itemIngredient.getCompleted();
+            int skin = itemIngredient.getSkin();
+            return new IngredientDataStore(name, timers, completed, skin);
+        }
+        Recipe recipe = (Recipe) ingredient;
+        return new IngredientDataStore(recipe.getClass().getSimpleName());
+
+    }
+    public void loadGame(){
+        Json json = new Json();
+        FileHandle file = Gdx.files.local("data.json");
+        String dataRaw = file.readString();
+        SaveDataStore saveData = json.fromJson(SaveDataStore.class, dataRaw);
+        chefData = saveData.getChefData();
+        orderNum = saveData.getOrderCount();
+        diffMult = saveData.getDiffMult();
+        createdOrder = saveData.getCreatedOrder();
+        timeSeconds = saveData.getTimeSeconds();
+        timeSecondsCount = saveData.getTimeSecondsCount();
+        chefCount= saveData.getChefCount();
+        playerRep=saveData.getRep();
+        hud.setHud(timeSecondsCount, saveData.getScore(), playerRep.getRep());
+        hud.updateOrder(scenarioComplete,orderNum);
+        OrderDataStore orderData = saveData.getOrder();
+        if (orderData != null) {
+            currentOrder = ordersInterface.loadOrder(saveData.getOrder());
+            createdOrder = true;
+        }
+        else{
+            createdOrder=false;
+        }
+    }
+    public Deque<Sprite> loadIngredients(ArrayList<IngredientDataStore> ingredientData){
+        Deque<Sprite> holding = new ArrayDeque<>();
+        for (IngredientDataStore ingredient : ingredientData){
+
+            if (ingredient.isRecipe()){
+                Recipe currentRecipe;
+                switch (ingredient.getName()){
+                    case "BurgerRecipe":
+                        currentRecipe = new BurgerRecipe();
+                        break;
+                    case "CookedPizzaRecipe":
+                        currentRecipe = new CookedPizzaRecipe();
+                        break;
+                    case "JacketPotatoRecipe":
+                        currentRecipe = new JacketPotatoRecipe();
+                        break;
+                    case "SaladRecipe":
+                        currentRecipe = new SaladRecipe();
+                        break;
+                    case "UncookedPizzaRecipe":
+                        currentRecipe = new UncookedPizzaRecipe();
+                        break;
+                    default:
+                        currentRecipe=null;
+                        break;
+                }
+                holding.add(currentRecipe);
+            }
+            else{
+                Ingredient currentIngredient;
+                switch (ingredient.getName()){
+                    case "Beans":
+                        currentIngredient=new Beans(ingredient.getTimers(),ingredient.getCompleted());
+                        break;
+                    case "Bun":
+                        currentIngredient=new Bun(ingredient.getTimers(),ingredient.getCompleted());
+                        break;
+                    case "Cheese":
+                        currentIngredient=new Cheese(ingredient.getTimers(),ingredient.getCompleted());
+                        break;
+                    case "Dough":
+                        currentIngredient=new Dough(ingredient.getTimers(),ingredient.getCompleted());
+                        break;
+                    case "Onion":
+                        currentIngredient=new Onion(ingredient.getTimers(),ingredient.getCompleted());
+                        break;
+                    case "Lettuce":
+                        currentIngredient=new Lettuce(ingredient.getTimers(),ingredient.getCompleted());
+                        break;
+                    case "Potato":
+                        currentIngredient=new Potato(ingredient.getTimers(),ingredient.getCompleted());
+                        break;
+                    case "Steak":
+                        currentIngredient=new Steak(ingredient.getTimers(),ingredient.getCompleted());
+                        break;
+                    case "Tomato":
+                        currentIngredient=new Tomato(ingredient.getTimers(),ingredient.getCompleted());
+                        break;
+                    case "FailedIngredient":
+                        currentIngredient=new FailedIngredient();
+                        break;
+                    default:
+                        currentIngredient=null;
+                        break;
+                }
+                currentIngredient.setSkin(ingredient.getSkin());
+                holding.add(currentIngredient);
+            }
+
+
+        }
+        return holding;
+
     }
 
     /**

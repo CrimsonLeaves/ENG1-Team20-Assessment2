@@ -2,6 +2,7 @@ package com.team13.piazzapanic;
 
 import Recipe.Order;
 import Sprites.PlateStation;
+import Tools.OrderDataStore;
 import com.badlogic.gdx.graphics.Texture;
 
 import java.util.concurrent.ThreadLocalRandom;
@@ -29,6 +30,21 @@ public class Orders {
             case 0:
                 return new Order(PlateStation.getRecipe("Burger"), burger_recipe,startTime,60f*diff);
             case 1:
+                return new Order(PlateStation.getRecipe("Salad"), salad_recipe,startTime,60f*diff);
+            default:
+                return null;
+        }
+    }
+    public Order loadOrder(OrderDataStore order){
+        String orderType = order.getOrderType();
+        int startTime = order.getStartTime();
+        float diff = order.getDiff();
+        Texture burger_recipe = new Texture("Food/burger_recipe.png");
+        Texture salad_recipe = new Texture("Food/salad_recipe.png");
+        switch (orderType){
+            case "Food/burger_recipe.png":
+                return new Order(PlateStation.getRecipe("Burger"), burger_recipe,startTime,60f*diff);
+            case "Food/salad_recipe.png":
                 return new Order(PlateStation.getRecipe("Salad"), salad_recipe,startTime,60f*diff);
             default:
                 return null;
