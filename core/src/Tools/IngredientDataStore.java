@@ -1,30 +1,35 @@
 package Tools;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class IngredientDataStore {
-    String name;
-    Map<String, Float> timers;
-    Map<String, Boolean> completed;
-    int skin;
-    boolean recipe;
+    private String name;
+    private Map<String, Float> timers;
+    private Map<String, Boolean> completed;
+    private int skin;
+    private boolean recipe;
+    private float currentTimer;
 
 
     public IngredientDataStore(){
-        name="";
-        timers=new HashMap<>();
-        completed=new HashMap<>();
-        skin=0;
-        recipe=false;
+        name = "";
+        timers = new HashMap<>();
+        completed = new HashMap<>();
+        skin = 0;
+        recipe = false;
+        currentTimer = 0;
     }
 
-    public IngredientDataStore(String name,Map<String, Float> timers, Map<String, Boolean> completed, int skin){
+    public IngredientDataStore(String name,Map<String, Float> timers, Map<String, Boolean> completed, int skin, float currentTimer){
         this.name=name;
         this.timers=timers;
         this.completed=completed;
         this.skin=skin;
         recipe=false;
+        this.currentTimer = currentTimer;
     }
     public IngredientDataStore(String name){
         this.name=name;
@@ -32,6 +37,7 @@ public class IngredientDataStore {
         completed=null;
         skin=0;
         recipe=true;
+        currentTimer = 0;
     }
     //name
     public String getName() {return name;}
@@ -48,4 +54,11 @@ public class IngredientDataStore {
     //failed
     public boolean isRecipe() {return recipe;}
     public void setRecipe(boolean recipe) {this.recipe = recipe;}
+    //currentTimer
+    public float getCurrentTimer() {
+        return currentTimer;
+    }
+    public void setCurrentTimer(float currentTimer) {
+        this.currentTimer = currentTimer;
+    }
 }

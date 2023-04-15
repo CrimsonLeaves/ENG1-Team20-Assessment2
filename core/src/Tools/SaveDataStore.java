@@ -16,6 +16,7 @@ public class SaveDataStore {
     private int score;
     private Reputation rep;
     private OrderDataStore order;
+    private ArrayList<IngredientDataStore>[][] stationItems;
 
     //Contructors
 
@@ -30,8 +31,9 @@ public class SaveDataStore {
         score = 0;
         rep=new Reputation(3);
         order=new OrderDataStore();
+        stationItems = null;
     }
-    public SaveDataStore(ArrayList<ChefDataStore> chefData, int orderCount, float diffMult, boolean createdOrder,float timeSeconds, float timeSecondsCount, int chefCount, int score, Reputation rep, OrderDataStore order){
+    public SaveDataStore(ArrayList<ChefDataStore> chefData, int orderCount, float diffMult, boolean createdOrder,float timeSeconds, float timeSecondsCount, int chefCount, int score, Reputation rep, OrderDataStore order, ArrayList<IngredientDataStore>[][] stationItems){
         this.chefData = chefData;
         this.orderCount = orderCount;
         this.diffMult = diffMult;
@@ -39,9 +41,10 @@ public class SaveDataStore {
         this.timeSecondsCount = timeSecondsCount;
         this.timeSeconds = timeSeconds;
         this.chefCount = chefCount;
-        this.score=score;
-        this.rep=rep;
-        this.order=order;
+        this.score = score;
+        this.rep = rep;
+        this.order = order;
+        this.stationItems = stationItems;
     }
 
     //Getters and Setters
@@ -76,4 +79,11 @@ public class SaveDataStore {
     //order
     public void setOrder(OrderDataStore order) {this.order = order;}
     public OrderDataStore getOrder() {return order;}
+    //stationItems
+    public ArrayList<IngredientDataStore>[][] getStationItems() {
+        return stationItems;
+    }
+    public void setStationItems(ArrayList<IngredientDataStore>[][] stationItems) {
+        this.stationItems = stationItems;
+    }
 }

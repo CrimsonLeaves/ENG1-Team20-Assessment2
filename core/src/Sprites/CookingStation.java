@@ -87,4 +87,9 @@ public class CookingStation extends InteractiveTileObject{
     public float getY(){
         return super.bdefNew.position.y;
     }
+
+    public void setTimer(float timer) {
+        this.timer = timer;
+    }
+    public float getTimer() {return timer;}
 }

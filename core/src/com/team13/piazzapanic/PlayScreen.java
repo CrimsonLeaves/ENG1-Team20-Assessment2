@@ -19,6 +19,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Intersector;
@@ -90,8 +91,9 @@ public class PlayScreen implements Screen {
     private float diffMult=1;
     private boolean moneyAdded;
     private final ShapeRenderer shapeRenderer;
-    private boolean loadGame = true;
+    private boolean loadGame = false;
     private ArrayList<ChefDataStore> chefData;
+    ArrayList<IngredientDataStore>[][] stationItems;
     //Powerups
     private ArrayList<Powerup> powerups;
     private final int totalPowerups=5;
@@ -129,9 +131,19 @@ public class PlayScreen implements Screen {
         map = mapLoader.load("Kitchen.tmx");
         renderer = new OrthogonalTiledMapRenderer(map, 1 / MainGame.PPM);
         gamecam.position.set(gameport.getWorldWidth() / 2, gameport.getWorldHeight() / 2, 0);
-
+        Json json = new Json();
+        FileHandle file = Gdx.files.local("data.json");
+        String dataRaw = file.readString();
+        SaveDataStore saveData = json.fromJson(SaveDataStore.class, dataRaw);
+        stationItems=saveData.getStationItems();
         world = new World(new Vector2(0,0), true);
-        new B2WorldCreator(world, map, this);
+        if (loadGame){
+            new B2WorldCreator(world, map, this, stationItems);
+        }
+        else{
+            new B2WorldCreator(world, map, this, null);
+            stationItems = new ArrayList[((TiledMapTileLayer) map.getLayers().get(0)).getWidth()][((TiledMapTileLayer) map.getLayers().get(0)).getHeight()];
+        }
         chefList = new CircularList<>(chefCount+1);
         if (loadGame){loadGame();}
         generateChefs(chefCount);
@@ -567,8 +579,9 @@ public class PlayScreen implements Screen {
         if (currentOrder!=null){
             order = new OrderDataStore(currentOrder.orderImg.toString(),currentOrder.startTime,diffMult);
         }
+        saveStations();
         //Create save object
-        SaveDataStore saveData = new SaveDataStore(chefData, orderNum, diffMult,createdOrder,timeSeconds,timeSecondsCount, chefCount, hud.getScore(), playerRep,order);
+        SaveDataStore saveData = new SaveDataStore(chefData, orderNum, diffMult,createdOrder,timeSeconds,timeSecondsCount, chefCount, hud.getScore(), playerRep,order, stationItems);
         //Save to file
         Json json = new Json();
         String dataString = json.toJson(saveData);
@@ -582,11 +595,69 @@ public class PlayScreen implements Screen {
             Map<String, Float> timers = itemIngredient.getTimers();
             Map<String, Boolean> completed = itemIngredient.getCompleted();
             int skin = itemIngredient.getSkin();
-            return new IngredientDataStore(name, timers, completed, skin);
+            return new IngredientDataStore(name, timers, completed, skin,0);
         }
         Recipe recipe = (Recipe) ingredient;
         return new IngredientDataStore(recipe.getClass().getSimpleName());
 
+    }
+    public void saveStations(){
+        stationItems = new ArrayList[((TiledMapTileLayer) map.getLayers().get(0)).getWidth()][((TiledMapTileLayer) map.getLayers().get(0)).getHeight()];
+        for (Pan pan : pans){
+            Ingredient ingredient = pan.getCurrentIngredient();
+            if (ingredient != null){
+                ArrayList<IngredientDataStore> ingredientData = new ArrayList<IngredientDataStore>();
+                IngredientDataStore item = new IngredientDataStore(ingredient.getClass().getSimpleName(),ingredient.getTimers(),ingredient.getCompleted(), ingredient.getSkin(), pan.getTimer());
+                int x = (int)(pan.getX()*MainGame.PPM-8)/MainGame.TILE_SIZE;
+                int y = (int)(pan.getY()*MainGame.PPM-8)/MainGame.TILE_SIZE;
+                ingredientData.add(item);
+                stationItems[x][y]=ingredientData;
+            }
+        }
+        for (ChoppingBoard board : choppingBoards){
+            Ingredient ingredient = board.getCurrentIngredient();
+            if (ingredient != null){
+                IngredientDataStore item = new IngredientDataStore(ingredient.getClass().getSimpleName(),ingredient.getTimers(),ingredient.getCompleted(), ingredient.getSkin(), board.getTimer());
+                int x = (int)(board.getX()*MainGame.PPM-8)/MainGame.TILE_SIZE;
+                int y = (int)(board.getY()*MainGame.PPM-8)/MainGame.TILE_SIZE;
+                ArrayList<IngredientDataStore> ingredientData = new ArrayList<IngredientDataStore>();
+                ingredientData.add(item);
+                stationItems[x][y]=ingredientData;
+            }
+        }
+        for (Oven oven : ovens){
+            Ingredient ingredient = oven.getCurrentIngredient();
+            if (ingredient != null){
+                IngredientDataStore item = new IngredientDataStore(ingredient.getClass().getSimpleName(),ingredient.getTimers(),ingredient.getCompleted(), ingredient.getSkin(), oven.getTimer());
+                int x = (int)(oven.getX()*MainGame.PPM-8)/MainGame.TILE_SIZE;
+                int y = (int)(oven.getY()*MainGame.PPM-8)/MainGame.TILE_SIZE;
+                ArrayList<IngredientDataStore> ingredientData = new ArrayList<IngredientDataStore>();
+                ingredientData.add(item);
+                stationItems[x][y]=ingredientData;
+            }
+        }
+        for (PlateStation plateStation : plateStations ){
+            Recipe recipe = plateStation.getCompletedRecipe();
+            if (recipe != null){
+                IngredientDataStore item = new IngredientDataStore(recipe.getClass().getSimpleName());
+                int x = (int)(plateStation.getX()*MainGame.PPM-8)/MainGame.TILE_SIZE;
+                int y = (int)(plateStation.getY()*MainGame.PPM-8)/MainGame.TILE_SIZE;
+                ArrayList<IngredientDataStore> ingredientData = new ArrayList<IngredientDataStore>();
+                ingredientData.add(item);
+                stationItems[x][y]=ingredientData;
+            }
+            else if (plateStation.getPlate().size() > 0){
+                ArrayList<IngredientDataStore> ingredientData = new ArrayList<IngredientDataStore>();
+
+                for (Object ingredient : plateStation.getPlate()){
+                    IngredientDataStore currentIngredient = saveIngredient((Sprite) ingredient);
+                    ingredientData.add(currentIngredient);
+                }
+                int x = (int)(plateStation.getX()*MainGame.PPM-8)/MainGame.TILE_SIZE;
+                int y = (int)(plateStation.getY()*MainGame.PPM-8)/MainGame.TILE_SIZE;
+                stationItems[x][y]=ingredientData;
+            }
+        }
     }
     public void loadGame(){
         Json json = new Json();
@@ -603,6 +674,7 @@ public class PlayScreen implements Screen {
         playerRep=saveData.getRep();
         hud.setHud(timeSecondsCount, saveData.getScore(), playerRep.getRep());
         hud.updateOrder(scenarioComplete,orderNum);
+        stationItems = saveData.getStationItems();
         OrderDataStore orderData = saveData.getOrder();
         if (orderData != null) {
             currentOrder = ordersInterface.loadOrder(saveData.getOrder());

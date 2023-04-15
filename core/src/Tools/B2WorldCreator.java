@@ -1,6 +1,10 @@
 package Tools;
 
+import Ingredients.*;
+import Recipe.Recipe;
+import Recipe.*;
 import Sprites.*;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
@@ -10,6 +14,8 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.*;
 import com.team13.piazzapanic.MainGame;
 import com.team13.piazzapanic.PlayScreen;
+
+import java.util.ArrayList;
 
 /**
  * B2WorldCreator is a class used to create Box2D World objects from a TiledMap.
@@ -23,6 +29,7 @@ import com.team13.piazzapanic.PlayScreen;
  *
  */
 public class B2WorldCreator {
+    ArrayList<IngredientDataStore>[][] items;
 
 /**
  * Constructor method for B2WorldCreator. It accepts a World, TiledMap and PlayScreen
@@ -37,7 +44,8 @@ public class B2WorldCreator {
  * @param map The TiledMap object.
  * */
 
-    public B2WorldCreator(World world, TiledMap map, PlayScreen screen) {
+    public B2WorldCreator(World world, TiledMap map, PlayScreen screen, ArrayList<IngredientDataStore>[][] items) {
+        this.items=items;
         TiledMapTileLayer layer = (TiledMapTileLayer) map.getLayers().get(0);
         for (int x = 0; x < layer.getWidth(); x++) {
             for (int y = 0; y < layer.getHeight(); y++) {
@@ -69,9 +77,47 @@ public class B2WorldCreator {
                     } else if (mapObject.getName().equals("worktop")) {
                         new Worktop(world, map, bdef, rectangle);
                     } else if (mapObject.getName().equals("chopping_board")) {
-                        screen.choppingBoards.add(new ChoppingBoard(world, map, bdef, rectangle));
+                        ChoppingBoard tempStation = new ChoppingBoard(world, map, bdef, rectangle);
+                        addIngredient(x, y, tempStation);
+                        screen.choppingBoards.add(tempStation);
                     } else if (mapObject.getName().equals("plate")) {
-                        screen.plateStations.add(new PlateStation(world, map, bdef, rectangle));
+                        PlateStation tempPlateStat = new PlateStation(world, map, bdef, rectangle);
+                        if (items != null) {
+                            if (items[x][y] != null) {
+                                if (items[x][y].size()> 0) {
+                                    if (items[x][y].get(0).isRecipe()) {
+                                        IngredientDataStore rawRecipe = items[x][y].get(0);
+                                        Recipe currentRecipe;
+                                        switch (rawRecipe.getName()) {
+                                            case "BurgerRecipe":
+                                                currentRecipe = new BurgerRecipe();
+                                                break;
+                                            case "CookedPizzaRecipe":
+                                                currentRecipe = new CookedPizzaRecipe();
+                                                break;
+                                            case "JacketPotatoRecipe":
+                                                currentRecipe = new JacketPotatoRecipe();
+                                                break;
+                                            case "SaladRecipe":
+                                                currentRecipe = new SaladRecipe();
+                                                break;
+                                            case "UncookedPizzaRecipe":
+                                                currentRecipe = new UncookedPizzaRecipe();
+                                                break;
+                                            default:
+                                                currentRecipe = null;
+                                                break;
+                                        }
+                                        tempPlateStat.setRecipeDone(currentRecipe);
+                                    }else {
+                                        for (IngredientDataStore ingredient : items[x][y]) {
+                                            tempPlateStat.dropItem(generateIngredient(ingredient));
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        screen.plateStations.add(tempPlateStat);
                     } else if (mapObject.getName().equals("tomato")) {
                         new TomatoStation(world, map, bdef, rectangle);
                     } else if (mapObject.getName().equals("lettuce")) {
@@ -81,11 +127,15 @@ public class B2WorldCreator {
                     } else if (mapObject.getName().equals("onion")) {
                         new OnionStation(world, map, bdef, rectangle);
                     } else if (mapObject.getName().equals("pan1")) {
-                        screen.pans.add(new Pan(world, map, bdef, rectangle));
+                        Pan tempStation = new Pan(world, map, bdef, rectangle);
+                        addIngredient(x, y, tempStation);
+                        screen.pans.add(tempStation);
                     } else if (mapObject.getName().equals("steak")) {
                         new SteakStation(world, map, bdef, rectangle);
                     } else if (mapObject.getName().equals("pan2")) {
-                        screen.pans.add(new Pan(world, map, bdef, rectangle));
+                        Pan tempStation = new Pan(world, map, bdef, rectangle);
+                        addIngredient(x, y, tempStation);
+                        screen.pans.add(tempStation);
                     } else if (mapObject.getName().equals("completed_dish")) {
                         screen.cdStations.add(new CompletedDishStation(world, map, bdef, rectangle));
                     } else if (mapObject.getName().equals("order_top")) {
@@ -100,12 +150,70 @@ public class B2WorldCreator {
                     } else if(mapObject.getName().equals("beans")){
                         new BeansStation(world,map,bdef,rectangle);
                     } else if(mapObject.getName().equals("oven")){
-                        screen.ovens.add(new Oven(world,map,bdef,rectangle));
+                        Oven tempStation = new Oven(world, map, bdef, rectangle);
+                        addIngredient(x, y, tempStation);
+                        screen.ovens.add(tempStation);
                     }
                 }
 
 
             }
         }
+    }
+    private void addIngredient(int x, int y, CookingStation tile){
+        if (items == null){
+            return;
+        }
+        if (items[x][y] == null){
+            return;
+        }
+        Ingredient currentIngredient;
+        IngredientDataStore item = items[x][y].get(0);
+        currentIngredient=generateIngredient(item);
+        tile.setCurrentIngredient(currentIngredient);
+        tile.setTimer(item.getCurrentTimer());
+    }
+    private Ingredient generateIngredient(IngredientDataStore item){
+        Ingredient currentIngredient;
+        if (item == null){
+            return null;
+        }
+        switch (item.getName()){
+            case "Beans":
+                currentIngredient=new Beans(item.getTimers(),item.getCompleted());
+                break;
+            case "Bun":
+                currentIngredient=new Bun(item.getTimers(),item.getCompleted());
+                break;
+            case "Cheese":
+                currentIngredient=new Cheese(item.getTimers(),item.getCompleted());
+                break;
+            case "Dough":
+                currentIngredient=new Dough(item.getTimers(),item.getCompleted());
+                break;
+            case "Onion":
+                currentIngredient=new Onion(item.getTimers(),item.getCompleted());
+                break;
+            case "Lettuce":
+                currentIngredient=new Lettuce(item.getTimers(),item.getCompleted());
+                break;
+            case "Potato":
+                currentIngredient=new Potato(item.getTimers(),item.getCompleted());
+                break;
+            case "Steak":
+                currentIngredient=new Steak(item.getTimers(),item.getCompleted());
+                break;
+            case "Tomato":
+                currentIngredient=new Tomato(item.getTimers(),item.getCompleted());
+                break;
+            case "FailedIngredient":
+                currentIngredient=new FailedIngredient();
+                break;
+            default:
+                currentIngredient=null;
+                break;
+        }
+        currentIngredient.setSkin(item.getSkin());
+        return currentIngredient;
     }
 }

@@ -109,6 +109,9 @@ public class PlateStation extends InteractiveTileObject {
     public Recipe getCompletedRecipe(){
         return recipeDone;
     }
+    public void setRecipeDone(Recipe recipeDone) {
+        this.recipeDone = recipeDone;
+    }
 
     /**
      * Gets the x-coordinate of the plate station.
