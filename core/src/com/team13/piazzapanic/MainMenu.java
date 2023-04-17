@@ -1,7 +1,9 @@
 package com.team13.piazzapanic;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -13,61 +15,73 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.sun.tools.javac.util.Context;
 
 public class MainMenu implements Screen {
 
     private final MainGame game;
-    private Stage stage;
+    private Stage stage, stage2;
     private SpriteBatch spriteBatch;
-    private final Texture backgroundImage;
-    private final Sprite backgroundSprite;
+    private final Texture backgroundImage, loadImage;
+    private final Sprite backgroundSprite, loadSprite;
     private final OrthographicCamera camera;
     private final Viewport viewport;
     Skin skin;
     Image titleImage;
     Label moneyLabel;
-    Table table;
+    Table table, promptTable;
+    boolean loadPrompt;
 
 
     public MainMenu(MainGame game){
         backgroundImage = new Texture("UI/background.png");
         backgroundSprite = new Sprite(backgroundImage);
+        loadImage  =new Texture("UI/background.png");
+        loadSprite = new Sprite(loadImage);
         this.game=game;
         camera = new OrthographicCamera();
         viewport = new FitViewport(MainGame.V_WIDTH, MainGame.V_HEIGHT, camera);
         stage = new Stage(new ScreenViewport());
+        stage2 = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
         spriteBatch = new SpriteBatch();
         skin = new Skin(Gdx.files.internal("skin/glassy-ui.json"));
         titleImage= new Image(new Texture("UI/TitleText.png"));
+        loadPrompt=false;
+        promptTable=new Table();
 
     }
     public void resetScreen(){
         table.clear();
         table.remove();
+        promptTable.clear();
+        promptTable.remove();
         stage.clear();
+        stage2.clear();
     }
     @Override
     public void show() {
+        if (loadPrompt){
+            Gdx.input.setInputProcessor(stage2);
+        }
+        else{
+            Gdx.input.setInputProcessor(stage);
+        }
         table = new Table();
         Table buttonTable = new Table();
         table.setFillParent(true);
-        Gdx.input.setInputProcessor(stage);
-
+        promptTable.setFillParent(true);
+        //promptTable.setDebug(true);
         backgroundSprite.setSize(MainGame.V_WIDTH, MainGame.V_HEIGHT);
         backgroundSprite.setPosition(0, 0);
         camera.position.set(viewport.getWorldWidth() / 2, viewport.getWorldHeight() / 2, 0);
-
-        table.setDebug(false);
-
-
         stage.addActor(table);
-
-
         //Buttons
         TextButton scenarioMode = new TextButton("Scenario Mode", skin);
         TextButton endlessMode = new TextButton("Endless Mode", skin);
@@ -80,7 +94,6 @@ public class MainMenu implements Screen {
         //Money
         table.removeActor(moneyLabel);
         moneyLabel = new Label("Money: "+game.getMoney(),skin);
-
         scenarioMode.getLabel().setFontScale(0.5f);
         endlessMode.getLabel().setFontScale(0.5f);
         shop.getLabel().setFontScale(0.5f);
@@ -103,27 +116,89 @@ public class MainMenu implements Screen {
         table.row();
         table.add(moneyLabel).bottom().left();
 
+        promptTable = new Table();
+        Table promptTableButtons = new Table();
+        promptTable.setDebug(true);
+        table.setDebug(true);
 
+        TextButton loadButton = new TextButton("Load Game", skin);
+        loadButton.getLabel().setFontScale(0.5f);
+        TextButton newButton = new TextButton("New Game", skin);
+        newButton.getLabel().setFontScale(0.5f);
+        Label loadLabel = new Label("Would you like to load or start a new game?",skin);
+        loadLabel.setAlignment(Align.center);
+        promptTable.add(loadLabel).expandX().padBottom(20).row();
+        promptTableButtons.add(newButton).width(buttonWidth).height(buttonHeight).padRight(10);
+        promptTableButtons.add(loadButton).width(buttonWidth).height(buttonHeight).padLeft(10);
+        promptTable.add(promptTableButtons).center().center();
+        promptTable.center().center();
+        //promptTable.setBackground((Drawable) Color.WHITE);
+        stage2.addActor(promptTable);
+        int windowWidth = 500;
+        int windowHeight = 250;
+        loadSprite.setSize(windowWidth, windowHeight);
+        loadSprite.setPosition(MainGame.V_WIDTH/2-windowWidth/2, MainGame.V_HEIGHT/2-windowHeight/2);
+
+        loadButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                game.inGame = true;
+                game.loadGame = true;
+                game.playScreen = new PlayScreen(game);
+                game.playScreen.resetGame();
+                game.setScreen(game.startScreen);
+            }
+        });
+        newButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                game.inGame = true;
+                game.loadGame = false;
+                game.playScreen = new PlayScreen(game);
+                game.playScreen.resetGame();
+                game.setScreen(game.startScreen);
+            }
+        });
         scenarioMode.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                Gdx.app.log("State","Scenario "+game.difficulty);
-                game.inGame = true;
-                game.scenarioMode = true;
-                game.playScreen.scenarioMode=true;
-                game.playScreen.resetGame();
-                game.setScreen(game.startScreen);
+                if (!Gdx.files.local("dataScenario.json").exists()) {
+                    Gdx.app.log("State", "Scenario " + game.difficulty);
+                    game.inGame = true;
+                    game.scenarioMode = true;
+                    //game.playScreen.scenarioMode = true;
+                    game.loadGame = false;
+                    game.playScreen = new PlayScreen(game);
+                    game.playScreen.resetGame();
+                    game.setScreen(game.startScreen);
+                }
+                else{
+                    game.scenarioMode = true;
+                    //game.playScreen.scenarioMode = true;
+                    loadPrompt=true;
+                }
             }
         });
         endlessMode.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                Gdx.app.log("State","Endless "+game.difficulty);
-                game.inGame = true;
-                game.scenarioMode = false;
-                game.playScreen.scenarioMode=false;
-                game.playScreen.resetGame();
-                game.setScreen(game.startScreen);
+                if (!Gdx.files.local("dataEndless.json").exists()) {
+                    Gdx.app.log("State", "Scenario " + game.difficulty);
+                    game.inGame = true;
+                    game.scenarioMode = false;
+
+                    game.loadGame = false;
+                    game.playScreen = new PlayScreen(game);
+                    //game.playScreen.scenarioMode = false;
+                    game.playScreen.resetGame();
+
+                    game.setScreen(game.startScreen);
+                }
+                else{
+                    game.scenarioMode = false;
+                    //game.playScreen.scenarioMode = false;
+                    loadPrompt=true;
+                }
             }
         });
         shop.addListener(new ChangeListener() {
@@ -146,6 +221,7 @@ public class MainMenu implements Screen {
 
     }
 
+
     @Override
     public void render(float delta) {
         Gdx.gl.glClearColor(0, 0.5f, 0, 1);
@@ -158,7 +234,19 @@ public class MainMenu implements Screen {
         backgroundSprite.draw(game.batch);
         game.batch.end();
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
-        stage.draw();
+        stage2.act();
+        if (loadPrompt){
+            //game.batch.begin();
+            //backgroundSprite.draw(game.batch);
+            //loadSprite.draw(game.batch);
+            //game.batch.end();
+            stage2.draw();
+        } else {
+            stage.draw();
+        }
+        if (loadPrompt && Gdx.input.isKeyPressed(Input.Keys.ESCAPE)){
+            loadPrompt=false;
+        }
     }
 
     @Override
@@ -168,6 +256,7 @@ public class MainMenu implements Screen {
         }
         viewport.update(width, height);
         stage.getViewport().setScreenBounds((width-viewport.getScreenWidth())/2,(height-viewport.getScreenHeight())/2,viewport.getScreenWidth(),viewport.getScreenHeight());
+        stage2.getViewport().setScreenBounds((width-viewport.getScreenWidth())/2,(height-viewport.getScreenHeight())/2,viewport.getScreenWidth(),viewport.getScreenHeight());
         camera.position.set(viewport.getWorldWidth() / 2, viewport.getWorldHeight() / 2, 0);
     }
 
@@ -189,6 +278,7 @@ public class MainMenu implements Screen {
     @Override
     public void dispose() {
         stage.dispose();
+        stage2.dispose();
         spriteBatch.dispose();
         skin.dispose();
     }

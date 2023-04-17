@@ -62,7 +62,7 @@ public class PlayScreen implements Screen {
     public Reputation playerRep;
     private final TiledMap map;
     private final OrthogonalTiledMapRenderer renderer;
-    private final World world;
+    private World world;
     private CircularList<Chef> chefList;
     private int chefCount = 3;
     private Chef controlledChef;
@@ -91,7 +91,7 @@ public class PlayScreen implements Screen {
     private float diffMult=1;
     private boolean moneyAdded;
     private final ShapeRenderer shapeRenderer;
-    private boolean loadGame = false;
+    public boolean loadGame = true;
     private ArrayList<ChefDataStore> chefData;
     ArrayList<IngredientDataStore>[][] stationItems;
     //Powerups
@@ -113,6 +113,7 @@ public class PlayScreen implements Screen {
     public PlayScreen(MainGame game){
         shapeRenderer = new ShapeRenderer();
         this.game = game;
+        loadGame=game.loadGame;
         scenarioComplete = Boolean.FALSE;
         createdOrder = Boolean.FALSE;
         gamecam = new OrthographicCamera();
@@ -132,10 +133,22 @@ public class PlayScreen implements Screen {
         renderer = new OrthogonalTiledMapRenderer(map, 1 / MainGame.PPM);
         gamecam.position.set(gameport.getWorldWidth() / 2, gameport.getWorldHeight() / 2, 0);
         Json json = new Json();
-        FileHandle file = Gdx.files.local("data.json");
-        String dataRaw = file.readString();
-        SaveDataStore saveData = json.fromJson(SaveDataStore.class, dataRaw);
-        stationItems=saveData.getStationItems();
+        FileHandle file;
+        if (scenarioMode){
+            file = Gdx.files.local("dataScenario.json");
+        }
+        else{
+            file = Gdx.files.local("dataEndless.json");
+        }
+        if (!file.exists()){
+            loadGame=false;
+        }
+        else {
+            String dataRaw = file.readString();
+            SaveDataStore saveData = json.fromJson(SaveDataStore.class, dataRaw);
+            stationItems=saveData.getStationItems();
+        }
+
         world = new World(new Vector2(0,0), true);
         if (loadGame){
             new B2WorldCreator(world, map, this, stationItems);
@@ -521,6 +534,13 @@ public class PlayScreen implements Screen {
      * Resets all variables and objects for replaying.
      */
     public void resetGame(){
+        if (loadGame){
+            new B2WorldCreator(world, map, this, stationItems);
+        }
+        else{
+            new B2WorldCreator(world, map, this, null);
+            stationItems = new ArrayList[((TiledMapTileLayer) map.getLayers().get(0)).getWidth()][((TiledMapTileLayer) map.getLayers().get(0)).getHeight()];
+        }
         scenarioComplete = Boolean.FALSE;
         playerRep.reset();
         for (Chef chef : chefList.allElems()){
@@ -585,7 +605,14 @@ public class PlayScreen implements Screen {
         //Save to file
         Json json = new Json();
         String dataString = json.toJson(saveData);
-        FileHandle file = Gdx.files.local("data.json");
+        FileHandle file;
+        if (scenarioMode){
+            file = Gdx.files.local("dataScenario.json");
+        }
+        else{
+            file = Gdx.files.local("dataEndless.json");
+        }
+
         file.writeString(dataString, false);
     }
     public IngredientDataStore saveIngredient(Sprite ingredient){
@@ -661,7 +688,13 @@ public class PlayScreen implements Screen {
     }
     public void loadGame(){
         Json json = new Json();
-        FileHandle file = Gdx.files.local("data.json");
+        FileHandle file;
+        if (scenarioMode){
+            file = Gdx.files.local("dataScenario.json");
+        }
+        else{
+            file = Gdx.files.local("dataEndless.json");
+        }
         String dataRaw = file.readString();
         SaveDataStore saveData = json.fromJson(SaveDataStore.class, dataRaw);
         chefData = saveData.getChefData();

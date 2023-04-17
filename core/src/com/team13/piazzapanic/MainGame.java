@@ -38,6 +38,7 @@ public class MainGame extends Game {
 	public boolean isShopScreen;
 	public boolean inGame;
 	public boolean scenarioMode;
+	public boolean loadGame;
 	public String difficulty;
 	private int money;
 	//Chef counts
@@ -58,9 +59,9 @@ public class MainGame extends Game {
 		isPlayScreen = false;
 		isEndScreen = false;
 		inGame = false;
-		scenarioMode = false;
+		scenarioMode = true;
 		difficulty = "Easy";
-
+		loadGame=true;
 		money = 0;
 		chefCount = 3;
 		unlockedChefs = 3;
@@ -70,7 +71,7 @@ public class MainGame extends Game {
 	public void create() {
 		batch = new SpriteBatch();
 		startScreen = new StartScreen(this);
-		playScreen = new PlayScreen(this);
+		//playScreen = new PlayScreen(this);
 		endScreen = new EndScreen(this);
 		mainMenu = new MainMenu(this);
 		shopScreen = new ShopScreen(this);
