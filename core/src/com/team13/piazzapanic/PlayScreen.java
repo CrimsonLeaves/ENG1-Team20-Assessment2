@@ -111,6 +111,7 @@ public class PlayScreen implements Screen {
      */
 
     public PlayScreen(MainGame game){
+        stage = new Stage();
         shapeRenderer = new ShapeRenderer();
         this.game = game;
         loadGame=game.loadGame;

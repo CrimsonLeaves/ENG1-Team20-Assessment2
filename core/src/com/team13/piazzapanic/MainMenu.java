@@ -144,6 +144,7 @@ public class MainMenu implements Screen {
             public void changed(ChangeEvent event, Actor actor) {
                 game.inGame = true;
                 game.loadGame = true;
+                loadPrompt = false;
                 game.playScreen = new PlayScreen(game);
                 game.playScreen.resetGame();
                 game.setScreen(game.startScreen);
@@ -154,6 +155,7 @@ public class MainMenu implements Screen {
             public void changed(ChangeEvent event, Actor actor) {
                 game.inGame = true;
                 game.loadGame = false;
+                loadPrompt = false;
                 game.playScreen = new PlayScreen(game);
                 game.playScreen.resetGame();
                 game.setScreen(game.startScreen);

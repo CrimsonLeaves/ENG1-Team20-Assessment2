@@ -2,6 +2,7 @@ package com.team13.piazzapanic;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -16,6 +17,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
+import java.io.File;
+
 public class EndScreen implements Screen {
     private final MainGame game;
     private final Texture backgroundImageLose;
@@ -29,6 +32,7 @@ public class EndScreen implements Screen {
     public String time;
     public int score;
     Skin skin;
+    Table table;
 
     /**
      * Constructor for LoseScreen.
@@ -49,6 +53,7 @@ public class EndScreen implements Screen {
         time="00:00";
         score=0;
         skin = new Skin(Gdx.files.internal("skin/glassy-ui.json"));
+        table = new Table();
     }
 
 
@@ -58,7 +63,14 @@ public class EndScreen implements Screen {
      */
     @Override
     public void show() {
-        Table table = new Table();
+        if (game.playScreen != null){
+            game.playScreen.dispose();
+            game.playScreen=null;
+            table.clear();
+            table.remove();
+            stage.clear();
+        }
+        table = new Table();
         table.setFillParent(true);
         table.debug();
         stage.addActor(table);
@@ -111,7 +123,9 @@ public class EndScreen implements Screen {
         exit.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                removeSave(game.scenarioMode);
                 game.isEndScreen =false;
+                game.loadGame=false;
                 game.mainMenu.resetScreen();
                 game.setScreen(game.mainMenu);
             }
@@ -120,6 +134,9 @@ public class EndScreen implements Screen {
         replay.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                removeSave(game.scenarioMode);
+                game.loadGame=false;
+                game.playScreen = new PlayScreen(game);
                 game.playScreen.resetGame();
                 game.inGame=true;
                 game.setScreen(game.playScreen);
@@ -131,6 +148,20 @@ public class EndScreen implements Screen {
         exit.setPosition(stage.getWidth()-exit.getWidth()-40, 40);
 
 
+    }
+    private void removeSave(boolean scenarioMode){
+        if (scenarioMode){
+            FileHandle file = Gdx.files.local("dataScenario.json");
+            if (file.exists()){
+                file.delete();
+            }
+        }
+        else{
+            FileHandle file = Gdx.files.local("dataEndless.json");
+            if (file.exists()){
+                file.delete();
+            }
+        }
     }
 
     /**
