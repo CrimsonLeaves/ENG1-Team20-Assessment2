@@ -48,7 +48,7 @@ public class RecipeTest {
         assertNull("Nothing should be contained in the cooked pizza's recipe."
                 , cookedpizza.getIngredients());
     }
-    /* fails when using potatoes
+
     @Test
     //Test Requirement: UR_RECIPE/FR_RECIPE_JACKET_POTATO
     public void test_JacketPotatoRecipe(){
@@ -61,7 +61,7 @@ public class RecipeTest {
         assertTrue("The jacket potato's third ingredient should be cheese.",
                 jacketpotato.getIngredients().get(2) instanceof Cheese);
     }
-    */
+
     @Test
     //Test Requirement: UR_RECIPE
     public void test_SaladRecipe(){
