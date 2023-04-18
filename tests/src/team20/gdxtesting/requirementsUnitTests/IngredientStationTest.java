@@ -52,7 +52,7 @@ public class IngredientStationTest {
         assertTrue("A buns station should return a bun.", b.getIngredient() instanceof Bun);
         assertFalse("A bun station shouldn't return dough.", b.getIngredient() instanceof Dough);
     }
-    /*
+    
     @Test
     // Test Requirement: UR_STATION/UR_INGREDIENT_BEANS
     public void test_BeansStation(){
@@ -72,7 +72,7 @@ public class IngredientStationTest {
         assertTrue("A cheese station should return cheese.", c.getIngredient() instanceof  Cheese);
         assertFalse("A cheese station shouldn't return beans.", c.getIngredient() instanceof Beans);
     }
-
+    
     @Test
     //Test Requirement: UR_STATION
     public void test_LettuceStation(){
@@ -82,7 +82,7 @@ public class IngredientStationTest {
         assertTrue("A lettuce station should return lettuce.", l.getIngredient() instanceof  Lettuce);
         assertFalse("A lettuce station shouldn't return cheese.", l.getIngredient() instanceof Cheese);
     }
-
+    /*
     @Test
     //Test Requirement: UR_STATION
     public void test_OnionStation(){
