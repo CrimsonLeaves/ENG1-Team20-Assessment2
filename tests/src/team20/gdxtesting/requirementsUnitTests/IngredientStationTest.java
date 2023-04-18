@@ -20,11 +20,8 @@ public class IngredientStationTest {
     /**
      * Tests the IngredientStation Class and all of its subclasses.
      */
-    @Test
-    public void noterror(){
-        //just a placeholder to avoid errors.
-    }
-    /*
+    
+    
     @Test
     // Test Requirement: UR_STATION
     public void test_IngredientStation(){
@@ -34,7 +31,7 @@ public class IngredientStationTest {
         assertTrue("An ingredient station should return an ingredient.", s.getIngredient() instanceof Ingredient);
 
     }
-
+    /*
     @Test
     // Test Requirement: UR_INGREDIENT_DOUGH/UR_STATION
     public void test_DoughStation(){
