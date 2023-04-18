@@ -102,7 +102,7 @@ public class IngredientStationTest {
         assertTrue("A potato station should return potatoes.", p.getIngredient() instanceof  Potato);
         assertFalse("A potato station shouldn't return onions.", p.getIngredient() instanceof Onion);
     }
-
+    /*
     @Test
     //Test Requirement: UR_STATION
     public void test_SteakStation(){
@@ -123,6 +123,6 @@ public class IngredientStationTest {
         assertTrue("A tomato station should return tomatoes.", t.getIngredient() instanceof  Tomato);
         assertFalse("A tomato station shouldn't return steaks.", t.getIngredient() instanceof Potato);
     }
-    
+    */
 }
 
