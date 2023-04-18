@@ -74,10 +74,10 @@ public class MainMenu implements Screen {
             Gdx.input.setInputProcessor(stage);
         }
         table = new Table();
+        promptTable = new Table();
         Table buttonTable = new Table();
         table.setFillParent(true);
         promptTable.setFillParent(true);
-        //promptTable.setDebug(true);
         backgroundSprite.setSize(MainGame.V_WIDTH, MainGame.V_HEIGHT);
         backgroundSprite.setPosition(0, 0);
         camera.position.set(viewport.getWorldWidth() / 2, viewport.getWorldHeight() / 2, 0);
@@ -116,10 +116,9 @@ public class MainMenu implements Screen {
         table.row();
         table.add(moneyLabel).bottom().left();
 
-        promptTable = new Table();
+
         Table promptTableButtons = new Table();
-        promptTable.setDebug(true);
-        table.setDebug(true);
+        //promptTable.setDebug(true);
 
         TextButton loadButton = new TextButton("Load Game", skin);
         loadButton.getLabel().setFontScale(0.5f);
