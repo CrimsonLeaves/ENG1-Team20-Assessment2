@@ -1,6 +1,7 @@
 package com.team13.piazzapanic;
 
 import Recipe.Order;
+import Recipe.*;
 import Sprites.PlateStation;
 import Tools.OrderDataStore;
 import com.badlogic.gdx.graphics.Texture;
@@ -14,7 +15,7 @@ public class Orders {
      * Constructor for Orders
      */
     public Orders(){
-        totalRecipes=2;
+        totalRecipes=4;
     }
 
     /**
@@ -26,11 +27,17 @@ public class Orders {
         int randomNum = ThreadLocalRandom.current().nextInt(0, totalRecipes);
         Texture burger_recipe = new Texture("Food/burger_recipe.png");
         Texture salad_recipe = new Texture("Food/salad_recipe.png");
+        Texture pizza_recipe = new Texture("Food/pizza_recipe.png");
+        Texture jacket_potato_recipe = new Texture("Food/jacket_potato_recipe.png");
         switch (randomNum){
             case 0:
-                return new Order(PlateStation.getRecipe("Burger"), burger_recipe,startTime,60f*diff);
+                return new Order(new BurgerRecipe(), burger_recipe,startTime,60f*diff);
             case 1:
-                return new Order(PlateStation.getRecipe("Salad"), salad_recipe,startTime,60f*diff);
+                return new Order(new SaladRecipe(), salad_recipe,startTime,60f*diff);
+            case 2:
+                return new Order(new CookedPizzaRecipe(), pizza_recipe, startTime, 60f*diff);
+            case 3:
+                return new Order(new JacketPotatoRecipe(), jacket_potato_recipe, startTime, 60f*diff);
             default:
                 return null;
         }
