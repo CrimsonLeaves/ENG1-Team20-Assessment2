@@ -31,7 +31,7 @@ public class IngredientStationTest {
         assertTrue("An ingredient station should return an ingredient.", s.getIngredient() instanceof Ingredient);
 
     }
-    /*
+    
     @Test
     // Test Requirement: UR_INGREDIENT_DOUGH/UR_STATION
     public void test_DoughStation(){
@@ -42,7 +42,7 @@ public class IngredientStationTest {
         //Test an invalid input.
         assertFalse("A dough station shouldn't return Tomatoes.", d.getIngredient() instanceof Tomato);
     }
-
+    /*
     @Test
     // Test Requirement: UR_STATION
     public void test_BunsStation(){
