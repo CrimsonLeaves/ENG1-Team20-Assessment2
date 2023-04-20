@@ -14,6 +14,7 @@ public class TestCircularList {
      * Unit testing class. Tests our custom implementation of a circular list for switching chefs on rotation.
      */
 
+    @Test
     public void testCircularListInit() {
         assertTrue(true);
     }
