@@ -25,7 +25,7 @@ public class IngredientStationTest {
     @Test
     // Test Requirement: UR_STATION
     public void test_IngredientStation(){
-        //Create a general ingredient station and see if it can return an ingredient.
+        //Create a generic ingredient station and see if it can return an ingredient.
         IngredientStation s = new IngredientStation(new World(new Vector2(0, 0), true),
                 new TiledMap(), new BodyDef(), new Rectangle());
         assertTrue("An ingredient station should return an ingredient.", s.getIngredient() instanceof Ingredient);

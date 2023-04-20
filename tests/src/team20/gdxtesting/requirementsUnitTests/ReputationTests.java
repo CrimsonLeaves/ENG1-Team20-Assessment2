@@ -13,7 +13,6 @@ public class ReputationTests {
 
     @Test
     public void testReputationInit() {
-        //TODO: Try initialising with variable from main game class?
         int maxRep = 3;
         Reputation reput = new Reputation(maxRep);
         assertEquals("This test will pass when the reputation method has been initialised correctly", reput.getRep(), maxRep);
