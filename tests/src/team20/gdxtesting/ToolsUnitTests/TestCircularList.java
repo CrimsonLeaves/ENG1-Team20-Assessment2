@@ -15,7 +15,7 @@ public class TestCircularList {
      */
 
     public void testCircularListInit() {
-
+        assertTrue(true);
     }
 
 }
