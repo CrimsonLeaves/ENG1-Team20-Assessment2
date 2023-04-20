@@ -10,6 +10,10 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class Orders {
     int totalRecipes;
+    Texture burger_recipe = new Texture("Food/burger_recipe.png");
+    Texture salad_recipe = new Texture("Food/salad_recipe.png");
+    Texture pizza_recipe = new Texture("Food/pizza_recipe.png");
+    Texture jacket_potato_recipe = new Texture("Food/jacket_potato_recipe.png");
 
     /**
      * Constructor for Orders
@@ -25,10 +29,7 @@ public class Orders {
      */
     public Order newOrder(int startTime, float diff){
         int randomNum = ThreadLocalRandom.current().nextInt(0, totalRecipes);
-        Texture burger_recipe = new Texture("Food/burger_recipe.png");
-        Texture salad_recipe = new Texture("Food/salad_recipe.png");
-        Texture pizza_recipe = new Texture("Food/pizza_recipe.png");
-        Texture jacket_potato_recipe = new Texture("Food/jacket_potato_recipe.png");
+
         switch (randomNum){
             case 0:
                 return new Order(new BurgerRecipe(), burger_recipe,startTime,60f*diff);
@@ -46,13 +47,15 @@ public class Orders {
         String orderType = order.getOrderType();
         int startTime = order.getStartTime();
         float diff = order.getDiff();
-        Texture burger_recipe = new Texture("Food/burger_recipe.png");
-        Texture salad_recipe = new Texture("Food/salad_recipe.png");
         switch (orderType){
             case "Food/burger_recipe.png":
                 return new Order(PlateStation.getRecipe("Burger"), burger_recipe,startTime,60f*diff);
             case "Food/salad_recipe.png":
                 return new Order(PlateStation.getRecipe("Salad"), salad_recipe,startTime,60f*diff);
+            case "Food/pizza_recipe.png":
+                return new Order(PlateStation.getRecipe("Pizza"), pizza_recipe, startTime, 60f*diff);
+            case "Food/jacket_potato_recipe.png":
+                return new Order(PlateStation.getRecipe("Jacket Potato"), jacket_potato_recipe, startTime, 60f*diff);
             default:
                 return null;
         }
