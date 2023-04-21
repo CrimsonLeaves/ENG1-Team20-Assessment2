@@ -2,7 +2,6 @@ package com.team13.piazzapanic;
 
 import Recipe.Order;
 import Recipe.*;
-import Sprites.PlateStation;
 import Tools.OrderDataStore;
 import com.badlogic.gdx.graphics.Texture;
 
@@ -49,13 +48,13 @@ public class Orders {
         float diff = order.getDiff();
         switch (orderType){
             case "Food/burger_recipe.png":
-                return new Order(PlateStation.getRecipe("Burger"), burger_recipe,startTime,60f*diff);
+                return new Order(new BurgerRecipe(), burger_recipe,startTime,60f*diff);
             case "Food/salad_recipe.png":
-                return new Order(PlateStation.getRecipe("Salad"), salad_recipe,startTime,60f*diff);
+                return new Order(new SaladRecipe(), salad_recipe,startTime,60f*diff);
             case "Food/pizza_recipe.png":
-                return new Order(PlateStation.getRecipe("Pizza"), pizza_recipe, startTime, 60f*diff);
+                return new Order(new CookedPizzaRecipe(), pizza_recipe, startTime, 60f*diff);
             case "Food/jacket_potato_recipe.png":
-                return new Order(PlateStation.getRecipe("Jacket Potato"), jacket_potato_recipe, startTime, 60f*diff);
+                return new Order(new JacketPotatoRecipe(), jacket_potato_recipe, startTime, 60f*diff);
             default:
                 return null;
         }

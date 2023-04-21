@@ -311,13 +311,12 @@ public class PlayScreen implements Screen {
                         if(choppingBoardTile.getCurrentIngredient() != null){
                             controlledChef.pickUp(choppingBoardTile.getCurrentIngredient());
                             choppingBoardTile.setCurrentIngredient(null);
-                        } else {
-                            assert ingredient != null;
-                            if(ingredient.getTimer("Chopping Board") != null
-                                      && !ingredient.isCompleted("Chopping Board")){
-                                choppingBoardTile.setCurrentIngredient(ingredient);
-                                controlledChef.putDown();
-                            }
+                        } else if (ingredient != null){
+                                if(ingredient.getTimer("Chopping Board") != null
+                                          && !ingredient.isCompleted("Chopping Board")){
+                                    choppingBoardTile.setCurrentIngredient(ingredient);
+                                    controlledChef.putDown();
+                                }
                         }
                         break;
                     case "Sprites.Pan":
@@ -325,13 +324,12 @@ public class PlayScreen implements Screen {
                         if(panTile.getCurrentIngredient() != null){
                             controlledChef.pickUp(panTile.getCurrentIngredient());
                             panTile.setCurrentIngredient(null);
-                        } else {
-                            assert ingredient != null;
-                            if(ingredient.getTimer("Pan") != null
-                                      && !ingredient.isCompleted("Pan")){
-                                panTile.setCurrentIngredient(ingredient);
-                                controlledChef.putDown();
-                            }
+                        } else if (ingredient != null){
+                                if(ingredient.getTimer("Pan") != null
+                                          && !ingredient.isCompleted("Pan")){
+                                    panTile.setCurrentIngredient(ingredient);
+                                    controlledChef.putDown();
+                                }
                         }
                         break;
                     case "Sprites.Oven":
