@@ -149,7 +149,7 @@ public class B2WorldCreator {
                         new PotatoStation(world,map,bdef,rectangle);
                     } else if(mapObject.getName().equals("beans")){
                         new BeansStation(world,map,bdef,rectangle);
-                    } else if(mapObject.getName().equals(Constants.OVEN)){
+                    } else if(mapObject.getName().equals("oven")){
                         Oven tempStation = new Oven(world, map, bdef, rectangle);
                         addIngredient(x, y, tempStation);
                         screen.ovens.add(tempStation);
