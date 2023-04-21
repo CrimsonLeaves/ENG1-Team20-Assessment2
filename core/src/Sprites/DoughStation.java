@@ -3,6 +3,7 @@ package Sprites;
 import Ingredients.Cheese;
 import Ingredients.Dough;
 import Ingredients.Ingredient;
+import Tools.Constants;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -21,8 +22,8 @@ public class DoughStation extends IngredientStation{
      */
     public DoughStation(World world, TiledMap map, BodyDef bdef, Rectangle rectangle) {
         super(world, map, bdef, rectangle);
-        completed.put("Chopping Board", true);
-        completed.put("Pan", true);
+        completed.put(Constants.CHOPPING_BOARD, true);
+        completed.put(Constants.PAN, true);
     }
 
     @Override

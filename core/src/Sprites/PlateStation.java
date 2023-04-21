@@ -2,6 +2,7 @@ package Sprites;
 
 import Ingredients.*;
 import Recipe.*;
+import Tools.Constants;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Rectangle;
@@ -43,10 +44,10 @@ public class PlateStation extends InteractiveTileObject {
         fixture.setUserData(this);
         this.plate = new ArrayList<>();
         recipes = new HashMap<>();
-        recipes.put("Salad",new SaladRecipe());
-        recipes.put("Burger", new BurgerRecipe());
-        recipes.put("Pizza", new UncookedPizzaRecipe());
-        recipes.put("Jacket Potato", new JacketPotatoRecipe());
+        recipes.put(Constants.SALAD,new SaladRecipe());
+        recipes.put(Constants.BURGER, new BurgerRecipe());
+        recipes.put(Constants.PIZZA, new UncookedPizzaRecipe());
+        recipes.put(Constants.JACKET_POTATO, new JacketPotatoRecipe());
         this.recipeDone = null;
     }
 

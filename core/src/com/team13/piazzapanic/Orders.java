@@ -3,16 +3,17 @@ package com.team13.piazzapanic;
 import Recipe.Order;
 import Recipe.*;
 import Tools.OrderDataStore;
+import Tools.Constants;
 import com.badlogic.gdx.graphics.Texture;
 
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Orders {
     int totalRecipes;
-    Texture burger_recipe = new Texture("Food/burger_recipe.png");
-    Texture salad_recipe = new Texture("Food/salad_recipe.png");
-    Texture pizza_recipe = new Texture("Food/pizza_recipe.png");
-    Texture jacket_potato_recipe = new Texture("Food/jacket_potato_recipe.png");
+    Texture burger_recipe = new Texture(Constants.BURGER_RECIPE_PATH);
+    Texture salad_recipe = new Texture(Constants.SALAD_RECIPE_PATH);
+    Texture pizza_recipe = new Texture(Constants.PIZZA_RECIPE_PATH);
+    Texture jacket_potato_recipe = new Texture(Constants.JACKET_POTATO_RECIPE_PATH);
 
     /**
      * Constructor for Orders
@@ -47,11 +48,11 @@ public class Orders {
         int startTime = order.getStartTime();
         float diff = order.getDiff();
         switch (orderType){
-            case "Food/burger_recipe.png":
+            case Constants.BURGER_RECIPE_PATH:
                 return new Order(new BurgerRecipe(), burger_recipe,startTime,60f*diff);
-            case "Food/salad_recipe.png":
+            case Constants.SALAD_RECIPE_PATH:
                 return new Order(new SaladRecipe(), salad_recipe,startTime,60f*diff);
-            case "Food/pizza_recipe.png":
+            case Constants.PIZZA_RECIPE_PATH:
                 return new Order(new CookedPizzaRecipe(), pizza_recipe, startTime, 60f*diff);
             case "Food/jacket_potato_recipe.png":
                 return new Order(new JacketPotatoRecipe(), jacket_potato_recipe, startTime, 60f*diff);

@@ -1,5 +1,6 @@
 package com.team13.piazzapanic;
 
+import Tools.Constants;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
@@ -163,7 +164,7 @@ public class MainMenu implements Screen {
         scenarioMode.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                if (!Gdx.files.local("dataScenario.json").exists()) {
+                if (!Gdx.files.local(Constants.DATA_SCENARIO_PATH).exists()) {
                     Gdx.app.log("State", "Scenario " + game.difficulty);
                     game.inGame = true;
                     game.scenarioMode = true;
@@ -183,7 +184,7 @@ public class MainMenu implements Screen {
         endlessMode.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                if (!Gdx.files.local("dataEndless.json").exists()) {
+                if (!Gdx.files.local(Constants.DATA_ENDLESS_PATH).exists()) {
                     Gdx.app.log("State", "Scenario " + game.difficulty);
                     game.inGame = true;
                     game.scenarioMode = false;

@@ -1,5 +1,6 @@
 package com.team13.piazzapanic;
 
+import Tools.Constants;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.files.FileHandle;
@@ -151,13 +152,13 @@ public class EndScreen implements Screen {
     }
     private void removeSave(boolean scenarioMode){
         if (scenarioMode){
-            FileHandle file = Gdx.files.local("dataScenario.json");
+            FileHandle file = Gdx.files.local(Constants.DATA_SCENARIO_PATH);
             if (file.exists()){
                 file.delete();
             }
         }
         else{
-            FileHandle file = Gdx.files.local("dataEndless.json");
+            FileHandle file = Gdx.files.local(Constants.DATA_ENDLESS_PATH);
             if (file.exists()){
                 file.delete();
             }

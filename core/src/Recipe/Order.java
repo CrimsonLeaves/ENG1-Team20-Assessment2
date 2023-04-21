@@ -1,5 +1,6 @@
 package Recipe;
 
+import Tools.Constants;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -56,7 +57,7 @@ public class Order extends Sprite {
         Sprite sprite = new Sprite(orderImg);
         adjustedX = x - (8 / MainGame.PPM);
         adjustedY = y + (2 / MainGame.PPM);
-        if (orderImg.toString().equals("Food/salad_recipe.png")) {
+        if (orderImg.toString().equals(Constants.SALAD_RECIPE_PATH)) {
             sprite.setBounds(adjustedX, adjustedY, 53 / MainGame.PPM, 28 / MainGame.PPM);
             sprite.draw(batch);
         } else {

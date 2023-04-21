@@ -15,17 +15,14 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Json;
@@ -136,10 +133,10 @@ public class PlayScreen implements Screen {
         Json json = new Json();
         FileHandle file;
         if (scenarioMode){
-            file = Gdx.files.local("dataScenario.json");
+            file = Gdx.files.local(Constants.DATA_SCENARIO_PATH);
         }
         else{
-            file = Gdx.files.local("dataEndless.json");
+            file = Gdx.files.local(Constants.DATA_ENDLESS_PATH);
         }
         if (!file.exists()){
             loadGame=false;
@@ -312,8 +309,8 @@ public class PlayScreen implements Screen {
                             controlledChef.pickUp(choppingBoardTile.getCurrentIngredient());
                             choppingBoardTile.setCurrentIngredient(null);
                         } else if (ingredient != null){
-                                if(ingredient.getTimer("Chopping Board") != null
-                                          && !ingredient.isCompleted("Chopping Board")){
+                                if(ingredient.getTimer(Constants.CHOPPING_BOARD) != null
+                                          && !ingredient.isCompleted(Constants.CHOPPING_BOARD)){
                                     choppingBoardTile.setCurrentIngredient(ingredient);
                                     controlledChef.putDown();
                                 }
@@ -325,8 +322,8 @@ public class PlayScreen implements Screen {
                             controlledChef.pickUp(panTile.getCurrentIngredient());
                             panTile.setCurrentIngredient(null);
                         } else if (ingredient != null){
-                                if(ingredient.getTimer("Pan") != null
-                                          && !ingredient.isCompleted("Pan")){
+                                if(ingredient.getTimer(Constants.PAN) != null
+                                          && !ingredient.isCompleted(Constants.PAN)){
                                     panTile.setCurrentIngredient(ingredient);
                                     controlledChef.putDown();
                                 }
@@ -341,8 +338,8 @@ public class PlayScreen implements Screen {
                             controlledChef.pickUp(ovenTile.getCurrentRecipe());
                             ovenTile.setCurrentRecipe(null);
                         } else if (ingredient != null){
-                            if(ingredient.getTimer("Oven") != null
-                                && !ingredient.isCompleted("Oven")){
+                            if(ingredient.getTimer(Constants.OVEN) != null
+                                && !ingredient.isCompleted(Constants.OVEN)){
                                 ovenTile.setCurrentIngredient(ingredient);
                                 controlledChef.putDown();
                             }
@@ -606,10 +603,10 @@ public class PlayScreen implements Screen {
         String dataString = json.toJson(saveData);
         FileHandle file;
         if (scenarioMode){
-            file = Gdx.files.local("dataScenario.json");
+            file = Gdx.files.local(Constants.DATA_SCENARIO_PATH);
         }
         else{
-            file = Gdx.files.local("dataEndless.json");
+            file = Gdx.files.local(Constants.DATA_ENDLESS_PATH);
         }
 
         file.writeString(dataString, false);
@@ -689,10 +686,10 @@ public class PlayScreen implements Screen {
         Json json = new Json();
         FileHandle file;
         if (scenarioMode){
-            file = Gdx.files.local("dataScenario.json");
+            file = Gdx.files.local(Constants.DATA_SCENARIO_PATH);
         }
         else{
-            file = Gdx.files.local("dataEndless.json");
+            file = Gdx.files.local(Constants.DATA_ENDLESS_PATH);
         }
         String dataRaw = file.readString();
         SaveDataStore saveData = json.fromJson(SaveDataStore.class, dataRaw);
@@ -723,19 +720,19 @@ public class PlayScreen implements Screen {
             if (ingredient.isRecipe()){
                 Recipe currentRecipe;
                 switch (ingredient.getName()){
-                    case "BurgerRecipe":
+                    case Constants.BURGER_RECIPE:
                         currentRecipe = new BurgerRecipe();
                         break;
-                    case "CookedPizzaRecipe":
+                    case Constants.COOKED_PIZZA_RECIPE:
                         currentRecipe = new CookedPizzaRecipe();
                         break;
-                    case "JacketPotatoRecipe":
+                    case Constants.JACKET_POTATO_RECIPE:
                         currentRecipe = new JacketPotatoRecipe();
                         break;
-                    case "SaladRecipe":
+                    case Constants.SALAD_RECIPE:
                         currentRecipe = new SaladRecipe();
                         break;
-                    case "UncookedPizzaRecipe":
+                    case Constants.UNCOOKED_PIZZA_RECIPE:
                         currentRecipe = new UncookedPizzaRecipe();
                         break;
                     default:
@@ -745,43 +742,7 @@ public class PlayScreen implements Screen {
                 holding.add(currentRecipe);
             }
             else{
-                Ingredient currentIngredient;
-                switch (ingredient.getName()){
-                    case "Beans":
-                        currentIngredient=new Beans(ingredient.getTimers(),ingredient.getCompleted());
-                        break;
-                    case "Bun":
-                        currentIngredient=new Bun(ingredient.getTimers(),ingredient.getCompleted());
-                        break;
-                    case "Cheese":
-                        currentIngredient=new Cheese(ingredient.getTimers(),ingredient.getCompleted());
-                        break;
-                    case "Dough":
-                        currentIngredient=new Dough(ingredient.getTimers(),ingredient.getCompleted());
-                        break;
-                    case "Onion":
-                        currentIngredient=new Onion(ingredient.getTimers(),ingredient.getCompleted());
-                        break;
-                    case "Lettuce":
-                        currentIngredient=new Lettuce(ingredient.getTimers(),ingredient.getCompleted());
-                        break;
-                    case "Potato":
-                        currentIngredient=new Potato(ingredient.getTimers(),ingredient.getCompleted());
-                        break;
-                    case "Steak":
-                        currentIngredient=new Steak(ingredient.getTimers(),ingredient.getCompleted());
-                        break;
-                    case "Tomato":
-                        currentIngredient=new Tomato(ingredient.getTimers(),ingredient.getCompleted());
-                        break;
-                    case "FailedIngredient":
-                        currentIngredient=new FailedIngredient();
-                        break;
-                    default:
-                        currentIngredient=null;
-                        break;
-                }
-                currentIngredient.setSkin(ingredient.getSkin());
+                Ingredient currentIngredient = B2WorldCreator.getIngredient(ingredient);
                 holding.add(currentIngredient);
             }
 
@@ -998,7 +959,7 @@ public class PlayScreen implements Screen {
             Ingredient currentIngredient = choppingBoard.getCurrentIngredient();
             if (currentIngredient != null) {
                 currentIngredient.create(choppingBoard.getX(), choppingBoard.getY(), game.batch);
-                choppingBoard.drawProgressBar(game.batch,"Chopping Board", diffMult);
+                choppingBoard.drawProgressBar(game.batch,Constants.CHOPPING_BOARD, diffMult);
             }
         }
 
@@ -1006,7 +967,7 @@ public class PlayScreen implements Screen {
             Ingredient currentIngredient = pan.getCurrentIngredient();
             if (currentIngredient != null) {
                 currentIngredient.create(pan.getX(), pan.getY(), game.batch);
-                pan.drawProgressBar(game.batch,"Pan", diffMult);
+                pan.drawProgressBar(game.batch,Constants.PAN, diffMult);
             }
         }
 
@@ -1015,10 +976,10 @@ public class PlayScreen implements Screen {
             Recipe  currentRecipe = oven.getCurrentRecipe();
             if (currentIngredient != null) {
                 currentIngredient.create(oven.getX(),oven.getY(),game.batch);
-                oven.drawProgressBar(game.batch,"Oven", diffMult);
+                oven.drawProgressBar(game.batch,Constants.OVEN, diffMult);
             } else if (currentRecipe != null){
                 currentRecipe.create(oven.getX(),oven.getY(),game.batch);
-                oven.drawProgressBar(game.batch,"Oven", diffMult);
+                oven.drawProgressBar(game.batch,Constants.OVEN, diffMult);
             }
         }
 

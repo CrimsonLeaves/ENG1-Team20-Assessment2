@@ -2,6 +2,7 @@ package Sprites;
 
 import Ingredients.FailedIngredient;
 import Ingredients.Ingredient;
+import Tools.Constants;
 import Recipe.Recipe;
 import Recipe.CookedPizzaRecipe;
 import com.badlogic.gdx.Gdx;
@@ -56,35 +57,35 @@ public class Oven extends CookingStation{
     @Override
     public void update(float dt,float diff,boolean instantCook, boolean noBurn){
         if(currentIngredient != null && !currentIngredient.getFailed()) {
-            if (instantCook && !currentIngredient.isCompleted("Oven")){
-                timer=currentIngredient.getTimer("Oven");
+            if (instantCook && !currentIngredient.isCompleted(Constants.OVEN)){
+                timer=currentIngredient.getTimer(Constants.OVEN);
             }
             timer += dt;
-            if (timer > currentIngredient.getTimer("Oven")
-                    && !currentIngredient.isCompleted("Oven")) {
-                currentIngredient.setCompleted("Oven");
+            if (timer > currentIngredient.getTimer(Constants.OVEN)
+                    && !currentIngredient.isCompleted(Constants.OVEN)) {
+                currentIngredient.setCompleted(Constants.OVEN);
                 timer = 0;
-            } else if (noBurn && currentIngredient.isCompleted("Oven")){
+            } else if (noBurn && currentIngredient.isCompleted(Constants.OVEN)){
                 timer=0;
-            } else if( timer > currentIngredient.getTimer("Oven")*2*diff
-                    && currentIngredient.isCompleted("Oven")){
+            } else if( timer > currentIngredient.getTimer(Constants.OVEN)*2*diff
+                    && currentIngredient.isCompleted(Constants.OVEN)){
                 currentIngredient = new FailedIngredient();
             }
         } else if(currentRecipe != null){
-            if (instantCook && currentRecipe.getClass().getSimpleName().equals("UncookedPizzaRecipe")){
+            if (instantCook && currentRecipe.getClass().getSimpleName().equals(Constants.UNCOOKED_PIZZA_RECIPE)){
                 timer=pizzaTimer;
             }
             timer +=dt;
             //hardcoded to deal with cooking a pizza
-            if (timer > pizzaTimer && (currentRecipe.getClass().getSimpleName().equals("UncookedPizzaRecipe"))){
-                Gdx.app.log("Pizza","Made");
+            if (timer > pizzaTimer && (currentRecipe.getClass().getSimpleName().equals(Constants.UNCOOKED_PIZZA_RECIPE))){
+                Gdx.app.log(Constants.PIZZA,"Made");
                 timer = 0;
                 currentRecipe = new CookedPizzaRecipe(); //cooked pizza
 
-            } else if (noBurn && currentRecipe.getClass().getSimpleName().equals("CookedPizzaRecipe")){
+            } else if (noBurn && currentRecipe.getClass().getSimpleName().equals(Constants.COOKED_PIZZA_RECIPE)){
                 timer=0;
-            } else if (timer > pizzaTimer*2*diff && currentRecipe.getClass().getSimpleName().equals("CookedPizzaRecipe")){
-                Gdx.app.log("Pizza","Burnt");
+            } else if (timer > pizzaTimer*2*diff && currentRecipe.getClass().getSimpleName().equals(Constants.COOKED_PIZZA_RECIPE)){
+                Gdx.app.log(Constants.PIZZA,"Burnt");
                 currentRecipe = null;
                 currentIngredient = new FailedIngredient();
             }
@@ -107,7 +108,7 @@ public class Oven extends CookingStation{
             }
         }
         if (currentRecipe != null){
-            if (timer < pizzaTimer && currentRecipe.getClass().getSimpleName().equals("UncookedPizzaRecipe")){
+            if (timer < pizzaTimer && currentRecipe.getClass().getSimpleName().equals(Constants.UNCOOKED_PIZZA_RECIPE)){
                 float progress=timer/pizzaTimer;
                 batch.draw(progBarBack,adjX,adjY,(MainGame.TILE_SIZE-1)/MainGame.PPM,MainGame.TILE_SIZE/(4*MainGame.PPM));
                 batch.draw(progBarFill,adjX,adjY,(MainGame.TILE_SIZE-1)*progress/MainGame.PPM,MainGame.TILE_SIZE/(4*MainGame.PPM));

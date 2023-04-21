@@ -89,19 +89,19 @@ public class B2WorldCreator {
                                         IngredientDataStore rawRecipe = items[x][y].get(0);
                                         Recipe currentRecipe;
                                         switch (rawRecipe.getName()) {
-                                            case "BurgerRecipe":
+                                            case Constants.BURGER_RECIPE:
                                                 currentRecipe = new BurgerRecipe();
                                                 break;
-                                            case "CookedPizzaRecipe":
+                                            case Constants.COOKED_PIZZA_RECIPE:
                                                 currentRecipe = new CookedPizzaRecipe();
                                                 break;
-                                            case "JacketPotatoRecipe":
+                                            case Constants.JACKET_POTATO_RECIPE:
                                                 currentRecipe = new JacketPotatoRecipe();
                                                 break;
-                                            case "SaladRecipe":
+                                            case Constants.SALAD_RECIPE:
                                                 currentRecipe = new SaladRecipe();
                                                 break;
-                                            case "UncookedPizzaRecipe":
+                                            case Constants.UNCOOKED_PIZZA_RECIPE:
                                                 currentRecipe = new UncookedPizzaRecipe();
                                                 break;
                                             default:
@@ -149,7 +149,7 @@ public class B2WorldCreator {
                         new PotatoStation(world,map,bdef,rectangle);
                     } else if(mapObject.getName().equals("beans")){
                         new BeansStation(world,map,bdef,rectangle);
-                    } else if(mapObject.getName().equals("oven")){
+                    } else if(mapObject.getName().equals(Constants.OVEN)){
                         Oven tempStation = new Oven(world, map, bdef, rectangle);
                         addIngredient(x, y, tempStation);
                         screen.ovens.add(tempStation);
@@ -178,6 +178,12 @@ public class B2WorldCreator {
         if (item == null){
             return null;
         }
+        currentIngredient = getIngredient(item);
+        return currentIngredient;
+    }
+
+    public static Ingredient getIngredient(IngredientDataStore item) {
+        Ingredient currentIngredient;
         switch (item.getName()){
             case "Beans":
                 currentIngredient=new Beans(item.getTimers(),item.getCompleted());

@@ -5,7 +5,7 @@ public class OrderDataStore {
     int startTime;
     float diff;
     public OrderDataStore(){
-        orderType="burger";
+        orderType=Constants.BURGER;
         diff=1;
         startTime=0;
     }

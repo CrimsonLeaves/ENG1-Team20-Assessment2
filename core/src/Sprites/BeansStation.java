@@ -3,6 +3,7 @@ package Sprites;
 import Ingredients.Beans;
 import Ingredients.Ingredient;
 import Ingredients.Potato;
+import Tools.Constants;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -21,9 +22,9 @@ public class BeansStation extends IngredientStation{
      */
     public BeansStation(World world, TiledMap map, BodyDef bdef, Rectangle rectangle) {
         super(world, map, bdef, rectangle);
-        timers.put("Pan", (float) 3);
-        completed.put("Chopping Board", true);
-        completed.put("Pan", false);
+        timers.put(Constants.PAN, (float) 3);
+        completed.put(Constants.CHOPPING_BOARD, true);
+        completed.put(Constants.PAN, false);
     }
 
     @Override

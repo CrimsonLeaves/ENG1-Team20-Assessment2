@@ -3,6 +3,7 @@ package Sprites;
 import Ingredients.Cheese;
 import Ingredients.Ingredient;
 import Ingredients.Potato;
+import Tools.Constants;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -21,10 +22,10 @@ public class PotatoStation extends IngredientStation{
      */
     public PotatoStation(World world, TiledMap map, BodyDef bdef, Rectangle rectangle) {
         super(world, map, bdef, rectangle);
-        timers.put("Oven", (float) 4);
-        completed.put("Chopping Board", true);
-        completed.put("Pan", true);
-        completed.put("Oven", false);
+        timers.put(Constants.OVEN, (float) 4);
+        completed.put(Constants.CHOPPING_BOARD, true);
+        completed.put(Constants.PAN, true);
+        completed.put(Constants.OVEN, false);
     }
 
     @Override

@@ -2,6 +2,7 @@ package Sprites;
 
 import Ingredients.FailedIngredient;
 import Ingredients.Ingredient;
+import Tools.Constants;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -40,18 +41,18 @@ public class CookingStation extends InteractiveTileObject{
 
     public void update(float dt,float diff,boolean instantCook, boolean noBurn){
         if(currentIngredient != null && !currentIngredient.getFailed()) {
-            if (instantCook && !currentIngredient.isCompleted("Chopping Board")){
-                timer=currentIngredient.getTimer("Chopping Board");
+            if (instantCook && !currentIngredient.isCompleted(Constants.CHOPPING_BOARD)){
+                timer=currentIngredient.getTimer(Constants.CHOPPING_BOARD);
             }
             timer += dt;
-            if (timer > currentIngredient.getTimer("Chopping Board")
-                && !currentIngredient.isCompleted("Chopping Board")) {
-                currentIngredient.setCompleted("Chopping Board");
+            if (timer > currentIngredient.getTimer(Constants.CHOPPING_BOARD)
+                && !currentIngredient.isCompleted(Constants.CHOPPING_BOARD)) {
+                currentIngredient.setCompleted(Constants.CHOPPING_BOARD);
                 timer = 0;
-            } else if (noBurn && currentIngredient.isCompleted("Chopping Board")){
+            } else if (noBurn && currentIngredient.isCompleted(Constants.CHOPPING_BOARD)){
                 timer=0;
-            } else if( timer > currentIngredient.getTimer("Chopping Board") *2*diff
-                    && currentIngredient.isCompleted("Chopping Board")){
+            } else if( timer > currentIngredient.getTimer(Constants.CHOPPING_BOARD) *2*diff
+                    && currentIngredient.isCompleted(Constants.CHOPPING_BOARD)){
                 currentIngredient = new FailedIngredient();
             }
         }

@@ -2,6 +2,7 @@ package Sprites;
 
 import Ingredients.Ingredient;
 import Ingredients.Steak;
+import Tools.Constants;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -19,10 +20,10 @@ public class SteakStation extends IngredientStation {
     public SteakStation(World world, TiledMap map, BodyDef bdef, Rectangle rectangle) {
         super(world, map, bdef, rectangle);
         fixture.setUserData(this);
-        timers.put("Chopping Board", (float) 2);
-        timers.put("Pan", (float) 3);
-        completed.put("Chopping Board", false);
-        completed.put("Pan", false);
+        timers.put(Constants.CHOPPING_BOARD, (float) 2);
+        timers.put(Constants.PAN, (float) 3);
+        completed.put(Constants.CHOPPING_BOARD, false);
+        completed.put(Constants.PAN, false);
     }
 
     @Override

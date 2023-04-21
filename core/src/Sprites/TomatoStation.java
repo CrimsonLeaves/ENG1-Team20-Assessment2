@@ -3,6 +3,7 @@ package Sprites;
 import Ingredients.Bun;
 import Ingredients.Ingredient;
 import Ingredients.Tomato;
+import Tools.Constants;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -21,9 +22,9 @@ public class TomatoStation extends IngredientStation {
     public TomatoStation(World world, TiledMap map, BodyDef bdef, Rectangle rectangle) {
         super(world, map, bdef, rectangle);
         fixture.setUserData(this);
-        timers.put("Chopping Board", (float) 2);
-        completed.put("Chopping Board", false);
-        completed.put("Pan", true);
+        timers.put(Constants.CHOPPING_BOARD, (float) 2);
+        completed.put(Constants.CHOPPING_BOARD, false);
+        completed.put(Constants.PAN, true);
     }
 
     @Override

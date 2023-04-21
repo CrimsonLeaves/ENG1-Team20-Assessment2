@@ -1,6 +1,7 @@
 package Sprites;
 
 import Ingredients.FailedIngredient;
+import Tools.Constants;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -22,18 +23,18 @@ public class Pan extends CookingStation {
     @Override
     public void update(float dt, float diff,boolean instantCook, boolean noBurn){
         if(currentIngredient != null && !currentIngredient.getFailed()) {
-            if (instantCook && !currentIngredient.isCompleted("Pan")){
-                timer=currentIngredient.getTimer("Pan");
+            if (instantCook && !currentIngredient.isCompleted(Constants.PAN)){
+                timer=currentIngredient.getTimer(Constants.PAN);
             }
             timer += dt;
-            if (timer > currentIngredient.getTimer("Pan")
-                && !currentIngredient.isCompleted("Pan")) {
-                currentIngredient.setCompleted("Pan");
+            if (timer > currentIngredient.getTimer(Constants.PAN)
+                && !currentIngredient.isCompleted(Constants.PAN)) {
+                currentIngredient.setCompleted(Constants.PAN);
                 timer = 0;
-            } else if (noBurn && currentIngredient.isCompleted("Pan")){
+            } else if (noBurn && currentIngredient.isCompleted(Constants.PAN)){
                 timer=0;
-            } else if( timer > currentIngredient.getTimer("Pan")*2*diff
-                        && currentIngredient.isCompleted("Pan")){
+            } else if( timer > currentIngredient.getTimer(Constants.PAN)*2*diff
+                        && currentIngredient.isCompleted(Constants.PAN)){
                 currentIngredient = new FailedIngredient();
             }
         }
