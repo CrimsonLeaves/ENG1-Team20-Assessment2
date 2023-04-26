@@ -1,5 +1,9 @@
 package com.team13.piazzapanic;
 
+/**
+ * Controls and handles the current reputation - allowing it to be decreased and reset. It is key for controlling if the
+ * game should end due to too many failed orders etc.
+ */
 public class Reputation {
     int rep;
     int maxRep;

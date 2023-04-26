@@ -20,6 +20,10 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 
 import java.io.File;
 
+/**
+ * EndScreen is the main screen that is displayed at the end of a round - win or lose. Its appearance is based on the
+ * outcome of the game, but always provides buttons to play again, or exit to the {@link MainMenu}
+ */
 public class EndScreen implements Screen {
     private final MainGame game;
     private final Texture backgroundImageLose;
@@ -150,6 +154,11 @@ public class EndScreen implements Screen {
 
 
     }
+
+    /**
+     * Deletes the correct save file once the EndScreen is reached to stop loading from an old save
+     * @param scenarioMode boolean of whether in scenarioMode or not
+     */
     private void removeSave(boolean scenarioMode){
         if (scenarioMode){
             FileHandle file = Gdx.files.local(Constants.DATA_SCENARIO_PATH);

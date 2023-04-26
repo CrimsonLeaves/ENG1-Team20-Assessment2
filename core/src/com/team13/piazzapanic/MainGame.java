@@ -54,6 +54,9 @@ public class MainGame extends Game {
 	Preferences prefs;
 
 
+	/**
+	 * Constructor for MainGame, instantiates all variables that are used between classes
+	 */
 	public MainGame(){
 		isShopScreen = false;
 		isPlayScreen = false;
@@ -67,6 +70,10 @@ public class MainGame extends Game {
 		unlockedChefs = 3;
 		maxChefs = 5;
 	}
+
+	/**
+	 * Initialises auxiliary screens and loads game data from preferences
+	 */
 	@Override
 	public void create() {
 		batch = new SpriteBatch();
@@ -81,10 +88,20 @@ public class MainGame extends Game {
 		unlockedChefs = prefs.getInteger("unlockedChefs", 3);
 
 	}
+
+	/**
+	 * Gets money from the preference file
+	 * @return The overall money earned
+	 */
 	public int getMoney() {
 		prefs.getInteger("money", 0);
 		return money;
 	}
+
+	/**
+	 * Alters the overall money saved in the preference file, either adds or subtracts money
+	 * @param money money to be added to overall total
+	 */
 	public void addMoney(int money) {
 		prefs = Gdx.app.getPreferences("gameData");
 		this.money+=money;
@@ -117,6 +134,9 @@ public class MainGame extends Game {
 	public int getMaxChefs() {return maxChefs;}
 
 
+	/**
+	 * Controls what screen should be present through different booleans
+	 */
 	@Override
 	public void render() {
 		super.render();

@@ -8,6 +8,9 @@ import com.badlogic.gdx.graphics.Texture;
 
 import java.util.concurrent.ThreadLocalRandom;
 
+/**
+ * A controller class that is used to instantiate new orders as required in the game. The orders are generated randomly.
+ */
 public class Orders {
     int totalRecipes;
     Texture burger_recipe = new Texture(Constants.BURGER_RECIPE_PATH);
@@ -43,6 +46,12 @@ public class Orders {
                 return null;
         }
     }
+
+    /**
+     * When given an {@link OrderDataStore} it creates the corresponding order object with the given timings.
+     * @param order Saved orderData object
+     * @return Created order in the correct object format
+     */
     public Order loadOrder(OrderDataStore order){
         String orderType = order.getOrderType();
         int startTime = order.getStartTime();

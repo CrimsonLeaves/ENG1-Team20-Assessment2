@@ -108,6 +108,7 @@ public class PlayScreen implements Screen {
      */
 
     public PlayScreen(MainGame game){
+        //Initialises variables
         stage = new Stage();
         shapeRenderer = new ShapeRenderer();
         this.game = game;
@@ -132,6 +133,7 @@ public class PlayScreen implements Screen {
         gamecam.position.set(gameport.getWorldWidth() / 2, gameport.getWorldHeight() / 2, 0);
         Json json = new Json();
         FileHandle file;
+        //Get correct save file
         if (scenarioMode){
             file = Gdx.files.local(Constants.DATA_SCENARIO_PATH);
         }
@@ -141,12 +143,12 @@ public class PlayScreen implements Screen {
         if (!file.exists()){
             loadGame=false;
         }
-        else {
+        else { //If file exists get station data
             String dataRaw = file.readString();
             SaveDataStore saveData = json.fromJson(SaveDataStore.class, dataRaw);
             stationItems=saveData.getStationItems();
         }
-
+        //Create world from map
         world = new World(new Vector2(0,0), true);
         if (loadGame){
             new B2WorldCreator(world, map, this, stationItems);
@@ -165,6 +167,9 @@ public class PlayScreen implements Screen {
 
     }
 
+    /**
+     * Called when the screen is showed to change the stage from the previous menus. This means that buttons do not click from the wrong screen
+     */
     @Override
     public void show(){
         Gdx.input.setInputProcessor(stage);
@@ -212,15 +217,15 @@ public class PlayScreen implements Screen {
         handleRemovingFromPlateStation();
     }
 
+    /**
+     * Handles input for switching between controlled chefs by cycling the chefList when the required input is given
+     */
     private void handleChefSwitching(){
         if ((Gdx.input.isKeyJustPressed(Input.Keys.R) && canSwitchChefs())) {
 
             controlledChef.b2body.setLinearVelocity(0, 0);
-            //Chef tempChef=controlledChef;
-
             while (!chefList.peekNextItem().getUserControlChef()){
                 chefList.nextItem();
-                //Stop infinite loop here
             }
             controlledChef = chefList.nextItem();
 
@@ -409,7 +414,8 @@ public class PlayScreen implements Screen {
     }
 
     /**
-     * Initialises chefs as circular list and creates in world space
+     * Initialises chefs as circular list and creates in world space. If the game is loading data and the data exists,
+     * the chefs are generated from their preexisting locaions and items being held. Save data is stored in {@link ChefDataStore}
      * @param chefCount Number of chefs to create in game
      */
     public void generateChefs(int chefCount){
@@ -453,6 +459,7 @@ public class PlayScreen implements Screen {
     public void checkOrder(){
         if (scenarioComplete==Boolean.TRUE){
             int totalMoney = hud.updateScore(Boolean.TRUE, currentOrder.startTime,diffMult);
+            game.endScreen.score=totalMoney;
             hud.updateOrder(Boolean.TRUE, 0);
             if (!moneyAdded){
                 moneyAdded=true;
@@ -465,8 +472,7 @@ public class PlayScreen implements Screen {
         }
         if (currentOrder != null){
             if (currentOrder.orderComplete == Boolean.TRUE){
-                //orderNum++;
-                hud.updateScore(Boolean.FALSE, currentOrder.startTime,diffMult);
+                game.endScreen.score = hud.updateScore(Boolean.FALSE, currentOrder.startTime,diffMult);
                 currentOrder = null;
                 createdOrder = Boolean.FALSE;
                 hud.updateOrder(Boolean.FALSE, orderNum);
@@ -498,10 +504,10 @@ public class PlayScreen implements Screen {
     }
 
     /**
-     * Puts game into lose game state
+     * Puts game into lose game state by setting the {@link MainGame} variables for screens to corresponding values.
+     * It also passes the needed data to the {@link EndScreen}, to display the data.
      */
     public void loseGame(){
-        Gdx.app.log("State","The game is in loss state");
         game.inGame=false;
         game.isEndScreen =true;
         game.isPlayScreen=false;
@@ -542,7 +548,7 @@ public class PlayScreen implements Screen {
             timeSeconds = 0f;
             timeSecondsCount = 0f;
             orderNum=0;
-            currentOrder=null;
+            currentOrder = null;
             switch (game.difficulty){
                 case "Easy":
                     diffMult=1.5f;
@@ -561,13 +567,15 @@ public class PlayScreen implements Screen {
         controlledChef.notificationSetBounds("Down");
 
         game.isEndScreen =false;
-
-
-
     }
+
+    /**
+     * Main saving method - called when the window focus is lost - e.g. when closed. It saves all data for chefs and their
+     * holding in {@link ChefDataStore} and {@link IngredientDataStore} respectively. It also stores the current order in {@link OrderDataStore}
+     * and stores it all in {@link SaveDataStore}
+     */
     public void saveGame(){
         //Save chef locations
-        Gdx.app.log("Game","Saved");
         //Generate chefData
         ArrayList<ChefDataStore> chefData = new ArrayList<>();
         for (Chef chef : chefList.allElems()){
@@ -599,6 +607,12 @@ public class PlayScreen implements Screen {
 
         file.writeString(dataString, false);
     }
+
+    /**
+     * Converts an ingredient or recipe object into {@link IngredientDataStore} which can be serialized and saved and loaded.
+     * @param ingredient Ingredient to be saved
+     * @return Serializable ingredient object store
+     */
     public IngredientDataStore saveIngredient(Sprite ingredient){
         if (ingredient instanceof Ingredient){
             Ingredient itemIngredient = (Ingredient) ingredient;
@@ -612,6 +626,11 @@ public class PlayScreen implements Screen {
         return new IngredientDataStore(recipe.getClass().getSimpleName());
 
     }
+
+    /**
+     * Iterates through all {@link CookingStation} that can store an item and saves any present items to {@link ArrayList}.
+     * Used for saving and further stored in {@link SaveDataStore}
+     */
     public void saveStations(){
         stationItems = new ArrayList[((TiledMapTileLayer) map.getLayers().get(0)).getWidth()][((TiledMapTileLayer) map.getLayers().get(0)).getHeight()];
         for (Pan pan : pans){
@@ -670,6 +689,11 @@ public class PlayScreen implements Screen {
             }
         }
     }
+
+    /**
+     * Main loading method - called when the screen is initialised to regenerate all data if the save file exists. This data is
+     * stored locally and used in other methods to fully load game.
+     */
     public void loadGame(){
         Json json = new Json();
         FileHandle file;
@@ -701,6 +725,13 @@ public class PlayScreen implements Screen {
             createdOrder=false;
         }
     }
+
+    /**
+     * Converts an {@link ArrayList} of {@link IngredientDataStore} to their corresponding ingredient objects to be used
+     * for loading chefs or station items.
+     * @param ingredientData an Array of serializable ingredient objects
+     * @return Deque of all serializable ingredients as corresponding object
+     */
     public Deque<Sprite> loadIngredients(ArrayList<IngredientDataStore> ingredientData){
         Deque<Sprite> holding = new ArrayDeque<>();
         for (IngredientDataStore ingredient : ingredientData){
@@ -787,7 +818,8 @@ public class PlayScreen implements Screen {
     }
 
     /**
-     * Checks for any overlap of controlled chef and powerups. Removes and activates if so.
+     * Checks for any overlap of controlled chef and powerups. Removes and activates if so. Uses {@link Rectangle} stored in
+     * {@link Chef} and {@link Powerup}
      */
     public void checkPowerupCollisions(){
         Iterator itr = powerups.iterator();
@@ -808,7 +840,7 @@ public class PlayScreen implements Screen {
     }
 
     /**
-     * Enables the powerup's ability once collided
+     * Enables the {@link Powerup}'s ability once collided
      * @param name Simple class name of powerup
      */
     private void activatePowerups(String name){
@@ -841,6 +873,10 @@ public class PlayScreen implements Screen {
                 Gdx.app.log("Error","wrong name");
         }
     }
+
+    /**
+     * Resets powerups if another powerup is picked up or timer runs out (for time based powerups)
+     */
     private void resetPowerups(){
         movementSpeed=1f;
         instantCook=false;
@@ -893,13 +929,14 @@ public class PlayScreen implements Screen {
         if (Math.round(timeSecondsCount % 10) == 5 && createdOrder == Boolean.FALSE){
             createdOrder = Boolean.TRUE;
             orderNum++;
-            currentOrder=ordersInterface.newOrder(hud.getTime(),diffMult);
+            currentOrder = ordersInterface.newOrder(hud.getTime(),diffMult);
+            hud.updateOrder(Boolean.FALSE, orderNum);
         }
         float period = 1f;
         if (timeSeconds > period) {
             timeSeconds -= period;
             hud.updateTime(scenarioComplete);
-            if (ThreadLocalRandom.current().nextInt(0, (int)(25/diffMult)) == 0){
+            if (ThreadLocalRandom.current().nextInt(0, (int)(35/diffMult)) == 0){
                 createPowerup();
             }
         }

@@ -120,9 +120,9 @@ public class ShopScreen implements Screen {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 int unlockedChefs = game.getUnlockedChefs();
-                if (game.getMoney() > 100 && game.getUnlockedChefs() < game.getMaxChefs()){
+                if (game.getMoney() > 500 && game.getUnlockedChefs() < game.getMaxChefs()){
                     game.setUnlockedChefs(unlockedChefs + 1);
-                    game.addMoney(-100);
+                    game.addMoney(-500);
                 }
             }
         });

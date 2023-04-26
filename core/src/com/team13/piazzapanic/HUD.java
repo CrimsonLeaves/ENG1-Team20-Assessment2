@@ -15,6 +15,10 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 
 
+/**
+ * The HUD class is in charge of displaying and updating any important game statistics to the user. It keeps track of the
+ * score, reputation, time, and order count.
+ */
 public class HUD implements Disposable {
     public Stage stage;
     private Boolean scenarioComplete;
@@ -125,6 +129,13 @@ public class HUD implements Disposable {
         stage.addActor(table);
 
     }
+
+    /**
+     * Regenerates the HUD to appear the same when loading a previous game.
+     * @param timeSeconds current Time in seconds
+     * @param score current score of game
+     * @param rep current reputation amount
+     */
     public void setHud(float timeSeconds,int score, int rep){
         worldTimerM=(int)timeSeconds/60;
         worldTimerS=(int)timeSeconds%60;
@@ -170,6 +181,7 @@ public class HUD implements Disposable {
                 }
             }
             score += addScore;
+
         }
 
 
@@ -220,22 +232,12 @@ public class HUD implements Disposable {
     public int getTime(){
         return worldTimerM*60+worldTimerS;
     }
+
+    /**
+     * Gets the current score that is stored in the HUD
+     * @return The current score for the round
+     */
     public int getScore() {return score;}
-    public void reset(){
-        //Reset lives
-        lives = new Image[3];
-        for (int i=0; i<3;i++){
-            Image heart = new Image(new Texture(Gdx.files.internal("UI/heart.png")));
-            table.add(heart);
-            lives[i]=heart;
-        }
-        //Reset Time
-        worldTimerS=0;
-        worldTimerM=0;
-        //Reset Score
-        score=0;
-        updateOrder(false,0);
-    }
 
     @Override
     public void dispose() {

@@ -24,6 +24,11 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.sun.tools.javac.util.Context;
 
+/**
+ * The MainMenu class is responsible for displaying the different game modes and the navigation of the game. It allows
+ * for a flow to exist between each level/round and displays this in an according manner. It also sets up the other screens
+ * and acts as a controller between each one.
+ */
 public class MainMenu implements Screen {
 
     private final MainGame game;
@@ -40,6 +45,10 @@ public class MainMenu implements Screen {
     boolean loadPrompt;
 
 
+    /** The main constructor which instantiates al variables and textures. This removes memory leaks and allows for the
+     * screen to be consistent throughout
+     * @param game The MainGame instance that the MainMenu will be a part of.
+     */
     public MainMenu(MainGame game){
         backgroundImage = new Texture("UI/background.png");
         backgroundSprite = new Sprite(backgroundImage);
@@ -58,6 +67,10 @@ public class MainMenu implements Screen {
         promptTable=new Table();
 
     }
+
+    /**
+     * Resets stage and accompanying tables to remove any overlapping content on the next frame
+     */
     public void resetScreen(){
         table.clear();
         table.remove();
@@ -66,6 +79,10 @@ public class MainMenu implements Screen {
         stage.clear();
         stage2.clear();
     }
+
+    /**
+     * Called when the screen is shown, it creates the button overlay for the screen, as well as their listeners.
+     */
     @Override
     public void show() {
         if (loadPrompt){
@@ -165,7 +182,6 @@ public class MainMenu implements Screen {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 if (!Gdx.files.local(Constants.DATA_SCENARIO_PATH).exists()) {
-                    Gdx.app.log("State", "Scenario " + game.difficulty);
                     game.inGame = true;
                     game.scenarioMode = true;
                     //game.playScreen.scenarioMode = true;
@@ -185,7 +201,6 @@ public class MainMenu implements Screen {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 if (!Gdx.files.local(Constants.DATA_ENDLESS_PATH).exists()) {
-                    Gdx.app.log("State", "Scenario " + game.difficulty);
                     game.inGame = true;
                     game.scenarioMode = false;
 
@@ -224,6 +239,11 @@ public class MainMenu implements Screen {
     }
 
 
+    /**
+     * Called each frame, allows for assets to be updated and drawn. Also determines which stage should be used for input
+     * and which stage to draw - depending on what overlay should be shown.
+     * @param delta The time in seconds since the last render.
+     */
     @Override
     public void render(float delta) {
         Gdx.gl.glClearColor(0, 0.5f, 0, 1);
@@ -238,10 +258,6 @@ public class MainMenu implements Screen {
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
         stage2.act();
         if (loadPrompt){
-            //game.batch.begin();
-            //backgroundSprite.draw(game.batch);
-            //loadSprite.draw(game.batch);
-            //game.batch.end();
             stage2.draw();
         } else {
             stage.draw();
@@ -251,6 +267,12 @@ public class MainMenu implements Screen {
         }
     }
 
+    /**
+     * Called when the screen is resized to update the stages, viewports and cameras. If the size of the window is changed,
+     * old elements are cleared and new ones rendered.
+     * @param width new screen width
+     * @param height new screen height
+     */
     @Override
     public void resize(int width, int height) {
         if (viewport.getScreenHeight()+viewport.getLeftGutterWidth()+ viewport.getRightGutterWidth() != width || viewport.getScreenWidth()+ viewport.getBottomGutterHeight()+ viewport.getTopGutterHeight()  != height){

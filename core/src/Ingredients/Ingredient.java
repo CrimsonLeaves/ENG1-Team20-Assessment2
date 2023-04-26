@@ -83,18 +83,35 @@ public abstract class Ingredient extends Sprite {
     public Float getTimer(String station){
         return timers.get(station);
     }
+
+    /**
+     * Returns the all the timers for the ingrdient - used for saving
+     * @return the Map of each station and their timer
+     */
     public Map<String, Float> getTimers(){
         return timers;
     }
 
+    /**
+     * Gets the ingredient's current skin index
+     * @return the skin index
+     */
     public int getSkin() {
         return skin;
     }
 
+    /**
+     * Sets the ingredient's current skin index
+     * @param skin ingredient skin index
+     */
     public void setSkin(int skin) {
         this.skin = skin;
     }
 
+    /**
+     * Returns the all the completed state for the ingredient in each station
+     * @return the Map of each station and if they have been completed
+     */
     public Map<String, Boolean> getCompleted() {
         return completed;
     }

@@ -45,7 +45,7 @@ public class B2WorldCreator {
  * */
 
     public B2WorldCreator(World world, TiledMap map, PlayScreen screen, ArrayList<IngredientDataStore>[][] items) {
-        this.items=items;
+        this.items=items; //Used if loading
         TiledMapTileLayer layer = (TiledMapTileLayer) map.getLayers().get(0);
         for (int x = 0; x < layer.getWidth(); x++) {
             for (int y = 0; y < layer.getHeight(); y++) {
@@ -78,17 +78,17 @@ public class B2WorldCreator {
                         new Worktop(world, map, bdef, rectangle);
                     } else if (mapObject.getName().equals("chopping_board")) {
                         ChoppingBoard tempStation = new ChoppingBoard(world, map, bdef, rectangle);
-                        addIngredient(x, y, tempStation);
+                        addIngredient(x, y, tempStation); //Add ingredient if needed
                         screen.choppingBoards.add(tempStation);
                     } else if (mapObject.getName().equals("plate")) {
                         PlateStation tempPlateStat = new PlateStation(world, map, bdef, rectangle);
-                        if (items != null) {
-                            if (items[x][y] != null) {
-                                if (items[x][y].size()> 0) {
-                                    if (items[x][y].get(0).isRecipe()) {
+                        if (items != null) { //If loading
+                            if (items[x][y] != null) { //If plate station list exists
+                                if (items[x][y].size()> 0) { //If list contains item
+                                    if (items[x][y].get(0).isRecipe()) { //If the item is a recipe
                                         IngredientDataStore rawRecipe = items[x][y].get(0);
                                         Recipe currentRecipe;
-                                        switch (rawRecipe.getName()) {
+                                        switch (rawRecipe.getName()) { //load recipe
                                             case Constants.BURGER_RECIPE:
                                                 currentRecipe = new BurgerRecipe();
                                                 break;
@@ -108,10 +108,10 @@ public class B2WorldCreator {
                                                 currentRecipe = null;
                                                 break;
                                         }
-                                        tempPlateStat.setRecipeDone(currentRecipe);
-                                    }else {
-                                        for (IngredientDataStore ingredient : items[x][y]) {
-                                            tempPlateStat.dropItem(generateIngredient(ingredient));
+                                        tempPlateStat.setRecipeDone(currentRecipe); //set recipe
+                                    }else { //If items are ingredients
+                                        for (IngredientDataStore ingredient : items[x][y]) { //for each ingredient
+                                            tempPlateStat.dropItem(generateIngredient(ingredient)); //Add to plate stack
                                         }
                                     }
                                 }
@@ -160,31 +160,49 @@ public class B2WorldCreator {
             }
         }
     }
+
+    /**
+     * Checks to see if ingredient exists for current station in the save. If so it is loaded and added to the staion.
+     * @param x Tile's x location
+     * @param y Tile's y location
+     * @param tile The current station
+     */
     private void addIngredient(int x, int y, CookingStation tile){
-        if (items == null){
+        if (items == null){ //skip if no save exists (or is new game)
             return;
         }
-        if (items[x][y] == null){
+        if (items[x][y] == null){ //skip if no save for current tile exists
             return;
         }
         Ingredient currentIngredient;
-        IngredientDataStore item = items[x][y].get(0);
-        currentIngredient=generateIngredient(item);
-        tile.setCurrentIngredient(currentIngredient);
-        tile.setTimer(item.getCurrentTimer());
+        IngredientDataStore item = items[x][y].get(0);//get data
+        currentIngredient=generateIngredient(item); //Convert data to ingredient
+        tile.setCurrentIngredient(currentIngredient); //Add ingredient to station
+        tile.setTimer(item.getCurrentTimer()); //Set any cooking timers to keep progress
     }
+
+    /**
+     * The given raw ingredient data is converted into the correct ingredient object
+     * @param item Raw ingredient data to be added
+     * @return converted ingredient object
+     */
     private Ingredient generateIngredient(IngredientDataStore item){
         Ingredient currentIngredient;
-        if (item == null){
+        if (item == null){ //if no data return
             return null;
         }
         currentIngredient = getIngredient(item);
         return currentIngredient;
     }
 
+    /**
+     * Generates and returns the ingredient object once given the raw ingredient data.
+     * @param item Raw ingredient data to be added
+     * @return converted ingredient object
+     */
     public static Ingredient getIngredient(IngredientDataStore item) {
         Ingredient currentIngredient;
-        switch (item.getName()){
+        switch (item.getName()){ //Switch name and create object
             case "Beans":
                 currentIngredient=new Beans(item.getTimers(),item.getCompleted());
                 break;
@@ -220,6 +238,6 @@ public class B2WorldCreator {
                 break;
         }
         currentIngredient.setSkin(item.getSkin());
-        return currentIngredient;
+        return currentIngredient; //return object
     }
 }

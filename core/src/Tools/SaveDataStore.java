@@ -19,7 +19,9 @@ public class SaveDataStore {
     private ArrayList<IngredientDataStore>[][] stationItems;
 
     //Contructors
-
+    /**
+     * No argument constructor with default files required for serialization
+     */
     public SaveDataStore(){
         chefData = new ArrayList<ChefDataStore>();
         diffMult = 1f;
@@ -33,6 +35,21 @@ public class SaveDataStore {
         order=new OrderDataStore();
         stationItems = null;
     }
+
+    /**
+     * Constructor for overall save data controller - stores all parts of data to be serialized
+     * @param chefData List of all chef save data
+     * @param orderCount current Order number
+     * @param diffMult current difficulty multiplier
+     * @param createdOrder Order exists
+     * @param timeSeconds current second progress
+     * @param timeSecondsCount total time in seconds
+     * @param chefCount number of chefs
+     * @param score current score
+     * @param rep current reputation object
+     * @param order Current order save data
+     * @param stationItems current station save data
+     */
     public SaveDataStore(ArrayList<ChefDataStore> chefData, int orderCount, float diffMult, boolean createdOrder,float timeSeconds, float timeSecondsCount, int chefCount, int score, Reputation rep, OrderDataStore order, ArrayList<IngredientDataStore>[][] stationItems){
         this.chefData = chefData;
         this.orderCount = orderCount;

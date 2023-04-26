@@ -38,8 +38,6 @@ public class Chef extends Sprite {
     private float waitTimer;
 
     public boolean chefOnChefCollision;
-
-
     public enum State {UP, DOWN, LEFT, RIGHT}
 
     public State currentState;

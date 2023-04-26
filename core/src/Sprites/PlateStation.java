@@ -110,6 +110,11 @@ public class PlateStation extends InteractiveTileObject {
     public Recipe getCompletedRecipe(){
         return recipeDone;
     }
+
+    /**
+     * Sets the completed recipe on the plate - used for loading
+     * @param recipeDone The completed recipe to be put on plate
+     */
     public void setRecipeDone(Recipe recipeDone) {
         this.recipeDone = recipeDone;
     }

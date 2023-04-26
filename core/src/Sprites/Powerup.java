@@ -7,7 +7,10 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Rectangle;
 import com.team13.piazzapanic.MainGame;
-
+/**
+ * Powerup class extends sprite
+ * A superclass for all powerups holding main constructor, variables, and methods to create it.
+ */
 public class Powerup extends Sprite {
     private Texture tex;
     private float xx;

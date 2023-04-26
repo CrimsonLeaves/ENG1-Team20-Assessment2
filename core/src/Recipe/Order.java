@@ -32,6 +32,7 @@ public class Order extends Sprite {
      * @param recipe The `Recipe` object associated with this order.
      * @param orderImg The image representing this order.
      * @param startTime The time at which the order is created.
+     * @param totalTime The time the order takes to complete
      */
     public Order(Recipe recipe, Texture orderImg, int startTime,float totalTime) {
         this.recipe = recipe;
@@ -64,10 +65,5 @@ public class Order extends Sprite {
             sprite.setBounds(adjustedX, adjustedY, 33 / MainGame.PPM, 28 / MainGame.PPM);
             sprite.draw(batch);
         }
-    }
-    public void drawTimer(){
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        shapeRenderer.arc(adjustedX, adjustedY, 10f,0f,120f);
-        shapeRenderer.end();
     }
 }
