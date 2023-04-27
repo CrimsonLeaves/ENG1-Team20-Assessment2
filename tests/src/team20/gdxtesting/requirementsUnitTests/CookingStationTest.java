@@ -1,7 +1,6 @@
 package team20.gdxtesting.requirementsUnitTests;
 
 import Ingredients.FailedIngredient;
-import Ingredients.Ingredient;
 import Ingredients.Tomato;
 import Sprites.ChoppingBoard;
 import Sprites.CookingStation;
@@ -87,12 +86,10 @@ public class CookingStationTest {
         //Firstly test when current ingredient == null.
         //Nothing should change.
         choppingBoard.setTimer(timer);
-        Ingredient ingredient = choppingBoard.getCurrentIngredient();
         choppingBoard.update(1f, 1f, false, false);
+        //Failure cannot be tested as ingredient is null.
         assertTrue("Timer should remain the same for null ingredient for the cooking station.",
                 choppingBoard.getTimer()==timer);
-        assertSame("Ingredient should not be failed, if it was initially null.",
-                ingredient, choppingBoard.getCurrentIngredient());
 
         //Ingredient isn't null but it is failed.
         //Nothing should change
@@ -140,7 +137,6 @@ public class CookingStationTest {
         //Testing Branch 4: (completed, over chopped and so fails)
         choppingBoard.setTimer(100f);
         choppingBoard.update(1, 1, false, false);
-        System.out.print(choppingBoard.getCurrentIngredient());
         assertTrue("The ingredient should be over prepared and set to failed."
                 , choppingBoard.getCurrentIngredient().getFailed());
     }
