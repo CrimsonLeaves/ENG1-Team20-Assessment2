@@ -105,7 +105,7 @@ public abstract class Ingredient extends Sprite {
      * @param skin ingredient skin index
      */
     public void setSkin(int skin) {
-        if (skin != 0 && skin != 1){
+        if (skin < 0 || skin > 2){
             return;
         }
         this.skin = skin;
