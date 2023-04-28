@@ -311,6 +311,11 @@ public class PlayScreen implements Screen {
                             } else if (ingredient != null){
                                 if(ingredient.getTimer(Constants.PAN) != null
                                         && !ingredient.isCompleted(Constants.PAN)){
+                                    if (ingredient instanceof Steak){
+                                        if (!ingredient.isCompleted(Constants.CHOPPING_BOARD)){
+                                            return;
+                                        }
+                                    }
                                     panTile.setCurrentIngredient(ingredient);
                                     controlledChef.putDown();
                                 }
