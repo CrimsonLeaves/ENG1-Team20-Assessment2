@@ -77,7 +77,7 @@ public class EndScreen implements Screen {
         }
         table = new Table();
         table.setFillParent(true);
-        table.debug();
+        //table.debug();
         stage.addActor(table);
         Gdx.input.setInputProcessor(stage);
         backgroundSprite.setSize(MainGame.V_WIDTH, MainGame.V_HEIGHT);

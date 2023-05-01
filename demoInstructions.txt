@@ -1,44 +1,76 @@
 #Tomato
 ~45 98
+~52 95
 ~56 90
 @0.5
-pickup
+interact
 @0.5
 #Onion
 ~71 92
 ~71 90
 @0.5
-pickup
+interact
 @0.5
 #Lettuce
 ~85 92
 ~85 90
 @0.5
-pickup
+interact
 @0.5
 #Chop1
-~52 112
-@1
+~56 100
+~56 113
+@0.5
+interact
+@0.5
 #Chop2
-~36 108
-~38 112
-@1
+~40 108
+~40 113
+@0.5
+interact
+@0.5
 #Chop3
 ~22 108
-~20 112
-#pickupChop1
-~50 108
-~52 112
-@1
-#pickupChop2
-~36 108
-~38 112
-@1
-#pickupChop3
+~22 113
+@0.5
+interact
+@0.5
+#PickupChop1
+~56 108
+~56 113
+@0.5
+interact
+@0.5
+#PickupChop2
+~40 108
+~40 113
+@0.5
+interact
+@0.5
+#PickupChop3
 ~22 108
-~20 112
-@1
+~22 113
+@0.5
+interact
+@0.5
 #PlateStation
-~32 32
+~40 26
+@0.5
+interact
+@0.5
+interact
+@0.5
+interact
+@0.5
+interact
+@0.5
 #Serve
+~130 35
+~135 70
+~139 70
+@0.5
+interact
+@0.5
+~130 35
+~32 32
 @5

@@ -37,7 +37,9 @@ public class MainGame extends Game {
 	public boolean isPlayScreen;
 	public boolean isEndScreen;
 	public boolean isShopScreen;
+	public boolean isInstructionsScreen;
 	public boolean inGame;
+	public boolean idle;
 	public boolean scenarioMode;
 	public boolean loadGame;
 	public String difficulty;
@@ -51,8 +53,10 @@ public class MainGame extends Game {
 	public StartScreen startScreen;
 	public EndScreen endScreen;
 	public MainMenu mainMenu;
+	public InstructionsScreen instructionsScreen;
 	public DemoScreen demoScreen;
 	public ShopScreen shopScreen;
+	private float idleTime;
 	Preferences prefs;
 
 
@@ -60,6 +64,9 @@ public class MainGame extends Game {
 	 * Constructor for MainGame, instantiates all variables that are used between classes
 	 */
 	public MainGame(){
+		isInstructionsScreen=false;
+		idleTime=0;
+		idle=false;
 		isShopScreen = false;
 		isPlayScreen = false;
 		isEndScreen = false;
@@ -80,11 +87,11 @@ public class MainGame extends Game {
 	public void create() {
 		batch = new SpriteBatch();
 		startScreen = new StartScreen(this);
-		//playScreen = new PlayScreen(this);
 		endScreen = new EndScreen(this);
 		mainMenu = new MainMenu(this);
 		shopScreen = new ShopScreen(this);
-		demoScreen = new DemoScreen(this);
+		instructionsScreen = new InstructionsScreen(this);
+		//demoScreen = new DemoScreen(this);
 		prefs = Gdx.app.getPreferences("gameData");
 		money = prefs.getInteger("money", 0);
 		chefCount = prefs.getInteger("chefCount", 3);
@@ -142,23 +149,39 @@ public class MainGame extends Game {
 	 */
 	@Override
 	public void render() {
+		if (!inGame){
+			idleTime+=Gdx.graphics.getDeltaTime();
+		}
+		if (idleTime > 60 && !idle){
+			idle=true;
+			demoScreen=new DemoScreen(this);
+		}
+		if (Gdx.input.isTouched() || Gdx.input.isKeyPressed(Input.Keys.ANY_KEY)){
+			idleTime=0;
+			idle=false;
+
+		}
+
 		super.render();
-		if (Gdx.input.isKeyJustPressed(Input.Keys.TAB) && inGame){
+		if (Gdx.input.isKeyJustPressed(Input.Keys.TAB) && inGame) {
 			isPlayScreen = !isPlayScreen;
 		}
 		if (isEndScreen) {
 			setScreen(endScreen);
-		}
-		else if (inGame){
-			if (isPlayScreen ) {
+		} else if (inGame) {
+			if (isPlayScreen) {
 				setScreen(playScreen);
 			} else {
 				setScreen(startScreen);
 			}
-		} else if(isShopScreen){
+		} else if (isShopScreen) {
 			setScreen(shopScreen);
-		} else {
+		} else if (idle) {
 			setScreen(demoScreen);
+		} else if (isInstructionsScreen){
+			setScreen(instructionsScreen);
+		}else {
+			setScreen(mainMenu);
 		}
 	}
 

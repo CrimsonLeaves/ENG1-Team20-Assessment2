@@ -17,6 +17,7 @@ import java.util.List;
 
 public class DemoScript {
     Chef mainChef;
+    Chef secondChef;
     int instruction;
     float x;
     float y;
@@ -30,6 +31,7 @@ public class DemoScript {
         this.movementSpeed=movementSpeed;
         instructionType=0; //0=idle, 1=move, 2=interact
         mainChef = new Chef(world, x, y);
+        secondChef = new Chef(world, 125, 100);
         instruction=0;
         idleTime=0;
         FileHandle file = new FileHandle(Gdx.files.local("demoInstructions.txt").file());
@@ -53,6 +55,8 @@ public class DemoScript {
 
         mainChef.update(dt);
         mainChef.create(batch);
+        secondChef.update(dt);
+        secondChef.create(batch);
     }
     public void moveChef(){
         if (Math.abs((x-mainChef.b2body.getPosition().x)+Math.abs(y-mainChef.b2body.getPosition().y)) <= 0.01){
@@ -97,27 +101,8 @@ public class DemoScript {
         }
         else if (instr.length() > 0){
             String[] dat = instr.split(" ");
-            InteractiveTileObject tile = null;
-            String tileName = null;
-            if (mainChef.getTouchingTile() != null){
-                tile = (InteractiveTileObject) mainChef.getTouchingTile().getUserData();
-                if (dat[0].equals("pickup")){
-                    if (tile instanceof IngredientStation){
-                        IngredientStation ingredientTile = (IngredientStation) tile;
-                        mainChef.pickUp(ingredientTile.getIngredient());
-                    }
-                }
-                else if (dat[0] == "putdown"){
-                    switch (dat[1]){
-                        case "chopping":
-                            ChoppingBoard choppingBoardTile = (ChoppingBoard) tile;
-                            if(choppingBoardTile.getCurrentIngredient() == null){
-
-                            }
-                            break;
-                    }
-                }
-
+            if (dat[0].equals("interact")){
+                handleInteraction();
             }
 
         }

@@ -16,21 +16,26 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
-public class ShopScreen implements Screen {
+import java.util.ArrayList;
+
+public class InstructionsScreen implements Screen {
     private final MainGame game;
-    private final Texture backgroundImage;
-    private final Sprite backgroundSprite;
+    private final Texture instructionsControlsImage;
+    private final Texture instructionsStationsImage;
+    private final Texture instructionsPowerupsImage;
+    private ArrayList<Sprite> instructionBackgrounds;
+    private Sprite backgroundSprite;
     private final OrthographicCamera camera;
     private final Viewport viewport;
     private Stage stage;
-    private Image chefImage;
-    private Image currentChefSelected;
-    private Image notChefSelected;
-    private Texture chefnotUsed;
-    private Texture chefUsed;
-    private Texture chefLocked;
+    private Image selectedImage;
+    private Image notSelectedImage;
+    private Texture notSelected;
+    private Texture currentSelected;
     private Texture minusTexture;
     private Texture plusTexture;
+    private int currentScreen;
+    private int maxScreen;
     Skin skin;
 
     /**
@@ -38,23 +43,34 @@ public class ShopScreen implements Screen {
      *
      * @param game the game object.
      */
-    public ShopScreen(MainGame game) {
-        backgroundImage = new Texture("UI/background.png");
-        backgroundSprite = new Sprite(backgroundImage);
+    public InstructionsScreen(MainGame game) {
+        currentScreen=0;
+
+        instructionsControlsImage = new Texture("UI/instructionsControls.png");
+        instructionsStationsImage = new Texture("UI/instructionsStations.png");
+        instructionsPowerupsImage = new Texture("UI/instructionsPowerups.png");
+
+        instructionBackgrounds = new ArrayList<>();
+        instructionBackgrounds.add(new Sprite(instructionsControlsImage));
+        instructionBackgrounds.add(new Sprite(instructionsStationsImage));
+        instructionBackgrounds.add(new Sprite(instructionsPowerupsImage));
+        backgroundSprite= instructionBackgrounds.get(0);
+        maxScreen=instructionBackgrounds.size()-1;
+
+
         this.game=game;
         camera = new OrthographicCamera();
         viewport = new FitViewport(MainGame.V_WIDTH, MainGame.V_HEIGHT, camera);
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
         skin = new Skin(Gdx.files.internal("skin/glassy-ui.json"));
-        chefImage = new Image(new Texture("UI/chefShop.png"));
-        currentChefSelected = new Image(new Texture("UI/chefUsed.png"));
-        notChefSelected = new Image(new Texture("UI/chefNotUsed.png"));
-        chefnotUsed=new Texture("UI/chefNotUsed.png");
-        chefUsed=new Texture("UI/chefUsed.png");
+        notSelected=new Texture("UI/chefNotUsed.png");
+        currentSelected=new Texture("UI/chefUsed.png");
+        selectedImage = new Image(currentSelected);
+        notSelectedImage = new Image(notSelected);
+
         minusTexture=new Texture("UI/minusArrow.png");
         plusTexture=new Texture("UI/plusArrow.png");
-        chefLocked=new Texture("UI/chefLocked.png");
 
     }
 
@@ -71,6 +87,7 @@ public class ShopScreen implements Screen {
         //table.debug();
         stage.addActor(table);
         Gdx.input.setInputProcessor(stage);
+        backgroundSprite=instructionBackgrounds.get(currentScreen);
         backgroundSprite.setSize(MainGame.V_WIDTH, MainGame.V_HEIGHT);
         backgroundSprite.setPosition(0, 0);
         camera.position.set(viewport.getWorldWidth() / 2, viewport.getWorldHeight() / 2, 0);
@@ -78,19 +95,18 @@ public class ShopScreen implements Screen {
 
         //Buttons
         TextButton exit = new TextButton("Exit", skin);
-        TextButton buyChefButton = new TextButton("Buy",skin);
+        exit.getLabel().setFontScale(0.5f);
         ImageButton minusButton = new ImageButton(new TextureRegionDrawable(new TextureRegion(minusTexture)));
         ImageButton plusButton = new ImageButton(new TextureRegionDrawable(new TextureRegion(plusTexture)));
 
         //Button Sizes
-        exit.setSize(250,100);
-        buyChefButton.setSize(100,50);
+        exit.setSize(125,50);
 
         //Listeners
         exit.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                game.isShopScreen = false;
+                game.isInstructionsScreen = false;
                 game.mainMenu.resetScreen();
                 game.setScreen(game.mainMenu);
             }
@@ -98,61 +114,47 @@ public class ShopScreen implements Screen {
         plusButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                int chefCount = game.getChefCount();
-
-                if (chefCount < game.getUnlockedChefs()){
-
-                    game.setChefCount(chefCount + 1);
+                currentScreen+=1;
+                if (currentScreen > maxScreen){
+                    currentScreen=0;
                 }
             }
         });
         minusButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                Gdx.app.log("minus","clicked");
-                int chefCount = game.getChefCount();
-                if (chefCount > 1){
-                    game.setChefCount(chefCount - 1);
-                }
-            }
-        });
-        buyChefButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                int unlockedChefs = game.getUnlockedChefs();
-                if (game.getMoney() > 500 && game.getUnlockedChefs() < game.getMaxChefs()){
-                    game.setUnlockedChefs(unlockedChefs + 1);
-                    game.addMoney(-500);
+                currentScreen-=1;
+                if (currentScreen < 0){
+                    currentScreen=maxScreen;
                 }
             }
         });
 
         //Chef Table
-        chefTable.add(chefImage).size(120,120);
-        chefTable.row().padTop(20);
         //Chef quantity
         Table chefTotalTable = new Table();
         chefTotalTable.add(minusButton).size(32,32);
         //Add current amount of chefs, unlocked and locked graphics
-        for (int i = 0; i< game.getChefCount(); i++){
-            chefTotalTable.add(new Image(chefUsed)).size(16,16).padLeft(10).center();
-        }
-        for (int i = 0; i<game.getUnlockedChefs()- game.getChefCount(); i++){
-            chefTotalTable.add(new Image(chefnotUsed)).size(16,16).padLeft(10).center();
-        }
-        for (int i=0;i<game.getMaxChefs()-game.getUnlockedChefs();i++){
-            chefTotalTable.add(new Image(chefLocked)).size(16,16).padLeft(10).center();
+        for (int i = 0; i<= maxScreen; i++){
+            if (i==currentScreen){
+                chefTotalTable.add(new Image(currentSelected)).size(16,16).padLeft(10).center();
+
+            }
+            else{
+                chefTotalTable.add(new Image(notSelected)).size(16,16).padLeft(10).center();
+            }
+
         }
         chefTotalTable.add(plusButton).size(32,32).padLeft(10);
         //Add chef quantity to table
         chefTable.add(chefTotalTable).padBottom(20);
         chefTable.row();
-        chefTable.add(buyChefButton).size(150,75);
         chefTable.row();
         //Add chef table to main table.
         table.add(chefTable).padBottom(20);
         table.row();
-        table.add(exit);
+        table.add(exit).size(125,50);
+        table.bottom().padBottom(50);
 
 
 
@@ -213,11 +215,12 @@ public class ShopScreen implements Screen {
      */
     @Override
     public void dispose() {
-        backgroundImage.dispose();
+        instructionsPowerupsImage.dispose();
+        instructionsStationsImage.dispose();
+        instructionsControlsImage.dispose();
         stage.dispose();
         skin.dispose();
-        chefImage.remove();
-        notChefSelected.remove();
-        currentChefSelected.remove();
+        currentSelected.dispose();
+        notSelected.dispose();
     }
 }

@@ -1,7 +1,10 @@
 package com.team13.piazzapanic;
 
+import Ingredients.Ingredient;
+import Recipe.Recipe;
 import Sprites.*;
 import Tools.B2WorldCreator;
+import Tools.Constants;
 import Tools.DemoScript;
 import Tools.WorldContactListener;
 import com.badlogic.gdx.Gdx;
@@ -91,10 +94,63 @@ public class DemoScreen implements Screen {
         camera.update();
         renderer.setView(camera);
         renderer.render();
+        for (ChoppingBoard choppingBoard : choppingBoards) {
+            choppingBoard.update(delta, 1f, false, false);
+        }
+        for (Pan pan : pans) {
+            pan.update(delta, 1f, false, false);
+        }
+        for (Oven oven : ovens){
+            oven.update(delta, 1f, false, false);
+        }
         game.batch.setProjectionMatrix(camera.combined);
         game.batch.begin();
         //backgroundSprite.draw(game.batch);
         demoMode.update(delta, game.batch);
+
+        for (ChoppingBoard choppingBoard : choppingBoards) {
+            Ingredient currentIngredient = choppingBoard.getCurrentIngredient();
+            if (currentIngredient != null) {
+                currentIngredient.create(choppingBoard.getX(), choppingBoard.getY(), game.batch);
+                choppingBoard.drawProgressBar(game.batch, Constants.CHOPPING_BOARD, 1f);
+            }
+        }
+
+        for (Pan pan : pans) {
+            Ingredient currentIngredient = pan.getCurrentIngredient();
+            if (currentIngredient != null) {
+                currentIngredient.create(pan.getX(), pan.getY(), game.batch);
+                pan.drawProgressBar(game.batch,Constants.PAN, 1f);
+            }
+        }
+
+        for (Oven oven : ovens){
+            Ingredient currentIngredient = oven.getCurrentIngredient();
+            Recipe currentRecipe = oven.getCurrentRecipe();
+            if (currentIngredient != null) {
+                currentIngredient.create(oven.getX(),oven.getY(),game.batch);
+                oven.drawProgressBar(game.batch,Constants.OVEN, 1f);
+            } else if (currentRecipe != null){
+                currentRecipe.create(oven.getX(),oven.getY(),game.batch);
+                oven.drawProgressBar(game.batch,Constants.OVEN, 1f);
+            }
+        }
+        for (CompletedDishStation cdStation : cdStations) {
+            if(cdStation.getRecipe() != null){
+                cdStation.draw(game.batch);
+            }
+        }
+        for (PlateStation plateStation : plateStations) {
+            if (plateStation.getPlate().size() > 0){
+                for(Object ing : plateStation.getPlate()){
+                    Ingredient ingNew = (Ingredient) ing;
+                    ingNew.create(plateStation.getX(), plateStation.getY(),game.batch);
+                }
+            } else if (plateStation.getCompletedRecipe() != null){
+                Recipe recipeNew = plateStation.getCompletedRecipe();
+                recipeNew.create(plateStation.getX(), plateStation.getY(), game.batch);
+            }
+        }
         game.batch.end();
         world.step(1/60f, 6, 2);
 
@@ -132,7 +188,7 @@ public class DemoScreen implements Screen {
     @Override
     public void dispose() {
         backgroundImage.dispose();
-        stage.dispose();
+        //stage.dispose();
         world.dispose();
         renderer.dispose();
         map.dispose();

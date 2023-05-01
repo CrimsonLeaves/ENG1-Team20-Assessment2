@@ -72,6 +72,9 @@ public class MainMenu implements Screen {
      * Resets stage and accompanying tables to remove any overlapping content on the next frame
      */
     public void resetScreen(){
+        if (game.demoScreen != null){
+            game.demoScreen.dispose();
+        }
         table.clear();
         table.remove();
         promptTable.clear();
@@ -223,6 +226,13 @@ public class MainMenu implements Screen {
             public void changed(ChangeEvent event, Actor actor) {
                 game.isShopScreen=true;
                 game.setScreen(game.shopScreen);
+            }
+        });
+        instructions.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                game.isInstructionsScreen=true;
+                game.setScreen(game.instructionsScreen);
             }
         });
 
