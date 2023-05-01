@@ -12,7 +12,7 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(GdxTestRunner.class)
-public class ChefDataStore {
+public class ChefDataStoreTest {
     /**
      * Testing the ChefDataStore class, which stores the chef's data when the game is saved.
      */
