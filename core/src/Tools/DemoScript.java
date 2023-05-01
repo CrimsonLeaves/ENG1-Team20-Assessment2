@@ -101,8 +101,7 @@ public class DemoScript {
             String tileName = null;
             if (mainChef.getTouchingTile() != null){
                 tile = (InteractiveTileObject) mainChef.getTouchingTile().getUserData();
-                tileName = tile.getClass().getSimpleName();
-                if (dat[0] == "pickup"){
+                if (dat[0].equals("pickup")){
                     if (tile instanceof IngredientStation){
                         IngredientStation ingredientTile = (IngredientStation) tile;
                         mainChef.pickUp(ingredientTile.getIngredient());
