@@ -3,10 +3,13 @@ package team20.gdxtesting.ToolsUnitTests;
 import Tools.Constants;
 import Tools.OrderDataStore;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import team20.gdxtesting.GdxTestRunner;
 
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
+@RunWith(GdxTestRunner.class)
 public class OrderDataStoreTest {
     /**
      * Tests the OrderDataStore Class.
