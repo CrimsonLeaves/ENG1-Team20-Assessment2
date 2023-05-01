@@ -34,7 +34,7 @@ public class DemoScript {
         secondChef = new Chef(world, 125, 100);
         instruction=0;
         idleTime=0;
-        FileHandle file = new FileHandle(Gdx.files.local("demoInstructions.txt").file());
+        FileHandle file = Gdx.files.local("demoInstructions.txt");
         String rawInstructions = file.readString();
         rawInstructions = rawInstructions.replaceAll("\r","");
         instructionList = rawInstructions.split("\n");
