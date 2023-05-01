@@ -1,6 +1,5 @@
 package Sprites;
 
-import Ingredients.Cheese;
 import Ingredients.Dough;
 import Ingredients.Ingredient;
 import Tools.Constants;
@@ -26,6 +25,10 @@ public class DoughStation extends IngredientStation{
         completed.put(Constants.PAN, true);
     }
 
+    /**
+     * creates a new dough object
+     * @return new dough object
+     */
     @Override
     public Ingredient getIngredient(){return new Dough(new HashMap<>(timers),new HashMap<>(completed));}
 }

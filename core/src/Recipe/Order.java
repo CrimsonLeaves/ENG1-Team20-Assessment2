@@ -4,7 +4,6 @@ import Tools.Constants;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.team13.piazzapanic.MainGame;
 
 /**
@@ -22,7 +21,6 @@ public class Order extends Sprite {
     public int startTime;
     public float totalTime;
     public float currentTime;
-    private ShapeRenderer shapeRenderer;
     public float adjustedX;
     public float adjustedY;
 
@@ -42,7 +40,6 @@ public class Order extends Sprite {
         this.startTime=startTime;
         this.totalTime=totalTime;
         currentTime=0f;
-        shapeRenderer = new ShapeRenderer();
         adjustedX=0;
         adjustedY=0;
     }
@@ -58,11 +55,11 @@ public class Order extends Sprite {
         Sprite sprite = new Sprite(orderImg);
         adjustedX = x - (8 / MainGame.PPM);
         adjustedY = y + (2 / MainGame.PPM);
-        if (orderImg.toString().equals(Constants.SALAD_RECIPE_PATH)) {
-            sprite.setBounds(adjustedX, adjustedY, 53 / MainGame.PPM, 28 / MainGame.PPM);
+        if (orderImg.toString().equals(Constants.BURGER_RECIPE_PATH)) {
+            sprite.setBounds(adjustedX, adjustedY, 33 / MainGame.PPM, 28 / MainGame.PPM);
             sprite.draw(batch);
         } else {
-            sprite.setBounds(adjustedX, adjustedY, 33 / MainGame.PPM, 28 / MainGame.PPM);
+            sprite.setBounds(adjustedX, adjustedY, 53 / MainGame.PPM, 28 / MainGame.PPM);
             sprite.draw(batch);
         }
     }

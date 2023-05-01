@@ -4,7 +4,6 @@ import Ingredients.*;
 import Recipe.Recipe;
 import Recipe.*;
 import Sprites.*;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
@@ -20,7 +19,7 @@ import java.util.ArrayList;
 /**
  * B2WorldCreator is a class used to create Box2D World objects from a TiledMap.
  * This class uses the map objects to create various objects like worktop, plates,
- * chopperboard, bin, etc. based on the name assigned to the objects in the TiledMap.
+ * chopping board, bin, etc. based on the name assigned to the objects in the TiledMap.
  *
  * The class is instantiated with a World object, TiledMap object and PlayScreen object.
  * It then uses the first layer of the TiledMap to create the objects and assign their
@@ -34,7 +33,7 @@ public class B2WorldCreator {
 /**
  * Constructor method for B2WorldCreator. It accepts a World, TiledMap and PlayScreen
  * objects. The method then iterates over the cells in the first layer of the TiledMap and
- * uses the map objects to create various objects like worktop, plates, chopperboard,
+ * uses the map objects to create various objects like worktop, plates, chopping board,
  * bin, etc. based on the name assigned to the objects in the TiledMap.
  *
  * The objects are created as BodyDef objects and are passed to different sprite classes,
@@ -162,7 +161,7 @@ public class B2WorldCreator {
     }
 
     /**
-     * Checks to see if ingredient exists for current station in the save. If so it is loaded and added to the staion.
+     * Checks to see if ingredient exists for current station in the save. If so it is loaded and added to the station.
      * @param x Tile's x location
      * @param y Tile's y location
      * @param tile The current station
@@ -237,6 +236,7 @@ public class B2WorldCreator {
                 currentIngredient=null;
                 break;
         }
+        assert currentIngredient != null;
         currentIngredient.setSkin(item.getSkin());
         return currentIngredient; //return object
     }

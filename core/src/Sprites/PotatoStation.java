@@ -28,6 +28,10 @@ public class PotatoStation extends IngredientStation{
         completed.put(Constants.OVEN, false);
     }
 
+    /**
+     * creates a new potato object
+     * @return new potato object
+     */
     @Override
     public Ingredient getIngredient(){return new Potato(new HashMap<>(timers),new HashMap<>(completed));}
 }

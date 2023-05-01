@@ -1,6 +1,5 @@
 package Sprites;
 
-import Ingredients.Bun;
 import Ingredients.Ingredient;
 import Ingredients.Onion;
 import Tools.Constants;
@@ -27,6 +26,10 @@ public class OnionStation extends IngredientStation {
         completed.put(Constants.PAN, true);
     }
 
+    /**
+     * creates a new onion object
+     * @return new onion object
+     */
     @Override
     public Ingredient getIngredient(){return new Onion(new HashMap<>(timers),new HashMap<>(completed));}
 }

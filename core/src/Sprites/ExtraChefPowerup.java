@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.Texture;
 
 /**
  * ExtraChefPowerup extends the Powerup class.
- * It creates an item to pickup and create an extra chef in the game.
+ * It creates an item to pick up and create an extra chef in the game.
  */
 public class ExtraChefPowerup extends Powerup {
     public ExtraChefPowerup(float x, float y){

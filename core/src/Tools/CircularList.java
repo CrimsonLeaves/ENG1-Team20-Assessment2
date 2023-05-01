@@ -16,7 +16,7 @@ public class CircularList<E> {
         currentSize=0;
         currentIndex=-1;
         lastIndex=-1;
-        elements=new ArrayList<E>();
+        elements=new ArrayList<>();
     }
 
     public void addElement(E item){

@@ -26,6 +26,10 @@ public class SteakStation extends IngredientStation {
         completed.put(Constants.PAN, false);
     }
 
+    /**
+     * creates a new steak object
+     * @return new steak object
+     */
     @Override
     public Ingredient getIngredient(){return new Steak(new HashMap<>(timers),new HashMap<>(completed));}
 }

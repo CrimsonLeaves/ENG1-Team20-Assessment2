@@ -59,7 +59,7 @@ public class HUD implements Disposable {
         table.left().top();
         table.setFillParent(true);
 
-        timeLabel = new Label(String.format("%d", worldTimerM, ":", "%i", worldTimerS), new Label.LabelStyle(font, Color.WHITE));
+        timeLabel = new Label(String.format("%d:%d", worldTimerM, worldTimerS), new Label.LabelStyle(font, Color.WHITE));
         timeLabelT = new Label("TIME", new Label.LabelStyle(font, Color.BLACK));
         orderNumLT = new Label("ORDER", new Label.LabelStyle(font, Color.BLACK));
         orderNumL = new Label(String.format("%d", 0), new Label.LabelStyle(font, Color.WHITE));

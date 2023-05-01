@@ -49,10 +49,7 @@ public class Reputation {
      * @return True if game should lose
      */
     private boolean loseGame(){
-        if (rep <= 0){
-            return true;
-        }
-        return false;
+        return rep <= 0;
     }
 
     /**

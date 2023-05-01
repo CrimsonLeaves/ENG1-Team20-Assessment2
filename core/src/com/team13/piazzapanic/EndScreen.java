@@ -18,7 +18,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
-import java.io.File;
 
 /**
  * EndScreen is the main screen that is displayed at the end of a round - win or lose. Its appearance is based on the
@@ -32,7 +31,7 @@ public class EndScreen implements Screen {
     private final Sprite backgroundSprite;
     private final OrthographicCamera camera;
     private final Viewport viewport;
-    private Stage stage;
+    private final Stage stage;
     public Boolean win;
     public String time;
     public int score;
@@ -100,11 +99,11 @@ public class EndScreen implements Screen {
         //Endless Win
         Label EndlessTimeLabel = new Label("Survival Time: "+time,skin);
         //Resizing Fonts
-        float fontscale= 2f;
-        winLabel.setFontScale(fontscale);
-        scoreLabel.setFontScale(fontscale);
-        scenarioTimeLabel.setFontScale(fontscale);
-        scenarioTimeLabel.setFontScale(fontscale);
+        float fontScale= 2f;
+        winLabel.setFontScale(fontScale);
+        scoreLabel.setFontScale(fontScale);
+        scenarioTimeLabel.setFontScale(fontScale);
+        scenarioTimeLabel.setFontScale(fontScale);
         if (win){
             backgroundSprite.setTexture(backgroundImageScenarioWin);
             table.add(winLabel);
@@ -160,17 +159,15 @@ public class EndScreen implements Screen {
      * @param scenarioMode boolean of whether in scenarioMode or not
      */
     private void removeSave(boolean scenarioMode){
+        FileHandle file;
         if (scenarioMode){
-            FileHandle file = Gdx.files.local(Constants.DATA_SCENARIO_PATH);
-            if (file.exists()){
-                file.delete();
-            }
+            file = Gdx.files.local(Constants.DATA_SCENARIO_PATH);
         }
         else{
-            FileHandle file = Gdx.files.local(Constants.DATA_ENDLESS_PATH);
-            if (file.exists()){
-                file.delete();
-            }
+            file = Gdx.files.local(Constants.DATA_ENDLESS_PATH);
+        }
+        if (file.exists()){
+            file.delete();
         }
     }
 
