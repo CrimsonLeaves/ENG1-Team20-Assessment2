@@ -31,6 +31,10 @@ public class LettuceStation extends IngredientStation {
         completed.put(Constants.PAN, true);
     }
 
+    /**
+     * creates a new lettuce object
+     * @return new lettuce object
+     */
     @Override
     public Ingredient getIngredient(){return new Lettuce(new HashMap<>(timers),new HashMap<>(completed));}
 }

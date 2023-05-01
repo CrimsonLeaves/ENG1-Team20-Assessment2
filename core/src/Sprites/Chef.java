@@ -2,7 +2,6 @@ package Sprites;
 
 import Ingredients.*;
 import Recipe.Recipe;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -15,7 +14,6 @@ import com.team13.piazzapanic.MainGame;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Iterator;
-import java.util.Objects;
 
 /**
  * Chef class extends {@link Sprite} and represents a chef in the game.
@@ -135,6 +133,10 @@ public class Chef extends Sprite {
         }
     }
 
+    /**
+     * draws the chef in the world
+     * @param batch the chef sprite to be drawn
+     */
     public void create(SpriteBatch batch){
         this.draw(batch);
         float offset = 0;
@@ -219,7 +221,7 @@ public class Chef extends Sprite {
 
 
     /**
-     Returns the current state of the player based on the controlled chefs velocity.
+     Returns the current state of the player based on the controlled chefs' velocity.
      @return current state of the player - UP, DOWN, LEFT, or RIGHT
      */
     private State getState() {
@@ -236,8 +238,6 @@ public class Chef extends Sprite {
     }
 
     /**
-     * Define the body and fixture of the chef object.
-     *
      * This method creates a dynamic body definition and sets its position with the `initialX` and `initialY`
      * variables, then creates the body in the physics world. A fixture definition is also created and a
      * circle shape is set with a radius of `4.5f / MainGame.PPM` and a position shifted by `(0.5f / MainGame.PPM)`
@@ -304,25 +304,51 @@ public class Chef extends Sprite {
         }
     }
 
+    /**
+     * adds an item to the chefs stack
+     * @param item the item to be added
+     */
     public void pickUp(Sprite item){
         if(holding.size() < 3){
             holding.addFirst(item);
         }
     }
 
+    /**
+     * takes the top item off of the chefs stack
+     */
     public void putDown(){
         holding.removeFirst();
     }
 
+    /**
+     * looks at the top item of the chefs stack
+     * @return the item at the top of the stack
+     */
     public Sprite peekStack(){
         return holding.peekFirst();
     }
+
+    /**
+     * getter method for the holding stack
+     * @return holding
+     */
     public Deque<Sprite> getStack(){
         return holding;
     }
+
+    /**
+     * setter method for the holding stack
+     * @param holding the stack to be set
+     */
     public void setStack(Deque<Sprite> holding){
         this.holding=holding;
     }
+
+    /**
+     * returns how many items are in the stack
+     * @return the size of the stack
+     */
     public int getHoldingSize(){
         return holding.size();
     }
@@ -335,7 +361,7 @@ public class Chef extends Sprite {
      * @return userControlChef The boolean value indicating chef's control.
      */
     public boolean getUserControlChef () {
-            return Objects.requireNonNullElse(userControlChef, false);
+            return userControlChef;
         }
 
 }

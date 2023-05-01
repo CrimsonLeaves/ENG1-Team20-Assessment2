@@ -17,10 +17,10 @@ import com.team13.piazzapanic.MainGame;
 public class Oven extends CookingStation{
 
     Recipe currentRecipe;
-    private Texture progBarBack;
-    private Texture progBarFill;
-    private Texture progBarBurn;
-    private float pizzaTimer=5;
+    private final Texture progBarBack;
+    private final Texture progBarFill;
+    private final Texture progBarBurn;
+    private final float pizzaTimer=5;
 
     /**
      * Constructor for the class, initialises b2bodies.
@@ -39,14 +39,26 @@ public class Oven extends CookingStation{
         progBarBurn = new Texture("UI/progBarBurn.png");
     }
 
+    /**
+     * getter for the ovens current recipe
+     * @return currentRecipe
+     */
     public Recipe getCurrentRecipe(){return currentRecipe;}
 
+    /**
+     * setter for the ovens current recipe
+     * @param recipe recipe to be set
+     */
     public void setCurrentRecipe(Recipe recipe){
         if(currentIngredient == null){
             currentRecipe = recipe;
         }
     }
 
+    /**
+     * setter for the oven current ingredient
+     * @param ingredient ingredient to be set
+     */
     @Override
     public void setCurrentIngredient(Ingredient ingredient){
         if(currentRecipe == null){
@@ -54,6 +66,13 @@ public class Oven extends CookingStation{
         }
     }
 
+    /**
+     * updates the state of the oven
+     * @param dt delta time
+     * @param diff difficulty
+     * @param instantCook is instant cook powerup active
+     * @param noBurn is no burn powerup active
+     */
     @Override
     public void update(float dt,float diff,boolean instantCook, boolean noBurn){
         if(currentIngredient != null && !currentIngredient.getFailed()) {
@@ -91,10 +110,17 @@ public class Oven extends CookingStation{
             }
         }
     }
+
+    /**
+     * draws a progress bar for the ovens progress
+     * @param batch game's sprite batch
+     * @param station current station name
+     * @param diff current game difficulty
+     */
     @Override
     public void drawProgressBar(SpriteBatch batch, String station,float diff){
-        float adjX = getX()- (MainGame.TILE_SIZE-1)/2/MainGame.PPM;
-        float adjY = getY()-MainGame.TILE_SIZE/2/MainGame.PPM;
+        float adjX = getX()- (MainGame.TILE_SIZE-1)/2f/MainGame.PPM;
+        float adjY = getY()-MainGame.TILE_SIZE/2f/MainGame.PPM;
         if (currentIngredient != null&& !currentIngredient.getFailed()) {
             if (!currentIngredient.isCompleted(station)){
                 float progress=timer/currentIngredient.getTimer(station);

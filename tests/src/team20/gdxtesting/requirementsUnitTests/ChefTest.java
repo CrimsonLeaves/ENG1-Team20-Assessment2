@@ -8,8 +8,6 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.Contact;
-import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.World;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -98,7 +96,7 @@ public class ChefTest {
         Chef c1 = new Chef(new World(new Vector2(0,0),true), 0, 0);
         Chef c2 = new Chef(new World(new Vector2(0,0),true), 0, 0);
         Chef c3 = new Chef(new World(new Vector2(0,0),true), 0, 0);
-        CircularList<Chef> chefList = new CircularList<>(4);
+        CircularList<Chef> chefList = new CircularList<>();
         chefList.addElement(c1);
         chefList.addElement(c2);
         chefList.addElement(c3);

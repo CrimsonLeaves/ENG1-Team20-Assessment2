@@ -18,12 +18,12 @@ public class SaveDataStore {
     private OrderDataStore order;
     private ArrayList<IngredientDataStore>[][] stationItems;
 
-    //Contructors
+    //Constructors
     /**
      * No argument constructor with default files required for serialization
      */
     public SaveDataStore(){
-        chefData = new ArrayList<ChefDataStore>();
+        chefData = new ArrayList<>();
         diffMult = 1f;
         orderCount = 0;
         createdOrder = false;
@@ -85,7 +85,7 @@ public class SaveDataStore {
     public float getTimeSecondsCount() {return timeSecondsCount;}
     public void setTimeSecondsCount(float timeSecondsCount) {this.timeSecondsCount = timeSecondsCount;}
     //chefCount
-    public int getChefCount() {return chefCount; }
+    public int getChefCount() {return chefCount;}
     public void setChefCount(int chefCount) {this.chefCount = chefCount;}
     //score
     public int getScore() {return score;}

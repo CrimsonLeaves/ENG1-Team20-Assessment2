@@ -20,6 +20,13 @@ public class Pan extends CookingStation {
 
     }
 
+    /**
+     * updates the pans state
+     * @param dt delta time
+     * @param diff difficulty
+     * @param instantCook is instant cook powerup active
+     * @param noBurn is no burn powerup active
+     */
     @Override
     public void update(float dt, float diff,boolean instantCook, boolean noBurn){
         if(currentIngredient != null && !currentIngredient.getFailed()) {

@@ -32,6 +32,10 @@ public class CompletedDishStation extends InteractiveTileObject {
         recipe = null;
     }
 
+    /**
+     * draws the station in the world
+     * @param batch the sprite of the station
+     */
     public void draw(SpriteBatch batch){
         timer += 1/60f;
         recipe.create(this.getX(), this.getY() - (0.01f / MainGame.PPM), batch);
@@ -41,10 +45,18 @@ public class CompletedDishStation extends InteractiveTileObject {
         }
     }
 
+    /**
+     * getter method for the stations recipe
+     * @return recipe
+     */
     public Recipe getRecipe() {
         return recipe;
     }
 
+    /**
+     * setter method for the stations recipe
+     * @param recipe the recipe to be put on the station
+     */
     public void setRecipe(Recipe recipe) {
         this.recipe = recipe;
     }

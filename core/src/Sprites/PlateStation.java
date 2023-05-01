@@ -89,6 +89,11 @@ public class PlateStation extends InteractiveTileObject {
         }
     }
 
+    /**
+     * getter for the recipes in the plate station
+     * @param recipe the recipe to be returned
+     * @return the corresponding recipe
+     */
     public static Recipe getRecipe(String recipe){
         return recipes.get(recipe);
     }
@@ -98,8 +103,9 @@ public class PlateStation extends InteractiveTileObject {
      *
      * @return An ArrayList of ingredients on the plate.
      */
-    public ArrayList getPlate(){
-        return (ArrayList) this.plate;
+
+    public ArrayList<Ingredient> getPlate(){
+        return (ArrayList<Ingredient>) this.plate;
     }
 
     /**

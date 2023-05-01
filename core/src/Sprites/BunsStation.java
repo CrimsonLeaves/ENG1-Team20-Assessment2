@@ -34,6 +34,10 @@ public class BunsStation extends IngredientStation {
         completed.put(Constants.PAN, false);
     }
 
+    /**
+     * creates a new buns object
+     * @return new buns object
+     */
     @Override
     public Ingredient getIngredient(){return new Bun(new HashMap<>(timers),new HashMap<>(completed));}
 }

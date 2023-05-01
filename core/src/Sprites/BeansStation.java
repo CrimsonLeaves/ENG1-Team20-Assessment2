@@ -2,7 +2,6 @@ package Sprites;
 
 import Ingredients.Beans;
 import Ingredients.Ingredient;
-import Ingredients.Potato;
 import Tools.Constants;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Rectangle;
@@ -27,6 +26,10 @@ public class BeansStation extends IngredientStation{
         completed.put(Constants.PAN, false);
     }
 
+    /**
+     * creates a new beans object
+     * @return new beans object
+     */
     @Override
     public Ingredient getIngredient(){return new Beans(new HashMap<>(timers),new HashMap<>(completed));}
 }

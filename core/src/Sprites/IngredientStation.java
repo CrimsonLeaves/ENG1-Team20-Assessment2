@@ -30,5 +30,9 @@ public class IngredientStation extends InteractiveTileObject{
         completed = new HashMap<>();
     }
 
+    /**
+     * creates a new ingredient object
+     * @return new ingredient object
+     */
     public Ingredient getIngredient(){return new Ingredient(new HashMap<>(timers), new HashMap<>(completed)) {};}
 }

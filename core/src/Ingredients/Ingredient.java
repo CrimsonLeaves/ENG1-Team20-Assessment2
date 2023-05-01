@@ -85,7 +85,7 @@ public abstract class Ingredient extends Sprite {
     }
 
     /**
-     * Returns the all the timers for the ingrdient - used for saving
+     * Returns the all the timers for the ingredient - used for saving
      * @return the Map of each station and their timer
      */
     public Map<String, Float> getTimers(){
@@ -133,8 +133,10 @@ public abstract class Ingredient extends Sprite {
      * @param station the station which preparation has been completed for
      */
     public void setCompleted(String station){
-        completed.put(station, true);
-        skin += 1;
+        if (completed.containsKey(station)){
+            completed.put(station, true);
+            skin += 1;
+        }
     }
 
     /**

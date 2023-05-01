@@ -7,16 +7,14 @@ public class CircularList<E> {
 
     ArrayList<E> elements;
     int currentSize;
-    int maxSize;
     int currentIndex;
     int lastIndex;
 
-    public CircularList(int maxSize){
-        this.maxSize=maxSize;
+    public CircularList(){
         currentSize=0;
         currentIndex=-1;
         lastIndex=-1;
-        elements=new ArrayList<E>();
+        elements=new ArrayList<>();
     }
 
     public void addElement(E item){
@@ -29,7 +27,7 @@ public class CircularList<E> {
     }
 
     public E removeElement(){
-        if (Empty()){ return null;}
+        if (isEmpty()){ return null;}
         E toReturn=elements.get(lastIndex);
         lastIndex--;
         currentSize--;
@@ -38,7 +36,7 @@ public class CircularList<E> {
     }
 
     public E nextItem(){
-        if (Empty()) {return null;}
+        if (isEmpty()) {return null;}
         E toReturn=elements.get(currentIndex);
         currentIndex++;
         if (currentIndex >= currentSize){
@@ -47,7 +45,7 @@ public class CircularList<E> {
         return toReturn;
     }
     public E peekNextItem(){
-        if (Empty()) {return null;}
+        if (isEmpty()) {return null;}
         return elements.get(currentIndex);
     }
     public int getCurrentSize() {return currentSize;}
@@ -55,7 +53,7 @@ public class CircularList<E> {
         return elements;
     }
 
-    public boolean Empty(){
+    public boolean isEmpty(){
         return (currentSize==0);
     }
 }

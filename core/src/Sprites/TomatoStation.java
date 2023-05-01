@@ -27,6 +27,10 @@ public class TomatoStation extends IngredientStation {
         completed.put(Constants.PAN, true);
     }
 
+    /**
+     * creates a new tomato object
+     * @return new tomato object
+     */
     @Override
     public Ingredient getIngredient(){return new Tomato(new HashMap<>(timers), new HashMap<>(completed));}
 }

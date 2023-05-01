@@ -53,13 +53,13 @@ import java.util.concurrent.ThreadLocalRandom;
 public class PlayScreen implements Screen {
 
     private final MainGame game;
-    private final OrthographicCamera gamecam;
-    private final Viewport gameport;
+    private final OrthographicCamera gameCam;
+    private final Viewport gamePort;
     private HUD hud;
     public Reputation playerRep;
     private final TiledMap map;
     private final OrthogonalTiledMapRenderer renderer;
-    private World world;
+    private final World world;
     private CircularList<Chef> chefList;
     private int chefCount = 3;
     private Chef controlledChef;
@@ -71,7 +71,6 @@ public class PlayScreen implements Screen {
     public ArrayList<ChoppingBoard> choppingBoards = new ArrayList<>();
     public ArrayList<Pan> pans = new ArrayList<>();
     public ArrayList<CompletedDishStation> cdStations = new ArrayList<>();
-
     public ArrayList<Oven> ovens = new ArrayList<>();
     public Boolean scenarioMode;
 
@@ -84,16 +83,15 @@ public class PlayScreen implements Screen {
     private float timeSeconds = 0f;
 
     private float timeSecondsCount = 0f;
-    private Stage stage;
-    private float diffMult=1;
+    private final Stage stage;
+    private float diffMulti =1;
     private boolean moneyAdded;
     private final ShapeRenderer shapeRenderer;
-    public boolean loadGame = true;
+    public boolean loadGame;
     private ArrayList<ChefDataStore> chefData;
     ArrayList<IngredientDataStore>[][] stationItems;
     //Powerups
-    private ArrayList<Powerup> powerups;
-    private final int totalPowerups=5;
+    private final ArrayList<Powerup> powerups;
     private float movementSpeed=1f;
     private float powerupFinish=-1f;
     private boolean instantCook=false;
@@ -115,9 +113,9 @@ public class PlayScreen implements Screen {
         loadGame=game.loadGame;
         scenarioComplete = Boolean.FALSE;
         createdOrder = Boolean.FALSE;
-        gamecam = new OrthographicCamera();
+        gameCam = new OrthographicCamera();
         // FitViewport to maintain aspect ratio whilst scaling to screen size
-        gameport = new FitViewport(MainGame.V_WIDTH / MainGame.PPM, MainGame.V_HEIGHT / MainGame.PPM, gamecam);
+        gamePort = new FitViewport(MainGame.V_WIDTH / MainGame.PPM, MainGame.V_HEIGHT / MainGame.PPM, gameCam);
         // create HUD for score & time
         hud = new HUD(game.batch);
         playerRep=new Reputation(3);
@@ -130,7 +128,7 @@ public class PlayScreen implements Screen {
         TmxMapLoader mapLoader = new TmxMapLoader(new InternalFileHandleResolver());
         map = mapLoader.load("Kitchen.tmx");
         renderer = new OrthogonalTiledMapRenderer(map, 1 / MainGame.PPM);
-        gamecam.position.set(gameport.getWorldWidth() / 2, gameport.getWorldHeight() / 2, 0);
+        gameCam.position.set(gamePort.getWorldWidth() / 2, gamePort.getWorldHeight() / 2, 0);
         Json json = new Json();
         FileHandle file;
         //Get correct save file
@@ -157,7 +155,7 @@ public class PlayScreen implements Screen {
             new B2WorldCreator(world, map, this, null);
             stationItems = new ArrayList[((TiledMapTileLayer) map.getLayers().get(0)).getWidth()][((TiledMapTileLayer) map.getLayers().get(0)).getHeight()];
         }
-        chefList = new CircularList<>(chefCount+1);
+        chefList = new CircularList<>();
         if (loadGame){loadGame();}
         generateChefs(chefCount);
 
@@ -168,7 +166,8 @@ public class PlayScreen implements Screen {
     }
 
     /**
-     * Called when the screen is showed to change the stage from the previous menus. This means that buttons do not click from the wrong screen
+     * Called when the screen is showed to change the stage from the previous menus.
+     * This means that buttons do not click from the wrong screen
      */
     @Override
     public void show(){
@@ -177,41 +176,13 @@ public class PlayScreen implements Screen {
 
 
     /**
-     * The handleInput method is responsible for handling the input events of the game such as movement and interaction with objects.
-     *
-     * It checks if the 'R' key is just pressed and both chefs have the user control, if so,
-     * it switches the control between the two chefs.
-     *
-     * If the controlled chef does not have the user control,
-     * the method checks if chef1 or chef2 have the user control and sets the control to that chef.
-     *
-     * If the controlled chef has the user control,
-     * it checks if the 'W', 'A', 'S', or 'D' keys are pressed and sets the velocity of the chef accordingly.
-     *
-     * If the 'E' key is just pressed and the chef is touching a tile,
-     * it checks the type of tile and sets the chef's in-hands ingredient accordingly.
-     *
-     * The method also sets the direction of the chef based on its linear velocity.
-     *
-     * @param dt is the time delta between the current and previous frame.
+     * The handleInput method is responsible for handling the input events of the game.
+     * It has helper methods for handling chef switching, movement, interaction and
+     * removing from a plate station.
      */
 
-    public void handleInput(float dt){
+    public void handleInput(){
         handleChefSwitching();
-        /*
-        if (Gdx.input.isKeyJustPressed(Input.Keys.L)){
-            if (currentOrder==null){
-                if (playerRep.loseRep()){
-                    hud.updateLives(playerRep.getRep());
-                    loseGame();
-                }
-                hud.updateLives(playerRep.getRep());
-                return;
-            }
-            currentOrder.orderFailed=Boolean.TRUE;
-
-        }
-        */
         handleMovement();
         handleInteraction();
         handleRemovingFromPlateStation();
@@ -232,6 +203,9 @@ public class PlayScreen implements Screen {
         }
     }
 
+    /**
+     * Handles input for moving the controlled chef using the WASD keys
+     */
     private void handleMovement(){
         if (controlledChef.getUserControlChef()) {
             float xVelocity = 0;
@@ -259,6 +233,9 @@ public class PlayScreen implements Screen {
         }
     }
 
+    /**
+     * Handles interaction with tile objects
+     */
     private void handleInteraction(){
         if(Gdx.input.isKeyJustPressed(Input.Keys.E)){
             if(controlledChef.getTouchingTile() != null){
@@ -310,12 +287,8 @@ public class PlayScreen implements Screen {
                                 panTile.setCurrentIngredient(null);
                             } else if (ingredient != null){
                                 if(ingredient.getTimer(Constants.PAN) != null
-                                        && !ingredient.isCompleted(Constants.PAN)){
-                                    if (ingredient instanceof Steak){
-                                        if (!ingredient.isCompleted(Constants.CHOPPING_BOARD)){
-                                            return;
-                                        }
-                                    }
+                                        && !ingredient.isCompleted(Constants.PAN)
+                                        && ingredient.isCompleted(Constants.CHOPPING_BOARD)){
                                     panTile.setCurrentIngredient(ingredient);
                                     controlledChef.putDown();
                                 }
@@ -358,8 +331,8 @@ public class PlayScreen implements Screen {
                                         if(orderNum >= totalOrders){
                                             scenarioComplete = Boolean.TRUE;
                                             game.endScreen.win=true;
-                                            String stringTime = String.format("%02d:%02d",(int)(timeSecondsCount / 60),(int)(timeSecondsCount % 60));
-                                            game.endScreen.time=stringTime;
+                                            game.endScreen.time= String.format("%02d:%02d",(int)(timeSecondsCount / 60),
+                                                                                (int)(timeSecondsCount % 60));
                                         }
                                     }
                                 }
@@ -376,6 +349,9 @@ public class PlayScreen implements Screen {
         }
     }
 
+    /**
+     * Handles taking items off of the plate station
+     */
     private void handleRemovingFromPlateStation(){
         if(Gdx.input.isKeyJustPressed(Input.Keys.SHIFT_LEFT)
                 && controlledChef.getTouchingTile() != null){
@@ -396,22 +372,22 @@ public class PlayScreen implements Screen {
      * @param dt time interval for the update
     */
     public void update(float dt){
-        handleInput(dt);
+        handleInput();
 
-        gamecam.update();
-        renderer.setView(gamecam);
+        gameCam.update();
+        renderer.setView(gameCam);
 
         for (Chef chef : chefList.allElems()){
             chef.update(dt);
         }
         for (ChoppingBoard choppingBoard : choppingBoards) {
-            choppingBoard.update(dt, diffMult, instantCook, noBurn);
+            choppingBoard.update(dt, diffMulti, instantCook, noBurn);
         }
         for (Pan pan : pans) {
-            pan.update(dt, diffMult, instantCook, noBurn);
+            pan.update(dt, diffMulti, instantCook, noBurn);
         }
         for (Oven oven : ovens){
-            oven.update(dt, diffMult, instantCook, noBurn);
+            oven.update(dt, diffMulti, instantCook, noBurn);
         }
 
         world.step(1/60f, 6, 2);
@@ -420,7 +396,7 @@ public class PlayScreen implements Screen {
 
     /**
      * Initialises chefs as circular list and creates in world space. If the game is loading data and the data exists,
-     * the chefs are generated from their preexisting locaions and items being held. Save data is stored in {@link ChefDataStore}
+     * the chefs are generated from their preexisting locations and items being held. Save data is stored in {@link ChefDataStore}
      * @param chefCount Number of chefs to create in game
      */
     public void generateChefs(int chefCount){
@@ -463,7 +439,7 @@ public class PlayScreen implements Screen {
      */
     public void checkOrder(){
         if (scenarioComplete==Boolean.TRUE){
-            int totalMoney = hud.updateScore(Boolean.TRUE, currentOrder.startTime,diffMult);
+            int totalMoney = hud.updateScore(Boolean.TRUE, currentOrder.startTime, diffMulti);
             game.endScreen.score=totalMoney;
             hud.updateOrder(Boolean.TRUE, 0);
             if (!moneyAdded){
@@ -477,7 +453,7 @@ public class PlayScreen implements Screen {
         }
         if (currentOrder != null){
             if (currentOrder.orderComplete == Boolean.TRUE){
-                game.endScreen.score = hud.updateScore(Boolean.FALSE, currentOrder.startTime,diffMult);
+                game.endScreen.score = hud.updateScore(Boolean.FALSE, currentOrder.startTime, diffMulti);
                 currentOrder = null;
                 createdOrder = Boolean.FALSE;
                 hud.updateOrder(Boolean.FALSE, orderNum);
@@ -517,8 +493,7 @@ public class PlayScreen implements Screen {
         game.isEndScreen =true;
         game.isPlayScreen=false;
         game.endScreen.win=false;
-        String stringTime = String.format("%02d:%02d",(int)(timeSecondsCount / 60), (int)(timeSecondsCount % 60));
-        game.endScreen.time=stringTime;
+        game.endScreen.time= String.format("%02d:%02d",(int)(timeSecondsCount / 60), (int)(timeSecondsCount % 60));
         game.endScreen.score=hud.getScore();
         if (!game.scenarioMode){
             game.addMoney(hud.getScore());
@@ -542,7 +517,7 @@ public class PlayScreen implements Screen {
             if (chef.getTexture() != null) {chef.getTexture().dispose();}
             world.destroyBody(chef.b2body);
         }
-        chefList = new CircularList<Chef>(chefCount);
+        chefList = new CircularList<>();
         hud.dispose();
         hud=new HUD(game.batch);
         if (loadGame){loadGame();}
@@ -556,13 +531,13 @@ public class PlayScreen implements Screen {
             currentOrder = null;
             switch (game.difficulty){
                 case "Easy":
-                    diffMult=1.5f;
+                    diffMulti =1.5f;
                     break;
                 case "Medium":
-                    diffMult=1;
+                    diffMulti =1;
                     break;
                 case "Hard":
-                    diffMult=0.67f;
+                    diffMulti =0.67f;
                     break;
                 default:
                     break;
@@ -594,11 +569,11 @@ public class PlayScreen implements Screen {
         }
         OrderDataStore order = null;
         if (currentOrder!=null){
-            order = new OrderDataStore(currentOrder.orderImg.toString(),currentOrder.startTime,diffMult);
+            order = new OrderDataStore(currentOrder.orderImg.toString(),currentOrder.startTime, diffMulti);
         }
         saveStations();
         //Create save object
-        SaveDataStore saveData = new SaveDataStore(chefData, orderNum, diffMult,createdOrder,timeSeconds,timeSecondsCount, chefCount, hud.getScore(), playerRep,order, stationItems);
+        SaveDataStore saveData = new SaveDataStore(chefData, orderNum, diffMulti,createdOrder,timeSeconds,timeSecondsCount, chefCount, hud.getScore(), playerRep,order, stationItems);
         //Save to file
         Json json = new Json();
         String dataString = json.toJson(saveData);
@@ -639,37 +614,13 @@ public class PlayScreen implements Screen {
     public void saveStations(){
         stationItems = new ArrayList[((TiledMapTileLayer) map.getLayers().get(0)).getWidth()][((TiledMapTileLayer) map.getLayers().get(0)).getHeight()];
         for (Pan pan : pans){
-            Ingredient ingredient = pan.getCurrentIngredient();
-            if (ingredient != null){
-                ArrayList<IngredientDataStore> ingredientData = new ArrayList<IngredientDataStore>();
-                IngredientDataStore item = new IngredientDataStore(ingredient.getClass().getSimpleName(),ingredient.getTimers(),ingredient.getCompleted(), ingredient.getSkin(), pan.getTimer());
-                int x = (int)(pan.getX()*MainGame.PPM-8)/MainGame.TILE_SIZE;
-                int y = (int)(pan.getY()*MainGame.PPM-8)/MainGame.TILE_SIZE;
-                ingredientData.add(item);
-                stationItems[x][y]=ingredientData;
-            }
+            storeStationData(pan.getCurrentIngredient(), pan.getTimer(), pan.getX(), pan.getY());
         }
         for (ChoppingBoard board : choppingBoards){
-            Ingredient ingredient = board.getCurrentIngredient();
-            if (ingredient != null){
-                IngredientDataStore item = new IngredientDataStore(ingredient.getClass().getSimpleName(),ingredient.getTimers(),ingredient.getCompleted(), ingredient.getSkin(), board.getTimer());
-                int x = (int)(board.getX()*MainGame.PPM-8)/MainGame.TILE_SIZE;
-                int y = (int)(board.getY()*MainGame.PPM-8)/MainGame.TILE_SIZE;
-                ArrayList<IngredientDataStore> ingredientData = new ArrayList<IngredientDataStore>();
-                ingredientData.add(item);
-                stationItems[x][y]=ingredientData;
-            }
+            storeStationData(board.getCurrentIngredient(), board.getTimer(), board.getX(), board.getY());
         }
         for (Oven oven : ovens){
-            Ingredient ingredient = oven.getCurrentIngredient();
-            if (ingredient != null){
-                IngredientDataStore item = new IngredientDataStore(ingredient.getClass().getSimpleName(),ingredient.getTimers(),ingredient.getCompleted(), ingredient.getSkin(), oven.getTimer());
-                int x = (int)(oven.getX()*MainGame.PPM-8)/MainGame.TILE_SIZE;
-                int y = (int)(oven.getY()*MainGame.PPM-8)/MainGame.TILE_SIZE;
-                ArrayList<IngredientDataStore> ingredientData = new ArrayList<IngredientDataStore>();
-                ingredientData.add(item);
-                stationItems[x][y]=ingredientData;
-            }
+            storeStationData(oven.getCurrentIngredient(), oven.getTimer(), oven.getX(), oven.getY());
         }
         for (PlateStation plateStation : plateStations ){
             Recipe recipe = plateStation.getCompletedRecipe();
@@ -677,12 +628,12 @@ public class PlayScreen implements Screen {
                 IngredientDataStore item = new IngredientDataStore(recipe.getClass().getSimpleName());
                 int x = (int)(plateStation.getX()*MainGame.PPM-8)/MainGame.TILE_SIZE;
                 int y = (int)(plateStation.getY()*MainGame.PPM-8)/MainGame.TILE_SIZE;
-                ArrayList<IngredientDataStore> ingredientData = new ArrayList<IngredientDataStore>();
+                ArrayList<IngredientDataStore> ingredientData = new ArrayList<>();
                 ingredientData.add(item);
                 stationItems[x][y]=ingredientData;
             }
             else if (plateStation.getPlate().size() > 0){
-                ArrayList<IngredientDataStore> ingredientData = new ArrayList<IngredientDataStore>();
+                ArrayList<IngredientDataStore> ingredientData = new ArrayList<>();
 
                 for (Object ingredient : plateStation.getPlate()){
                     IngredientDataStore currentIngredient = saveIngredient((Sprite) ingredient);
@@ -692,6 +643,25 @@ public class PlayScreen implements Screen {
                 int y = (int)(plateStation.getY()*MainGame.PPM-8)/MainGame.TILE_SIZE;
                 stationItems[x][y]=ingredientData;
             }
+        }
+    }
+
+    /**
+     * stores the stations data
+     *
+     * @param currentIngredient2 the current ingredient on the station
+     * @param timer the current stations timer
+     * @param x2 x position of the station
+     * @param y2 y position of the station
+     */
+    private void storeStationData(Ingredient currentIngredient2, float timer, float x2, float y2) {
+        if (currentIngredient2 != null){
+            IngredientDataStore item = new IngredientDataStore(currentIngredient2.getClass().getSimpleName(), currentIngredient2.getTimers(), currentIngredient2.getCompleted(), currentIngredient2.getSkin(), timer);
+            int x = (int)(x2 * MainGame.PPM-8)/MainGame.TILE_SIZE;
+            int y = (int)(y2 *MainGame.PPM-8)/MainGame.TILE_SIZE;
+            ArrayList<IngredientDataStore> ingredientData = new ArrayList<>();
+            ingredientData.add(item);
+            stationItems[x][y]=ingredientData;
         }
     }
 
@@ -712,7 +682,7 @@ public class PlayScreen implements Screen {
         SaveDataStore saveData = json.fromJson(SaveDataStore.class, dataRaw);
         chefData = saveData.getChefData();
         orderNum = saveData.getOrderCount();
-        diffMult = saveData.getDiffMult();
+        diffMulti = saveData.getDiffMult();
         createdOrder = saveData.getCreatedOrder();
         timeSeconds = saveData.getTimeSeconds();
         timeSecondsCount = saveData.getTimeSecondsCount();
@@ -797,6 +767,7 @@ public class PlayScreen implements Screen {
 
 
         //Random powerup
+        int totalPowerups = 5;
         int randomNum = ThreadLocalRandom.current().nextInt(0, totalPowerups);
         Powerup newPowerup;
         switch (randomNum){
@@ -827,9 +798,9 @@ public class PlayScreen implements Screen {
      * {@link Chef} and {@link Powerup}
      */
     public void checkPowerupCollisions(){
-        Iterator itr = powerups.iterator();
+        Iterator<Powerup> itr = powerups.iterator();
         while (itr.hasNext()){
-            Powerup currentPowerup = (Powerup) itr.next();
+            Powerup currentPowerup = itr.next();
             if (currentPowerup.collisionRect.overlaps(controlledChef.collisionRect)){
                 String powerupName = currentPowerup.getClass().getSimpleName();
                 if (powerupName.equals("ExtraChefPowerup") && chefList.getCurrentSize()==chefCount+1){
@@ -934,14 +905,14 @@ public class PlayScreen implements Screen {
         if (Math.round(timeSecondsCount % 10) == 5 && createdOrder == Boolean.FALSE){
             createdOrder = Boolean.TRUE;
             orderNum++;
-            currentOrder = ordersInterface.newOrder(hud.getTime(),diffMult);
+            currentOrder = ordersInterface.newOrder(hud.getTime(), diffMulti);
             hud.updateOrder(Boolean.FALSE, orderNum);
         }
         float period = 1f;
         if (timeSeconds > period) {
             timeSeconds -= period;
             hud.updateTime(scenarioComplete);
-            if (ThreadLocalRandom.current().nextInt(0, (int)(35/diffMult)) == 0){
+            if (ThreadLocalRandom.current().nextInt(0, (int)(35/ diffMulti)) == 0){
                 createPowerup();
             }
         }
@@ -959,7 +930,7 @@ public class PlayScreen implements Screen {
         renderer.render();
         game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
         hud.stage.draw();
-        game.batch.setProjectionMatrix(gamecam.combined);
+        game.batch.setProjectionMatrix(gameCam.combined);
         game.batch.begin();
         checkOrder();
         checkPowerupCollisions();
@@ -989,7 +960,7 @@ public class PlayScreen implements Screen {
             Ingredient currentIngredient = choppingBoard.getCurrentIngredient();
             if (currentIngredient != null) {
                 currentIngredient.create(choppingBoard.getX(), choppingBoard.getY(), game.batch);
-                choppingBoard.drawProgressBar(game.batch,Constants.CHOPPING_BOARD, diffMult);
+                choppingBoard.drawProgressBar(game.batch,Constants.CHOPPING_BOARD, diffMulti);
             }
         }
 
@@ -997,7 +968,7 @@ public class PlayScreen implements Screen {
             Ingredient currentIngredient = pan.getCurrentIngredient();
             if (currentIngredient != null) {
                 currentIngredient.create(pan.getX(), pan.getY(), game.batch);
-                pan.drawProgressBar(game.batch,Constants.PAN, diffMult);
+                pan.drawProgressBar(game.batch,Constants.PAN, diffMulti);
             }
         }
 
@@ -1006,10 +977,10 @@ public class PlayScreen implements Screen {
             Recipe  currentRecipe = oven.getCurrentRecipe();
             if (currentIngredient != null) {
                 currentIngredient.create(oven.getX(),oven.getY(),game.batch);
-                oven.drawProgressBar(game.batch,Constants.OVEN, diffMult);
+                oven.drawProgressBar(game.batch,Constants.OVEN, diffMulti);
             } else if (currentRecipe != null){
                 currentRecipe.create(oven.getX(),oven.getY(),game.batch);
-                oven.drawProgressBar(game.batch,Constants.OVEN, diffMult);
+                oven.drawProgressBar(game.batch,Constants.OVEN, diffMulti);
             }
         }
 
@@ -1047,7 +1018,7 @@ public class PlayScreen implements Screen {
 
     @Override
     public void resize(int width, int height){
-        gameport.update(width, height);
+        gamePort.update(width, height);
     }
 
     @Override

@@ -4,25 +4,20 @@ import Tools.Constants;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.sun.tools.javac.util.Context;
 
 /**
  * The MainMenu class is responsible for displaying the different game modes and the navigation of the game. It allows
@@ -32,9 +27,9 @@ import com.sun.tools.javac.util.Context;
 public class MainMenu implements Screen {
 
     private final MainGame game;
-    private Stage stage, stage2;
-    private SpriteBatch spriteBatch;
-    private final Texture backgroundImage, loadImage;
+    private final Stage stage;
+    private final Stage stage2;
+    private final SpriteBatch spriteBatch;
     private final Sprite backgroundSprite, loadSprite;
     private final OrthographicCamera camera;
     private final Viewport viewport;
@@ -50,9 +45,9 @@ public class MainMenu implements Screen {
      * @param game The MainGame instance that the MainMenu will be a part of.
      */
     public MainMenu(MainGame game){
-        backgroundImage = new Texture("UI/background.png");
+        Texture backgroundImage = new Texture("UI/background.png");
         backgroundSprite = new Sprite(backgroundImage);
-        loadImage  =new Texture("UI/background.png");
+        Texture loadImage = new Texture("UI/background.png");
         loadSprite = new Sprite(loadImage);
         this.game=game;
         camera = new OrthographicCamera();
@@ -110,8 +105,8 @@ public class MainMenu implements Screen {
         TextButton instructions = new TextButton("Instructions", skin);
         //Difficulty
         Label difficultyLabel = new Label("Difficulty:",skin);
-        final SelectBox<String> difficultyBox= new SelectBox<String>(skin);
-        difficultyBox.setItems(new String[]{"Easy","Medium","Hard"});
+        final SelectBox<String> difficultyBox= new SelectBox<>(skin);
+        difficultyBox.setItems("Easy","Medium","Hard");
         //Money
         table.removeActor(moneyLabel);
         moneyLabel = new Label("Money: "+game.getMoney(),skin);
@@ -129,7 +124,7 @@ public class MainMenu implements Screen {
         buttonTable.add(instructions).width(buttonWidth).height(buttonHeight).right().padLeft(10);
         buttonTable.row().padTop(10);
         buttonTable.add(difficultyLabel).padRight(10);
-        buttonTable.add(difficultyBox).padLeft(10).width(buttonWidth).height(buttonHeight/3);
+        buttonTable.add(difficultyBox).padLeft(10).width(buttonWidth).height(buttonHeight/3f);
 
         table.add(titleImage).size(320,100).padBottom(20);
         table.row();
@@ -157,7 +152,7 @@ public class MainMenu implements Screen {
         int windowWidth = 500;
         int windowHeight = 250;
         loadSprite.setSize(windowWidth, windowHeight);
-        loadSprite.setPosition(MainGame.V_WIDTH/2-windowWidth/2, MainGame.V_HEIGHT/2-windowHeight/2);
+        loadSprite.setPosition(MainGame.V_WIDTH/2f-windowWidth/2f, MainGame.V_HEIGHT/2f-windowHeight/2f);
 
         loadButton.addListener(new ChangeListener() {
             @Override

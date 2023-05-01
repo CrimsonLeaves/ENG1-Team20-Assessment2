@@ -17,9 +17,9 @@ public class CookingStation extends InteractiveTileObject{
     protected Ingredient currentIngredient;
 
     protected float timer;
-    private Texture progBarBack;
-    private Texture progBarFill;
-    private Texture progBarBurn;
+    private final Texture progBarBack;
+    private final Texture progBarFill;
+    private final Texture progBarBurn;
 
     /**
      * Constructor for the class, initialises b2bodies.
@@ -39,6 +39,13 @@ public class CookingStation extends InteractiveTileObject{
         progBarBurn = new Texture("UI/progBarBurn.png");
     }
 
+    /**
+     * updates the state of the cooking station
+     * @param dt delta time
+     * @param diff difficulty
+     * @param instantCook is instant cook powerup active
+     * @param noBurn is no burn powerup active
+     */
     public void update(float dt,float diff,boolean instantCook, boolean noBurn){
         if(currentIngredient != null && !currentIngredient.getFailed()) {
             if (instantCook && !currentIngredient.isCompleted(Constants.CHOPPING_BOARD)){
@@ -66,9 +73,9 @@ public class CookingStation extends InteractiveTileObject{
      */
     public void drawProgressBar(SpriteBatch batch, String station,float diff){
         if (currentIngredient != null&& !currentIngredient.getFailed()) { //if there is an ingredient requiring a progress bar
-            float adjX = getX()-(MainGame.TILE_SIZE+1)/2/MainGame.PPM; //get x
-            float adjY = getY()-MainGame.TILE_SIZE/2/MainGame.PPM; //get y
-            if (!currentIngredient.isCompleted(station)){ //If ingredient isnt cooked (first progress bar)
+            float adjX = getX()-(MainGame.TILE_SIZE+1)/2f/MainGame.PPM; //get x
+            float adjY = getY()-MainGame.TILE_SIZE/2f/MainGame.PPM; //get y
+            if (!currentIngredient.isCompleted(station)){ //If ingredient isn't cooked (first progress bar)
                 float progress=timer/currentIngredient.getTimer(station); //get progress as 0-1
                 batch.draw(progBarBack,adjX,adjY,(MainGame.TILE_SIZE-1)/MainGame.PPM,MainGame.TILE_SIZE/(4*MainGame.PPM)); //draw background
                 batch.draw(progBarFill,adjX,adjY,(MainGame.TILE_SIZE-1)*progress/MainGame.PPM,MainGame.TILE_SIZE/(4*MainGame.PPM)); //draw progress bar
@@ -82,22 +89,48 @@ public class CookingStation extends InteractiveTileObject{
 
     }
 
+    /**
+     * setter for the ingredient on the cooking station
+     * @param ingredient ingredient to be set
+     */
     public void setCurrentIngredient(Ingredient ingredient) {
         currentIngredient = ingredient;
         timer = 0;
     }
+
+    /**
+     * getter for the current ingredient
+     * @return currentIngredient
+     */
     public Ingredient getCurrentIngredient(){return currentIngredient;}
 
+    /**
+     * getter for the x position of the station
+     * @return x coordinate
+     */
     public float getX(){
         return super.bdefNew.position.x;
     }
 
+    /**
+     * getter for the y position of the station
+     * @return y coordinate
+     */
     public float getY(){
         return super.bdefNew.position.y;
     }
 
+    /**
+     * setter for the stations timer
+     * @param timer the timer to be set
+     */
     public void setTimer(float timer) {
         this.timer = timer;
     }
+
+    /**
+     * getter for the stations timer
+     * @return timer
+     */
     public float getTimer() {return timer;}
 }

@@ -22,15 +22,15 @@ public class ShopScreen implements Screen {
     private final Sprite backgroundSprite;
     private final OrthographicCamera camera;
     private final Viewport viewport;
-    private Stage stage;
-    private Image chefImage;
-    private Image currentChefSelected;
-    private Image notChefSelected;
-    private Texture chefnotUsed;
-    private Texture chefUsed;
-    private Texture chefLocked;
-    private Texture minusTexture;
-    private Texture plusTexture;
+    private final Stage stage;
+    private final Image chefImage;
+    private final Image currentChefSelected;
+    private final Image notChefSelected;
+    private final Texture chefNotUsed;
+    private final Texture chefUsed;
+    private final Texture chefLocked;
+    private final Texture minusTexture;
+    private final Texture plusTexture;
     Skin skin;
 
     /**
@@ -50,7 +50,7 @@ public class ShopScreen implements Screen {
         chefImage = new Image(new Texture("UI/chefShop.png"));
         currentChefSelected = new Image(new Texture("UI/chefUsed.png"));
         notChefSelected = new Image(new Texture("UI/chefNotUsed.png"));
-        chefnotUsed=new Texture("UI/chefNotUsed.png");
+        chefNotUsed =new Texture("UI/chefNotUsed.png");
         chefUsed=new Texture("UI/chefUsed.png");
         minusTexture=new Texture("UI/minusArrow.png");
         plusTexture=new Texture("UI/plusArrow.png");
@@ -138,7 +138,7 @@ public class ShopScreen implements Screen {
             chefTotalTable.add(new Image(chefUsed)).size(16,16).padLeft(10).center();
         }
         for (int i = 0; i<game.getUnlockedChefs()- game.getChefCount(); i++){
-            chefTotalTable.add(new Image(chefnotUsed)).size(16,16).padLeft(10).center();
+            chefTotalTable.add(new Image(chefNotUsed)).size(16,16).padLeft(10).center();
         }
         for (int i=0;i<game.getMaxChefs()-game.getUnlockedChefs();i++){
             chefTotalTable.add(new Image(chefLocked)).size(16,16).padLeft(10).center();

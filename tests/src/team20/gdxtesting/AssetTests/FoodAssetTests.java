@@ -8,7 +8,6 @@ import team20.gdxtesting.GdxTestRunner;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(GdxTestRunner.class)
-
 public class FoodAssetTests {
 
     @Test
@@ -82,6 +81,11 @@ public class FoodAssetTests {
     }
 
     @Test
+    public void testFailed_ingredientPngExists() {
+        assertTrue("This test will only pass when the Failed_ingredient.png asset exists.", Gdx.files.internal("Food/Failed_ingredient.png").exists());
+    }
+
+    @Test
     public void testJacket_PotatoPngExists() {
         assertTrue("This test will only pass when the Jacket_Potato.png asset exists.", Gdx.files.internal("Food/Jacket_Potato.png").exists());
     }
@@ -109,6 +113,11 @@ public class FoodAssetTests {
     @Test
     public void testPizzaPngExists() {
         assertTrue("This test will only pass when the pizza.png asset exists.", Gdx.files.internal("Food/pizza.png").exists());
+    }
+
+    @Test
+    public void testPizzaRecipePngExists() {
+        assertTrue("This test will only pass when the pizza_recipe.png asset exists.", Gdx.files.internal("Food/pizza_recipe.png").exists());
     }
 
     @Test

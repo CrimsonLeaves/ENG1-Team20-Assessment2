@@ -2,7 +2,6 @@ package Sprites;
 
 import Ingredients.Cheese;
 import Ingredients.Ingredient;
-import Ingredients.Lettuce;
 import Tools.Constants;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Rectangle;
@@ -28,6 +27,10 @@ public class CheeseStation  extends IngredientStation{
         completed.put(Constants.PAN, true);
     }
 
+    /**
+     * creates a new cheese object
+     * @return new cheese object
+     */
     @Override
     public Ingredient getIngredient(){return new Cheese(new HashMap<>(timers),new HashMap<>(completed));}
 }
