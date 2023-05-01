@@ -288,7 +288,8 @@ public class PlayScreen implements Screen {
                                 panTile.setCurrentIngredient(null);
                             } else if (ingredient != null){
                                 if(ingredient.getTimer(Constants.PAN) != null
-                                        && !ingredient.isCompleted(Constants.PAN)){
+                                        && !ingredient.isCompleted(Constants.PAN)
+                                        && ingredient.isCompleted(Constants.CHOPPING_BOARD)){
                                     panTile.setCurrentIngredient(ingredient);
                                     controlledChef.putDown();
                                 }
