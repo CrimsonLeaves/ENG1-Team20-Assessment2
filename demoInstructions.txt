@@ -1,0 +1,44 @@
+#Tomato
+~45 98
+~56 90
+@0.5
+pickup
+@0.5
+#Onion
+~71 92
+~71 90
+@0.5
+pickup
+@0.5
+#Lettuce
+~85 92
+~85 90
+@0.5
+pickup
+@0.5
+#Chop1
+~52 112
+@1
+#Chop2
+~36 108
+~38 112
+@1
+#Chop3
+~22 108
+~20 112
+#pickupChop1
+~50 108
+~52 112
+@1
+#pickupChop2
+~36 108
+~38 112
+@1
+#pickupChop3
+~22 108
+~20 112
+@1
+#PlateStation
+~32 32
+#Serve
+@5

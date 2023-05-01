@@ -71,9 +71,9 @@ public class PlayScreen implements Screen {
     public ArrayList<ChoppingBoard> choppingBoards = new ArrayList<>();
     public ArrayList<Pan> pans = new ArrayList<>();
     public ArrayList<CompletedDishStation> cdStations = new ArrayList<>();
-    public Boolean scenarioMode;
-    public ArrayList<Oven> ovens = new ArrayList<>();
 
+    public ArrayList<Oven> ovens = new ArrayList<>();
+    public Boolean scenarioMode;
 
     public Boolean scenarioComplete;
     public Boolean createdOrder;

@@ -1,5 +1,6 @@
 package com.team13.piazzapanic;
 
+import Tools.DemoScript;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Preferences;
@@ -50,6 +51,7 @@ public class MainGame extends Game {
 	public StartScreen startScreen;
 	public EndScreen endScreen;
 	public MainMenu mainMenu;
+	public DemoScreen demoScreen;
 	public ShopScreen shopScreen;
 	Preferences prefs;
 
@@ -82,6 +84,7 @@ public class MainGame extends Game {
 		endScreen = new EndScreen(this);
 		mainMenu = new MainMenu(this);
 		shopScreen = new ShopScreen(this);
+		demoScreen = new DemoScreen(this);
 		prefs = Gdx.app.getPreferences("gameData");
 		money = prefs.getInteger("money", 0);
 		chefCount = prefs.getInteger("chefCount", 3);
@@ -155,7 +158,7 @@ public class MainGame extends Game {
 		} else if(isShopScreen){
 			setScreen(shopScreen);
 		} else {
-			setScreen(mainMenu);
+			setScreen(demoScreen);
 		}
 	}
 
