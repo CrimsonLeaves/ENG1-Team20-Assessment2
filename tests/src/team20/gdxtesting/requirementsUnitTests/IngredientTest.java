@@ -69,13 +69,18 @@ public class IngredientTest {
         //Tests if the ingredient can instead be displayed as prepared by changing the image.
         potato.setSkin(1);
         assertTrue("The potato skin should be set to 1", potato.getSkin()==1);
+        potato.setSkin(2);
+        assertTrue("The potato skin should be set to 2", potato.getSkin()==2);
         //Test that skin can be changed back to 0.
         potato.setSkin(0);
         assertTrue("The potato skin should be set to 0", potato.getSkin()==0);
         //Test that the skin can't be set to an invalid value.
-        potato.setSkin(2);
-        assertFalse("The potato skin cannot be set anything but 1 or 0"
-                , potato.getSkin()==2);
+        potato.setSkin(3);
+        assertFalse("The potato skin cannot be set anything over 2"
+                , potato.getSkin()==3);
+        potato.setSkin(-1);
+        assertFalse("The potato skin cannot be set anything under 0"
+                , potato.getSkin()==-1);
     }
     @Test
     //Test Requirement: UR_FOOD_PREP/UR_INGREDIENT_BEANS
