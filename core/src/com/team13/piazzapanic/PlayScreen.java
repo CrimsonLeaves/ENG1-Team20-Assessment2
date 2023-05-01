@@ -156,7 +156,7 @@ public class PlayScreen implements Screen {
             new B2WorldCreator(world, map, this, null);
             stationItems = new ArrayList[((TiledMapTileLayer) map.getLayers().get(0)).getWidth()][((TiledMapTileLayer) map.getLayers().get(0)).getHeight()];
         }
-        chefList = new CircularList<>(chefCount+1);
+        chefList = new CircularList<>();
         if (loadGame){loadGame();}
         generateChefs(chefCount);
 
@@ -518,7 +518,7 @@ public class PlayScreen implements Screen {
             if (chef.getTexture() != null) {chef.getTexture().dispose();}
             world.destroyBody(chef.b2body);
         }
-        chefList = new CircularList<>(chefCount);
+        chefList = new CircularList<>();
         hud.dispose();
         hud=new HUD(game.batch);
         if (loadGame){loadGame();}
