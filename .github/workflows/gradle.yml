@@ -62,11 +62,11 @@ jobs:
     - name: Download a Build Artifact
       uses: actions/download-artifact@v3.0.1
       with:
-        name: lib.jar
+        name: core-1.0.jar
     - name: Release
       uses: softprops/action-gh-release@de2c0eb89ae2a093876385947365aca7b0e5f844
       with:
-        files: lib.jar
+        files: core-1.0.jar
 
     
 
