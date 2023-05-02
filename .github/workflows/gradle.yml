@@ -51,20 +51,22 @@ jobs:
         name: checkstyle-report
         path: core/build/reports/checkstyle
   release:
-      runs-on: ubuntu-22.04
-      needs: [ "build" ]
-      if: startsWith(github.ref, 'refs/tags/’)
-      permissions:
-        contents: write
-      steps:
-      - name: Download a Build Artifact
-        uses: actions/download-artifact@v3.0.1
-        with:
-          name: lib.jar
-      - name: Release
-        uses: softprops/action-gh-release@de2c0eb89ae2a093876385947365aca7b0e5f844
-        with:
-          files: lib.jar
+    runs-on: ubuntu-22.04
+    needs: [ "build" ]
+    if: startsWith(github.ref, 'refs/tags/’)
+      
+    permissions:
+      contents: write
+        
+    steps:
+    - name: Download a Build Artifact
+      uses: actions/download-artifact@v3.0.1
+      with:
+        name: lib.jar
+    - name: Release
+      uses: softprops/action-gh-release@de2c0eb89ae2a093876385947365aca7b0e5f844
+      with:
+        files: lib.jar
 
     
 
