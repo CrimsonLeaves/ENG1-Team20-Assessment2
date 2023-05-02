@@ -124,7 +124,7 @@ public class Chef extends Sprite {
         if (!userControlChef && chefOnChefCollision) {
             waitTimer += dt;
             b2body.setLinearVelocity(new Vector2(startVector.x * -1, startVector.y * -1));
-            if (waitTimer > 0.3f) {
+            if (waitTimer > 0.15f) {
                 b2body.setLinearVelocity(new Vector2(0, 0));
                 chefOnChefCollision = false;
                 userControlChef = true;
