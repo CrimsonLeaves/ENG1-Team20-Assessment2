@@ -994,7 +994,7 @@ public class PlayScreen implements Screen {
         Gdx.gl.glEnable(GL20.GL_BLEND);
         if (currentOrder!=null){
             float orderX=435;
-            float orderY=450;
+            float orderY=465;
             float percent=(currentOrder.totalTime- currentOrder.currentTime)/ currentOrder.totalTime;
 
             shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
