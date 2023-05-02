@@ -62,7 +62,7 @@ jobs:
     - name: Download a Build Artifact
       uses: actions/download-artifact@v3.0.1
       with:
-        name: core-1.0.jar
+        name: core-1.0-ubuntu-22.04.jar
     - name: Release
       uses: softprops/action-gh-release@de2c0eb89ae2a093876385947365aca7b0e5f844
       with:
