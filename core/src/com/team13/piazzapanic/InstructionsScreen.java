@@ -82,7 +82,7 @@ public class InstructionsScreen implements Screen {
     @Override
     public void show() {
         Table table = new Table();
-        Table chefTable = new Table();
+        Table controlTable = new Table();
         table.setFillParent(true);
         //table.debug();
         stage.addActor(table);
@@ -95,12 +95,12 @@ public class InstructionsScreen implements Screen {
 
         //Buttons
         TextButton exit = new TextButton("Exit", skin);
-        exit.getLabel().setFontScale(0.5f);
+        exit.getLabel().setFontScale(0.4f);
         ImageButton minusButton = new ImageButton(new TextureRegionDrawable(new TextureRegion(minusTexture)));
         ImageButton plusButton = new ImageButton(new TextureRegionDrawable(new TextureRegion(plusTexture)));
 
         //Button Sizes
-        exit.setSize(125,50);
+        exit.setSize(100,40);
 
         //Listeners
         exit.addListener(new ChangeListener() {
@@ -130,31 +130,26 @@ public class InstructionsScreen implements Screen {
             }
         });
 
-        //Chef Table
-        //Chef quantity
-        Table chefTotalTable = new Table();
-        chefTotalTable.add(minusButton).size(32,32);
-        //Add current amount of chefs, unlocked and locked graphics
+        Table buttonTable = new Table();
+        buttonTable.add(minusButton).size(32,32);
         for (int i = 0; i<= maxScreen; i++){
             if (i==currentScreen){
-                chefTotalTable.add(new Image(currentSelected)).size(16,16).padLeft(10).center();
+                buttonTable.add(new Image(currentSelected)).size(16,16).padLeft(10).center();
 
             }
             else{
-                chefTotalTable.add(new Image(notSelected)).size(16,16).padLeft(10).center();
+                buttonTable.add(new Image(notSelected)).size(16,16).padLeft(10).center();
             }
 
         }
-        chefTotalTable.add(plusButton).size(32,32).padLeft(10);
+        buttonTable.add(plusButton).size(32,32).padLeft(10);
         //Add chef quantity to table
-        chefTable.add(chefTotalTable).padBottom(20);
-        chefTable.row();
-        chefTable.row();
+        controlTable.add(buttonTable);
         //Add chef table to main table.
-        table.add(chefTable).padBottom(20);
+        table.add(controlTable).padBottom(5);
         table.row();
-        table.add(exit).size(125,50);
-        table.bottom().padBottom(50);
+        table.add(exit).size(100,50);
+        table.bottom().padBottom(30);
 
 
 
