@@ -44,6 +44,23 @@ public class UIAssetTests {
     }
 
     @Test
+    public void testInstructionsControlsExists() {
+        assertTrue("This test will only pass when the instructionsControls.png asset exists.", Gdx.files.internal("UI/instructionsControls.png").exists());
+    }
+    @Test
+    public void testInstructionsPowerupsExists() {
+        assertTrue("This test will only pass when the instructionsPowerups.png asset exists.", Gdx.files.internal("UI/instructionsPowerups.png").exists());
+    }
+
+    @Test
+    public void testInstructionsStationsExists() {
+        assertTrue("This test will only pass when the instructionsStations.png asset exists.", Gdx.files.internal("UI/instructionsStations.png").exists());
+    }
+
+
+
+
+    @Test
     public void testLossImageExists() {
         assertTrue("This test will only pass when the lossImage.png asset exists.", Gdx.files.internal("UI/lossImage.png").exists());
     }
